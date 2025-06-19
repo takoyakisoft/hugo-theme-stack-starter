@@ -17,7 +17,17 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "hugo",
+            "command": "hugo --gc --minify",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Deploy",
+            "type": "shell",
+            "command": "wrangler pages deploy public --project-name takoyakisoft",
             "group": {
                 "kind": "build",
                 "isDefault": true

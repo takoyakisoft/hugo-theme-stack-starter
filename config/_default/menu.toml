@@ -8,17 +8,33 @@
 #newtab = true
 
 [[social]]
+identifier = "youtube"
+name = "YouTube"
+url = "https://www.youtube.com/@takoyaki-soft"
+
+[social.params]
+icon = "brand-youtube"
+
+[[social]]
+identifier = "x"
+name = "X"
+url = "https://x.com/takoyakisoft"
+
+[social.params]
+icon = "brand-x"
+
+[[social]]
+identifier = "bluesky"
+name = "Bluesky"
+url = "https://bsky.app/profile/takoyakisoft.bsky.social"
+
+[social.params]
+icon = "brand-bluesky"
+
+[[social]]
 identifier = "github"
 name = "GitHub"
-url = "https://github.com/CaiJimmy/hugo-theme-stack"
+url = "https://github.com/takoyakisoft"
 
 [social.params]
 icon = "brand-github"
-
-[[social]]
-identifier = "twitter"
-name = "Twitter"
-url = "https://twitter.com"
-
-[social.params]
-icon = "brand-twitter"

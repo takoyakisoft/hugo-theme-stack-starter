@@ -1,0 +1,43 @@
+# Rename this file to languages.toml to enable multilingual support
+[ja]
+languageName = "日本語"
+languagedirection = "ltr"
+title = "TakoyakiSoft"
+weight = 1
+
+[ja.params.dateFormat]
+published = "2006年01月02日"
+lastUpdated = "2006年01月02日 15:04"
+
+[ja.params.sidebar]
+emoji = "🕹️"
+subtitle = "様々なソフトウェアの使い方を分かりやすく解説します。"
+
+
+[en]
+languageName = "English"
+languagedirection = "ltr"
+title = "TakoyakiSoft"
+weight = 1
+
+[en.params.dateFormat]
+published = "Jan 02, 2006"
+lastUpdated = "Jan 02, 2006 15:04"
+
+[en.params.sidebar]
+emoji = "🕹️"
+subtitle = "Explaining how to use various software in an easy-to-understand manner."
+
+[zh-cn]
+languageName = "简体中文"
+languagedirection = "ltr"
+title = "TakoyakiSoft"
+weight = 1
+
+[zh-cn.params.dateFormat]
+published = "2006年01月02日"
+lastUpdated = "2006年01月02日 15:04"
+
+[zh-cn.params.sidebar]
+emoji = "🕹️"
+subtitle = "以通俗易懂的方式讲解各种软件的使用方法。"

@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ポリゴン・インパクト (Polygon Impact)</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        /* CSSは変更なし */
+        body { margin: 0; overflow: hidden; background-color: #111; color: white; font-family: monospace; }
+        canvas { display: block; }
+        #info {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+            display:block;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px black;
+            transition: transform 0.3s, color 0.3s;
+        }
+        #score {
+            position: absolute;
+            top: 40px;
+            left: 10px;
+            z-index: 100;
+            font-size: 1.5em;
+            text-shadow: 0 0 5px black;
+            transition: transform 0.2s, color 0.2s;
+        }
+        #score.pulse {
+            transform: scale(1.3);
+            color: #ffcc00;
+        }
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            pointer-events: none;
+            z-index: 101;
+            transition: all 0.1s ease;
+        }
+        #crosshair::before, #crosshair::after {
+            content: '';
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            mix-blend-mode: difference;
+        }
+        #crosshair::before {
+            width: 6px;
+            height: 2px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #crosshair::after {
+            width: 2px;
+            height: 6px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #crosshair.hit {
+            border-color: rgba(255, 100, 100, 0.9);
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+        /* スクリーンエフェクト用オーバーレイ */
+        #screen-flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0);
+            pointer-events: none;
+            z-index: 102;
+            transition: background-color 0.1s ease;
+        }
+        #vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 103;
+            background: radial-gradient(circle, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
+            opacity: 0.5;
+            transition: opacity 0.5s;
+        }
+        #bullet-time-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 100, 100, 0.8);
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            z-index: 104;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #bullet-time-indicator.active {
+            opacity: 0.7;
+            animation: pulse 1.5s infinite alternate;
+        }
+        #combo-counter {
+            position: absolute;
+            top: 80px;
+            left: 10px;
+            color: #ffcc00;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(255, 150, 0, 0.7);
+            z-index: 104;
+            pointer-events: none;
+            transition: transform 0.2s, color 0.2s;
+        }
+        #combo-counter.pulse {
+            transform: scale(1.5);
+            color: #ff8800;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.95); }
+            100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
+        }
+        #blocker {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #instructions {
+            width: 50%;
+            padding: 20px;
+            background-color: rgba(40,40,40,0.8);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.5em;
+            cursor: pointer;
+             border: 1px solid #555;
+        }
+        #instructions:hover {
+            background-color: rgba(60,60,60,0.9);
+        }
+    </style>
+</head>
+<body>
+    <div id="blocker">
+        <div id="instructions">
+            Click to Play<br>(Use Mouse to Look, Click to Shoot, ESC to Release Mouse)
+        </div>
+    </div>
+
+    <div id="info">Polygon Impact</div>
+    <div id="score">Score: 0</div>
+    <div id="crosshair" style="display: none;"></div>
+    <div id="screen-flash"></div>
+    <div id="vignette"></div>
+    <div id="bullet-time-indicator" style="display: none;">BULLET TIME</div>
+    <div id="combo-counter" style="display: none;">x1</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // --- 定数 ---
+        const TARGET_TAG = "target";
+        const BULLET_TAG = "bullet";
+        const GROUND_TAG = "ground";
+        const BULLET_SPEED = 80;
+        const BULLET_LIFETIME = 3.0;
+        const TARGET_HEALTH_MAX = 3;
+        const GRAVITY = new THREE.Vector3(0, -15, 0);
+        const GROUND_LEVEL = 0;
+        const RESTITUTION = 0.2;
+        const DAMPING = 0.98;
+        const PITCH_LIMIT = Math.PI / 2 - 0.1;
+        const MOUSE_SENSITIVITY = 0.002;
+
+        // エフェクト関連の定数
+        const HIT_STOP_DURATION = 0.12;
+        const SCREEN_SHAKE_DURATION = 0.2;
+        const SCREEN_FLASH_DURATION = 0.1;
+        const BULLET_TIME_DURATION = 1.5;
+        const BULLET_TIME_SCALE = 0.3;
+        const COMBO_TIMEOUT = 2.0;
+        // const PARTICLE_VARIETY = 3; // 注: 代わりに particleTypes が使用されます
+
+        // --- グローバル変数 ---
+        let scene, camera, cameraRig, renderer, clock; // cameraRig を追加
+        const gameObjects = [];
+        const particleSystems = [];
+
+        // ゲーム状態とエフェクト
+        let score = 0;
+        let isHitStopping = false;
+        let hitStopTimer = 0;
+        let screenShakeIntensity = 0;
+        let screenShakeTimer = 0;
+        let screenFlashTimer = 0;
+        let bulletTimeActive = false;
+        let bulletTimeTimer = 0;
+        let timeScale = 1.0;
+        let comboCount = 0;
+        let comboTimer = 0;
+        let lastHitTime = 0;
+        // cameraOriginalPosition, cameraOriginalRotation を削除
+        let particleTypes = ['standard', 'trail', 'spark', 'smoke', 'ring']; // 将来的に使用する可能性があるため保持しますが、現時点では createComplexEffect では直接使用されません
+        let particleColors = [0xffffaa, 0xff8844, 0x44aaff, 0xff44aa, 0x44ff88, 0xffffff, 0xdddddd]; // 白/灰色を追加
+        let lastShootTime = 0;
+        let environmentSoundSource = null; // ループする環境音用
+
+        // オーディオ
+        let audioContext;
+        let shootSoundBuffer, hitSoundBuffer, explosionSoundBuffer;
+        let impactSoundBuffer, comboSoundBuffer, bulletTimeSoundBuffer, environmentSoundBuffer; // impact と environment を追加
+
+        // ポインターロック
+        let controlsEnabled = false;
+        const cameraPitchEuler = new THREE.Euler(0, 0, 0, 'YXZ'); // 明確化のために名前変更
+        const cameraRigEuler = new THREE.Euler(0, 0, 0, 'YXZ'); // リグのヨー用
+
+        // DOM 要素
+        let blocker, instructions, crosshair, infoElement, scoreElement;
+        let screenFlash, vignette, bulletTimeIndicator, comboCounter;
+
+
+        // --- ゲーム初期化 ---
+        window.addEventListener('load', function() {
+            console.log("Window fully loaded.");
+            initGame();
+        });
+
+        function initGame() {
+            console.log("Initializing game components...");
+
+            // DOM 要素を取得
+            blocker = document.getElementById('blocker');
+            instructions = document.getElementById('instructions');
+            crosshair = document.getElementById('crosshair');
+            infoElement = document.getElementById('info');
+            scoreElement = document.getElementById('score');
+            screenFlash = document.getElementById('screen-flash');
+            vignette = document.getElementById('vignette');
+            bulletTimeIndicator = document.getElementById('bullet-time-indicator');
+            comboCounter = document.getElementById('combo-counter');
+
+            // 基本的な Three.js 設定
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x333355);
+            scene.fog = new THREE.Fog(0x333355, 30, 80);
+
+            // カメラリグ設定
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            cameraRig = new THREE.Group();
+            cameraRig.position.set(0, 6, 20); // リグに初期位置を設定
+            cameraRig.add(camera);          // カメラをリグに追加
+            scene.add(cameraRig);           // リグをシーンに追加
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.body.appendChild(renderer.domElement);
+
+            clock = new THREE.Clock();
+
+            // ライティング (変更なし)
+            const ambientLight = new THREE.AmbientLight(0xaaaaee, 0.4);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
+            directionalLight.position.set(15, 30, 20);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
+            directionalLight.shadow.camera.near = 0.5;
+            directionalLight.shadow.camera.far = 100;
+            directionalLight.shadow.camera.left = -30;
+            directionalLight.shadow.camera.right = 30;
+            directionalLight.shadow.camera.top = 30;
+            directionalLight.shadow.camera.bottom = -30;
+            scene.add(directionalLight);
+
+            // シーンオブジェクト
+            createGroundPlane();
+            spawnInitialTargets(20);
+
+            // オーディオシステム
+            initAudio(); // ここで環境音バッファが作成されます
+
+            // UI
+            updateScoreDisplay();
+            infoElement.textContent = 'Click Screen to Start';
+            blocker.style.display = 'flex';
+            crosshair.style.display = 'none';
+
+            // ポインターロック設定
+            instructions.addEventListener('click', requestPointerLock);
+            document.addEventListener('pointerlockchange', onPointerlockChange);
+            document.addEventListener('pointerlockerror', onPointerlockError);
+
+            // イベントリスナー
+            window.addEventListener('resize', onWindowResize);
+
+            console.log("Game Initialized Successfully.");
+            animate(); // アニメーションループを開始
+        }
+
+        // --- ポインターロック関数 ---
+        function requestPointerLock() {
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    playEnvironmentSound(); // 再開して環境音を再生
+                }).catch(e => console.error("Error resuming AudioContext:", e));
+            } else {
+                 playEnvironmentSound(); // コンテキストが既に実行中の場合は環境音を再生
+            }
+            renderer.domElement.requestPointerLock();
+        }
+
+        function onPointerlockChange() {
+            if (document.pointerLockElement === renderer.domElement) {
+                console.log('Pointer Lock Active');
+                controlsEnabled = true;
+                blocker.style.display = 'none';
+                crosshair.style.display = 'block';
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('click', handleShoot);
+            } else {
+                console.log('Pointer Lock Inactive');
+                controlsEnabled = false;
+                blocker.style.display = 'flex';
+                crosshair.style.display = 'none';
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('click', handleShoot);
+                // 非アクティブ時にオプションで環境音を停止
+                // stopEnvironmentSound();
+            }
+        }
+
+        function onPointerlockError() {
+            console.error('Pointer Lock Error');
+            instructions.textContent = 'Pointer Lock failed. Ensure the document has focus.';
+        }
+
+        // --- マウス移動ハンドリング ---
+        function onMouseMove(event) {
+            if (!controlsEnabled) return;
+
+            const movementX = event.movementX || 0;
+            const movementY = event.movementY || 0;
+
+            // ヨー (左右) - カメラリグを Y 軸周りに回転
+            cameraRigEuler.y -= movementX * MOUSE_SENSITIVITY;
+            cameraRig.quaternion.setFromEuler(cameraRigEuler);
+
+            // ピッチ (上下) - カメラをローカル X 軸周りに回転
+            cameraPitchEuler.x -= movementY * MOUSE_SENSITIVITY;
+            cameraPitchEuler.x = Math.max(-PITCH_LIMIT, Math.min(PITCH_LIMIT, cameraPitchEuler.x));
+            camera.quaternion.setFromEuler(cameraPitchEuler); // カメラに直接ピッチを適用
+        }
+
+        // --- オーディオシステム ---
+        function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioContext) {
+                    createSoundBuffers();
+                } else {
+                    console.warn("Web Audio API is not supported or context couldn't be created.");
+                }
+            } catch (e) {
+                console.warn("Web Audio API is not supported in this browser.", e);
+                audioContext = null;
+            }
+        }
+
+        function createSoundBuffers() {
+            if (!audioContext) return;
+
+            // 発射音 (変更なし)
+            shootSoundBuffer = createBufferFromFunction(0.12, (t) => {
+                const freq = 2000 - t * 18000;
+                const env = Math.pow(1 - t, 2.5);
+                const noise = (Math.random() * 0.15 - 0.075) * Math.pow(1 - t, 4);
+                const tone = Math.sin(t * 2 * Math.PI * freq) * env * 0.7;
+                const highFreq = Math.sin(t * 2 * Math.PI * (freq * 1.5)) * env * 0.3;
+                return tone + highFreq + noise;
+            });
+
+            // ヒット音 (変更なし)
+            hitSoundBuffer = createBufferFromFunction(0.2, (t) => {
+                const freq1 = 880 * Math.exp(-t * 15);
+                const freq2 = 1320 * Math.exp(-t * 12);
+                const freq3 = 1760 * Math.exp(-t * 20);
+                const noiseEnv = Math.pow(1 - t, 1.5);
+                const ringEnv = Math.exp(-t * 12);
+                const metallic = Math.sin(t * 2 * Math.PI * freq1) * 0.4 +
+                               Math.sin(t * 2 * Math.PI * freq2) * 0.3 +
+                               Math.sin(t * 2 * Math.PI * freq3) * 0.2;
+                const noise = (Math.random() * 2 - 1) * 0.3 * noiseEnv;
+                return metallic * ringEnv + noise;
+            });
+
+            // 爆発音 (変更なし)
+            explosionSoundBuffer = createBufferFromFunction(1.0, (t) => {
+                const rumbleFreq = 40 + Math.sin(t * Math.PI * 3) * 25;
+                const rumble = Math.sin(t * 2 * Math.PI * rumbleFreq) * Math.pow(1 - t, 0.4) * 0.8;
+                const crackleIntensity = Math.max(0, 1 - t * 2.5);
+                const crackle = (Math.random() * 2 - 1) * Math.pow(crackleIntensity, 2) * 0.4;
+                const shockwave = t < 0.1 ? Math.sin(t * 100) * (1 - t * 10) * 0.7 : 0;
+                return rumble + crackle + shockwave;
+             });
+
+            // バレットタイム音 (変更なし)
+            bulletTimeSoundBuffer = createBufferFromFunction(0.5, (t) => {
+                const sweep = Math.sin(t * 2 * Math.PI * (300 - t * 280)) * Math.pow(1 - t, 1) * 0.7;
+                const wobble = Math.sin(t * 2 * Math.PI * 5) * 0.3 * Math.min(t * 3, 1);
+                const sparkle = Math.sin(t * 2 * Math.PI * (2000 + Math.sin(t * 30) * 500)) * Math.pow(t, 2) * 0.2;
+                return sweep + wobble + sparkle;
+            });
+
+            // コンボ音 (変更なし)
+            comboSoundBuffer = createBufferFromFunction(0.3, (t) => {
+                const baseFreq = 440 + t * 880;
+                const ascend = Math.sin(t * 2 * Math.PI * baseFreq) * Math.pow(1 - t, 1) * 0.6;
+                const harmony = Math.sin(t * 2 * Math.PI * baseFreq * 1.5) * Math.pow(1 - t, 1.2) * 0.3;
+                return ascend + harmony;
+            });
+
+            // **新規: 衝撃音 (例: 地面との衝突用)**
+            impactSoundBuffer = createBufferFromFunction(0.25, (t) => {
+                // 低周波のドスンという音
+                const thudFreq = 100 * Math.exp(-t * 10);
+                const thud = Math.sin(t * 2 * Math.PI * thudFreq) * Math.pow(1 - t, 1.5) * 0.6;
+                // 短いノイズバースト
+                const noise = (Math.random() * 2 - 1) * Math.pow(1 - t, 3) * 0.3;
+                return thud + noise;
+            });
+
+            // **新規: 環境音 (ループする風/環境音)**
+            environmentSoundBuffer = createBufferFromFunction(5.0, (t) => { // 5 秒間
+                // 低周波の風のゴロゴロ音
+                const windRumbleFreq = 20 + Math.sin(t * Math.PI * 0.4) * 5 + Math.random() * 5;
+                const windRumble = Math.sin(t * 2 * Math.PI * windRumbleFreq) * 0.15 * (0.5 + Math.sin(t * Math.PI * 0.2) * 0.3);
+                // 高周波の口笛/シューというノイズ
+                const windHissFreq = 1500 + Math.sin(t * Math.PI * 1.5) * 300 + Math.random() * 200;
+                const windHiss = (Math.random() * 2 - 1) * 0.05 * (0.4 + Math.sin(t * Math.PI * 0.7) * 0.3);
+                // ループのための穏やかなフェードイン/アウト
+                const envelope = Math.min(t / 0.5, 1.0) * Math.min((5.0 - t) / 0.5, 1.0);
+                return (windRumble + windHiss) * envelope;
+            });
+        }
+
+        function createBufferFromFunction(duration, fn) {
+             if (!audioContext) return null;
+            const sampleRate = audioContext.sampleRate;
+            const frameCount = sampleRate * duration;
+            const buffer = audioContext.createBuffer(1, frameCount, sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < frameCount; i++) {
+                const t = i / sampleRate;
+                data[i] = fn(t, i, frameCount);
+            }
+            // 正規化/制限 (変更なし)
+            let max = 0;
+            for (let i = 0; i < frameCount; i++) max = Math.max(max, Math.abs(data[i]));
+            if (max > 1) {
+                for (let i = 0; i < frameCount; i++) data[i] /= max;
+            } else if (max > 0 && max < 0.5) {
+                 const gain = 0.8 / max;
+                 for (let i = 0; i < frameCount; i++) data[i] *= gain;
+            }
+            return buffer;
+        }
+
+        function playSound(buffer, volume = 1.0, rate = 1.0, loop = false) { // loop パラメータを追加
+            if (!audioContext || !buffer) return null;
+            if (audioContext.state === 'suspended') {
+                console.warn("AudioContext suspended, cannot play sound yet.");
+                return null;
+            }
+
+            try {
+                const source = audioContext.createBufferSource();
+                source.buffer = buffer;
+                source.loop = loop; // loop プロパティを設定
+                source.playbackRate.value = rate + (loop ? 0 : (Math.random() - 0.5) * 0.1); // ループにはランダムなレートを適用しない
+
+                const gainNode = audioContext.createGain();
+                gainNode.gain.setValueAtTime(volume * (loop ? 1 : (0.8 + Math.random() * 0.2)), audioContext.currentTime); // ループにはランダムな音量を適用しない
+
+                source.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                source.start(0);
+                return source; // ソースノードを返す (ループの停止に便利)
+            } catch (e) {
+                console.error("Error playing sound:", e);
+                return null;
+            }
+        }
+
+        // **新規: 環境音を再生/管理する関数**
+        function playEnvironmentSound() {
+            if (!audioContext || !environmentSoundBuffer || environmentSoundSource) return; // 再生中または準備ができていない
+             if (audioContext.state === 'suspended') return; // 一時停止中の場合は再生しない
+
+            console.log("Playing environment sound.");
+            environmentSoundSource = playSound(environmentSoundBuffer, 0.2, 1.0, true); // 低音量でループ再生
+        }
+
+        function stopEnvironmentSound() {
+             if (environmentSoundSource) {
+                 console.log("Stopping environment sound.");
+                 environmentSoundSource.stop();
+                 environmentSoundSource = null;
+             }
+        }
+
+
+        // --- オブジェクト生成 ---
+        function createGameObject(threeMesh, mass, pos, vel, tag = null) {
+             threeMesh.position.copy(pos);
+            threeMesh.castShadow = mass > 0;
+            threeMesh.receiveShadow = true;
+
+            threeMesh.userData = {
+                velocity: vel ? vel.clone() : new THREE.Vector3(0, 0, 0),
+                mass: mass,
+                tag: tag || "",
+                collider: null,
+                life: Infinity
+            };
+
+            scene.add(threeMesh);
+
+            if (mass > 0 || tag === BULLET_TAG) {
+                gameObjects.push(threeMesh);
+            }
+
+            return threeMesh;
+        }
+
+        function createGroundPlane() {
+             const groundSize = 100;
+            const groundGeometry = new THREE.PlaneGeometry(groundSize, groundSize);
+            const groundMaterial = new THREE.MeshStandardMaterial({
+                 color: 0x666677,
+                 roughness: 0.9,
+                 metalness: 0.1
+            });
+            const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+            groundMesh.rotation.x = -Math.PI / 2;
+            groundMesh.position.y = GROUND_LEVEL;
+            groundMesh.receiveShadow = true;
+
+            createGameObject(groundMesh, 0, groundMesh.position, null, GROUND_TAG);
+        }
+
+        function spawnInitialTargets(count) {
+             for (let i = 0; i < count; i++) {
+                spawnTarget();
+            }
+        }
+
+        function spawnTarget() {
+            const size = 1 + Math.random() * 1.5;
+            let targetGeometry;
+            let colliderInfo = {};
+            const shapeType = Math.random();
+
+            if (shapeType < 0.6) {
+                targetGeometry = new THREE.BoxGeometry(size, size, size);
+                colliderInfo = { type: 'box', size: new THREE.Vector3(size, size, size), boundingRadius: size * Math.sqrt(3) / 2 };
+            } else if (shapeType < 0.8) {
+                targetGeometry = new THREE.SphereGeometry(size * 0.5, 16, 12);
+                colliderInfo = { type: 'sphere', radius: size * 0.5, boundingRadius: size * 0.5 };
+            } else {
+                targetGeometry = new THREE.CylinderGeometry(size * 0.4, size * 0.4, size * 1.2, 16);
+                const radius = size * 0.4;
+                const height = size * 1.2;
+                colliderInfo = { type: 'cylinder', radius: radius, height: height, boundingRadius: Math.sqrt(radius * radius + (height / 2) * (height / 2)) };
+            }
+
+            const targetMaterial = new THREE.MeshStandardMaterial({
+                color: new THREE.Color().setHSL(Math.random() * 0.3 + 0.55, 0.8, 0.6),
+                roughness: 0.4,
+                metalness: 0.2
+            });
+            const targetMesh = new THREE.Mesh(targetGeometry, targetMaterial);
+
+            const pos = new THREE.Vector3(
+                (Math.random() - 0.5) * 40,
+                Math.random() * 15 + 5 + GROUND_LEVEL,
+                (Math.random() - 0.5) * 40
+            );
+            const vel = new THREE.Vector3(
+                (Math.random() - 0.5) * 3,
+                Math.random() * 3,
+                (Math.random() - 0.5) * 3
+            );
+            const mass = size;
+
+            const target = createGameObject(targetMesh, mass, pos, vel, TARGET_TAG);
+            target.userData.health = TARGET_HEALTH_MAX;
+            target.userData.maxHealth = TARGET_HEALTH_MAX;
+            target.userData.originalColor = targetMaterial.color.clone();
+            target.userData.collider = colliderInfo;
+            target.userData.angularVelocity = new THREE.Euler(
+                (Math.random() - 0.5) * 0.05,
+                (Math.random() - 0.5) * 0.05,
+                (Math.random() - 0.5) * 0.05
+            );
+        }
+
+        // --- 発射 ---
+        function handleShoot() { // 方向/位置に cameraRig を使用するように調整
+             if (!audioContext) {
+                console.warn("Audio not ready, cannot shoot yet.");
+                return;
+            }
+            if (audioContext.state === 'suspended') {
+                 audioContext.resume().catch(e => console.error("Error resuming AudioContext:", e));
+                 return;
+            }
+
+            const currentTime = clock.getElapsedTime();
+            const timeSinceLastShot = currentTime - lastShootTime;
+            if (timeSinceLastShot < 0.1) return;
+            lastShootTime = currentTime;
+
+            crosshair.classList.remove('hit');
+            void crosshair.offsetWidth;
+            crosshair.classList.add('hit');
+            setTimeout(() => crosshair.classList.remove('hit'), 100);
+
+            const pitchRate = bulletTimeActive ? 0.7 : 1.0;
+            const volumeRate = bulletTimeActive ? 0.6 : 0.8;
+            playSound(shootSoundBuffer, volumeRate, pitchRate);
+
+            triggerScreenShake(0.05); // 発射時に軽い揺れ
+
+            const bulletRadius = 0.15;
+            const bulletGeometry = new THREE.SphereGeometry(bulletRadius, 8, 6);
+            const bulletMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffff88, emissive: 0xffff00, emissiveIntensity: 2.0,
+                roughness: 0.1, metalness: 0.2, transparent: true, opacity: 1.0
+            });
+            const bulletMesh = new THREE.Mesh(bulletGeometry, bulletMaterial);
+            const bulletLight = new THREE.PointLight(0xffffaa, 1.0, 8);
+            bulletMesh.add(bulletLight);
+
+            // リグ内部のカメラから方向と位置を取得
+            const camDir = new THREE.Vector3();
+            camera.getWorldDirection(camDir); // カメラのワールド方向を使用
+            const camPos = new THREE.Vector3();
+            camera.getWorldPosition(camPos); // カメラのワールド位置を使用
+
+            const startPos = camPos.add(camDir.clone().multiplyScalar(1.5));
+
+            const effectiveBulletSpeed = bulletTimeActive ? BULLET_SPEED * 0.7 : BULLET_SPEED;
+            const velocity = camDir.clone().multiplyScalar(effectiveBulletSpeed);
+            const bullet = createGameObject(bulletMesh, 0.1, startPos, velocity, BULLET_TAG);
+            bullet.userData.life = BULLET_LIFETIME;
+            bullet.userData.collider = { type: 'sphere', radius: bulletRadius, boundingRadius: bulletRadius };
+
+            if (!bulletTimeActive) {
+                const trailPos = startPos.clone().sub(camDir.clone().multiplyScalar(0.2));
+                createComplexEffect(trailPos, 'trail');
+            }
+        }
+
+        // --- パーティクルシステム ---
+        // 回転属性とロジックを削除
+        function createParticleExplosion(position, count, color, size, speed, duration, gravityFactor = 1.0, type = 'standard') {
+             if (!scene || !clock) return;
+
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            const velocities = [];
+            const colors = [];
+            const sizes = []; // サイズのバリエーションを維持
+            // rotations = []; を削除
+            const baseColor = new THREE.Color(color);
+
+            let particleConfig = {
+                sizeVariation: 0.5,
+                colorVariation: 0.2,
+                speedVariation: 0.8,
+                directionBias: new THREE.Vector3(0, 1, 0),
+                // rotationSpeed: 0.1 を削除
+            };
+
+            switch(type) {
+                case 'spark':
+                    particleConfig.sizeVariation = 0.8;
+                    particleConfig.colorVariation = 0.1;
+                    particleConfig.speedVariation = 1.2;
+                    particleConfig.directionBias = new THREE.Vector3(0, 1.5, 0);
+                    // particleConfig.rotationSpeed = 0.3;
+                    break;
+                case 'smoke':
+                    particleConfig.sizeVariation = 1.5;
+                    particleConfig.colorVariation = 0.05;
+                    particleConfig.speedVariation = 0.4;
+                    particleConfig.directionBias = new THREE.Vector3(0, 0.8, 0);
+                    // particleConfig.rotationSpeed = 0.02;
+                    break;
+                case 'ring':
+                    particleConfig.directionBias = new THREE.Vector3(0, 0, 0); // No vertical bias
+                    particleConfig.speedVariation = 0.3;
+                    // particleConfig.rotationSpeed = 0.05;
+                    break;
+                case 'trail':
+                    particleConfig.sizeVariation = 0.3;
+                    particleConfig.speedVariation = 0.5;
+                    particleConfig.directionBias = new THREE.Vector3(0, 0.2, 0);
+                    // particleConfig.rotationSpeed = 0.01;
+                    break;
+            }
+
+            for (let i = 0; i < count; i++) {
+                vertices.push(position.x, position.y, position.z);
+
+                let dirX, dirY, dirZ;
+                if (type === 'ring') {
+                     const angle = Math.random() * Math.PI * 2;
+                    dirX = Math.cos(angle);
+                    dirY = (Math.random() - 0.5) * 0.2; // Slightly spread out vertically
+                    dirZ = Math.sin(angle);
+                } else {
+                    // Spherical distribution
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos((Math.random() * 2) - 1);
+                    dirX = Math.sin(phi) * Math.cos(theta);
+                    dirY = Math.sin(phi) * Math.sin(theta);
+                    dirZ = Math.cos(phi);
+
+                    // Apply bias and normalize
+                    dirX += particleConfig.directionBias.x * (Math.random() * 0.5);
+                    dirY += particleConfig.directionBias.y * (Math.random() * 0.5);
+                    dirZ += particleConfig.directionBias.z * (Math.random() * 0.5);
+
+                    const len = Math.sqrt(dirX*dirX + dirY*dirY + dirZ*dirZ);
+                    if (len > 0) { dirX /= len; dirY /= len; dirZ /= len; }
+                }
+
+                const particleSpeed = speed * (0.5 + Math.random() * particleConfig.speedVariation);
+                velocities.push(dirX * particleSpeed, dirY * particleSpeed, dirZ * particleSpeed);
+
+                const particleSize = size * (0.5 + Math.random() * particleConfig.sizeVariation);
+                sizes.push(particleSize);
+
+                // rotations.push(...) を削除
+
+                const particleColor = baseColor.clone();
+                particleColor.offsetHSL(
+                    (Math.random() - 0.5) * particleConfig.colorVariation,
+                    (Math.random() - 0.5) * particleConfig.colorVariation,
+                    (Math.random() - 0.5) * particleConfig.colorVariation
+                );
+                colors.push(particleColor.r, particleColor.g, particleColor.b);
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            geometry.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1)); // サイズを維持
+            // geometry.setAttribute('rotation', ...) を削除
+
+            let material; // マテリアルのロジックは変更なし
+            if (type === 'spark') {
+                material = new THREE.PointsMaterial({
+                    size: size, // Size will be controlled by attribute
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 1.0,
+                    sizeAttenuation: true, // Make particles smaller further away
+                    depthWrite: false, // Avoid hiding particles behind transparent ones
+                    blending: THREE.AdditiveBlending // Bright additive effect
+                });
+            } else if (type === 'smoke') {
+                 material = new THREE.PointsMaterial({
+                    size: size * 2, // Smoke is larger
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.7, // Smokey transparency
+                    sizeAttenuation: true,
+                    depthWrite: false,
+                    blending: THREE.NormalBlending // Standard blending for smoke
+                });
+            } else { // 'standard', 'ring', 'trail'
+                 material = new THREE.PointsMaterial({
+                    size: size,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 1.0,
+                    sizeAttenuation: true,
+                    depthWrite: false,
+                    blending: THREE.AdditiveBlending // Default to additive for glow
+                });
+            }
+
+            const points = new THREE.Points(geometry, material);
+            points.userData = {
+                life: duration,
+                startTime: clock.getElapsedTime(),
+                initialOpacity: material.opacity,
+                initialSize: material.size, // Store base material size
+                gravityFactor: gravityFactor,
+                type: type,
+                // initialRotationSpeed: particleConfig.rotationSpeed // Store initial rotation speed
+            };
+
+            scene.add(points);
+            particleSystems.push(points);
+
+            return points;
+        }
+
+        // 複雑なエフェクトでいくつかのバリエーションに particleColors を使用
+        function createComplexEffect(position, effectType = 'hit') {
+            const randomColor = () => particleColors[Math.floor(Math.random() * particleColors.length)];
+
+            switch(effectType) {
+                case 'hit':
+                    createParticleExplosion(position, 15, randomColor(), 0.15, 8, 0.4, 0.3, 'spark');
+                    createParticleExplosion(position, 10, 0xffaa44, 0.1, 5, 0.3, 0.2, 'standard');
+                    break;
+                case 'explosion':
+                    createParticleExplosion(position, 80, 0xff8800, 0.3, 20, 0.8, 0.8, 'standard');
+                    createParticleExplosion(position, 40, randomColor(), 0.25, 15, 0.6, 0.5, 'spark');
+                    createParticleExplosion(position, 30, 0xaaaaaa, 0.4, 8, 1.2, 0.3, 'smoke');
+                    createParticleExplosion(position, 20, 0xffaa44, 0.2, 25, 0.5, 0.1, 'ring');
+                    break;
+                case 'critical':
+                    createParticleExplosion(position, 30, randomColor(), 0.2, 15, 0.5, 0.4, 'spark');
+                    createParticleExplosion(position, 20, 0xffdd00, 0.15, 10, 0.4, 0.3, 'standard');
+                    createParticleExplosion(position, 15, 0xff6600, 0.25, 20, 0.6, 0.2, 'ring');
+                    break;
+                case 'trail':
+                    createParticleExplosion(position, 8, 0xffffaa, 0.1, 1, 0.3, 0.1, 'trail');
+                    break;
+            }
+        }
+
+
+        function updateParticles(deltaTime) { // 回転更新ロジックを削除
+            if (!clock) return;
+            const currentTime = clock.getElapsedTime();
+
+            for (let i = particleSystems.length - 1; i >= 0; i--) {
+                const points = particleSystems[i];
+                if (!points || !points.userData) { // Safety check
+                    particleSystems.splice(i, 1);
+                    continue;
+                }
+                const life = points.userData.life || 1.0;
+                const startTime = points.userData.startTime || 0;
+                const elapsedTime = currentTime - startTime;
+
+                // 生存期間チェック - 変更なし
+                if (elapsedTime >= life) {
+                    scene.remove(points);
+                    if(points.geometry) points.geometry.dispose();
+                    if(points.material) points.material.dispose();
+                    particleSystems.splice(i, 1);
+                    continue; // 次のパーティクルシステムへ進む
+                }
+
+                 const geometry = points.geometry;
+                 if (!geometry || !geometry.attributes.position || !geometry.attributes.velocity) continue;
+
+                const positions = geometry.attributes.position.array;
+                const velocities = geometry.attributes.velocity.array;
+                const progress = elapsedTime / life;
+                const effectiveGravity = GRAVITY.y * points.userData.gravityFactor;
+
+                const particleType = points.userData.type || 'standard';
+                let sizeFactor = 1.0 - progress;
+                let opacityFactor = 1.0 - Math.pow(progress, 2); // Fade out quadratically
+
+                switch(particleType) {
+                     case 'spark':
+                        sizeFactor = progress < 0.3 ? 1.0 + progress : 1.3 - progress * 1.3; // Initial expansion, then shrink
+                        opacityFactor = 1.0 - Math.pow(progress, 1.5); // Fade slightly faster
+                        break;
+                    case 'smoke':
+                        sizeFactor = 0.5 + progress * 1.5; // Grow over time
+                        opacityFactor = 1.0 - Math.pow(progress, 0.7); // Fade slowly
+                        break;
+                    case 'ring':
+                        sizeFactor = 0.5 + progress * 2.5; // Expand faster
+                        opacityFactor = 1.0 - Math.pow(progress, 1.2); // Fade slightly slower than default
+                        break;
+                    case 'trail':
+                        // Quick shrink, then steady size for a bit
+                        sizeFactor = progress < 0.2 ? 0.8 + progress : 1.0 - (progress - 0.2) * 1.25;
+                        break;
+                    // Default case ('standard') uses the initial factors
+                }
+
+                const sizes = geometry.attributes.size?.array;
+                // 削除: const rotations = geometry.attributes.rotation?.array;
+                // const rotationSpeed = points.userData.initialRotationSpeed || 0; // Get initial speed
+
+                for (let j = 0; j < positions.length; j += 3) {
+                    // Apply gravity and damping to velocity
+                    velocities[j + 1] += effectiveGravity * deltaTime;
+                    velocities[j] *= DAMPING;
+                    velocities[j+1] *= DAMPING;
+                    velocities[j+2] *= DAMPING;
+
+                    // Update position
+                    positions[j] += velocities[j] * deltaTime;
+                    positions[j + 1] += velocities[j + 1] * deltaTime;
+                    positions[j + 2] += velocities[j + 2] * deltaTime;
+
+                    // 回転更新ロジックを削除
+                    // if (rotations && sizes) {
+                    //     rotations[j/3] += rotationSpeed * (Math.random() - 0.5) * 2 * deltaTime * (1.0 - progress); // Random rotation, slows down
+                    // }
+                }
+                geometry.attributes.position.needsUpdate = true;
+                // rotation の needsUpdate を削除
+                // if (rotations) geometry.attributes.rotation.needsUpdate = true;
+
+                // Update material properties based on particle type and progress
+                if (points.material) {
+                    points.material.opacity = points.userData.initialOpacity * opacityFactor;
+                    // Note: Material size is now just a base, individual particle size is set via attribute
+                    // We might still fade the base size, or just rely on the attribute fading if needed.
+                    // points.material.size = points.userData.initialSize * sizeFactor; // Optional: fade base size too
+                }
+
+            }
+        }
+
+        // --- エフェクト ---
+        function triggerHitStop() {
+             if (!isHitStopping) {
+                isHitStopping = true;
+                hitStopTimer = HIT_STOP_DURATION;
+            }
+        }
+
+        function triggerScreenShake(intensity) { // (変更なし、ロジックは updateEffects に移動)
+             if (!camera) return;
+            if (intensity > screenShakeIntensity || screenShakeTimer <= 0) {
+                screenShakeIntensity = intensity;
+            }
+            screenShakeTimer = Math.max(screenShakeTimer, SCREEN_SHAKE_DURATION);
+        }
+
+        function triggerScreenFlash(intensity = 1.0) {
+             screenFlashTimer = SCREEN_FLASH_DURATION;
+            screenFlash.style.backgroundColor = `rgba(255, 255, 255, ${intensity * 0.3})`;
+        }
+
+        function activateBulletTime() {
+            if (bulletTimeActive) return;
+
+            bulletTimeActive = true;
+            bulletTimeTimer = BULLET_TIME_DURATION;
+            timeScale = BULLET_TIME_SCALE;
+
+            bulletTimeIndicator.style.display = 'block';
+            bulletTimeIndicator.classList.add('active');
+            vignette.style.opacity = '0.8';
+
+            if (bulletTimeSoundBuffer) {
+                playSound(bulletTimeSoundBuffer, 0.7, 0.8);
+            } else {
+                // Fallback sound if bullet time sound fails to load
+                playSound(shootSoundBuffer, 0.4, 0.5);
+            }
+        }
+
+        function incrementCombo() { // comboSoundBuffer を使用
+            comboCount++;
+            comboTimer = COMBO_TIMEOUT;
+
+            comboCounter.style.display = 'block';
+            comboCounter.textContent = `x${comboCount}`;
+            comboCounter.classList.remove('pulse');
+            void comboCounter.offsetWidth;
+            comboCounter.classList.add('pulse');
+
+            const comboBonus = Math.min(comboCount * 5, 50); // Cap combo bonus per hit
+            score += comboBonus;
+            updateScoreDisplay();
+
+            // comboSoundBuffer を使用
+            if (comboCount >= 2) { // 2 ヒット目からコンボ音を開始
+                const pitchRate = Math.min(1.0 + (comboCount - 2) * 0.15, 1.8); // ピッチのスケーリングを調整
+                playSound(comboSoundBuffer, 0.6, pitchRate); // comboSoundBuffer を使用
+            }
+
+            if (comboCount >= 5 && !bulletTimeActive) { // Trigger bullet time on high combo
+                activateBulletTime();
+            }
+        }
+
+        // --- エフェクト更新 ---
+        const shakeOffset = new THREE.Vector3(); // 揺れのオフセット用の再利用可能なベクトル
+        const shakeRotation = new THREE.Euler(); // 揺れの回転用の再利用可能なオイラー角
+        function updateEffects(deltaTime) {
+            // ヒットストップ更新 (変更なし)
+            if (isHitStopping) {
+                hitStopTimer -= deltaTime;
+                if (hitStopTimer <= 0) { isHitStopping = false; }
+            }
+
+            // 画面揺れ更新 - リグに対してカメラのローカル変換に適用
+            if (screenShakeTimer > 0 && camera) {
+                screenShakeTimer -= deltaTime;
+
+                const shakePhase = Math.max(0, screenShakeTimer / SCREEN_SHAKE_DURATION);
+                // タイマーが切れるにつれて強度は二次関数的に減少
+                const currentIntensity = screenShakeIntensity * Math.pow(shakePhase, 2);
+
+                // 位置と回転のランダムなオフセットを計算 (カメラローカル)
+                shakeOffset.set(
+                    (Math.random() - 0.5) * 2 * currentIntensity * 0.15, // x オフセット
+                    (Math.random() - 0.5) * 2 * currentIntensity * 0.15, // y オフセット
+                    0 // 通常 z オフセットは不要
+                );
+                shakeRotation.set(
+                    0, // マウスからの追加のピッチ揺れなし
+                    0, // マウスからの追加のヨー揺れなし
+                    (Math.random() - 0.5) * 2 * currentIntensity * 0.04 // z 軸 (ロール) 揺れ
+                );
+
+                // カメラのローカル位置と回転に一時的なオフセットを適用
+                camera.position.copy(shakeOffset);
+                camera.rotation.z = shakeRotation.z; // ロール揺れを直接適用
+
+                if (screenShakeTimer <= 0) {
+                    screenShakeIntensity = 0;
+                    // カメラのローカル位置とロールをリセット
+                    camera.position.set(0, 0, 0);
+                    camera.rotation.z = 0;
+                }
+            } else if (camera && (camera.position.x !== 0 || camera.position.y !== 0 || camera.rotation.z !== 0)) {
+                 // 揺れが突然終了した場合や状態の不一致がある場合にリセットを確認
+                 camera.position.set(0, 0, 0);
+                 camera.rotation.z = 0;
+            }
+
+
+            // スクリーンフラッシュ更新 (変更なし)
+            if (screenFlashTimer > 0) {
+                screenFlashTimer -= deltaTime;
+                const flashProgress = screenFlashTimer / SCREEN_FLASH_DURATION;
+                screenFlash.style.backgroundColor = `rgba(255, 255, 255, ${flashProgress * 0.3})`;
+                if (screenFlashTimer <= 0) {
+                    screenFlash.style.backgroundColor = 'rgba(255, 255, 255, 0)';
+                }
+            }
+
+            // バレットタイム更新 (変更なし)
+            if (bulletTimeActive) {
+                bulletTimeTimer -= deltaTime / timeScale; // タイマーに realDeltaTime を使用 (TimeScaleの影響を受けないように)
+                if (bulletTimeTimer <= 0) {
+                    bulletTimeActive = false;
+                    timeScale = 1.0;
+                    bulletTimeIndicator.style.display = 'none';
+                    vignette.style.opacity = '0.5'; // Reset vignette opacity
+                } else {
+                    // Gradually return to normal speed towards the end
+                    const easeOutProgress = Math.pow(bulletTimeTimer / BULLET_TIME_DURATION, 0.5); // Easing out
+                    timeScale = BULLET_TIME_SCALE + (1.0 - BULLET_TIME_SCALE) * (1.0 - easeOutProgress);
+                }
+            } else {
+                // アクティブでない場合はタイムスケールが 1 であることを確認
+                timeScale = 1.0;
+            }
+
+            // コンボシステム更新 (変更なし)
+            if (comboCount > 0) {
+                comboTimer -= deltaTime; // コンボウィンドウにゲームのデルタタイムを使用
+                if (comboTimer <= 0) {
+                    comboCount = 0;
+                    comboCounter.style.display = 'none';
+                }
+            }
+        }
+
+
+        // --- 物理演算更新 ---
+        // 地面衝突時の衝撃音を追加
+        function updatePhysics(deltaTime) {
+            if (!gameObjects) return;
+
+            for (let i = gameObjects.length - 1; i >= 0; i--) {
+                const obj = gameObjects[i];
+                 if (!obj || !obj.userData) {
+                    console.warn("Invalid object found in gameObjects at index:", i);
+                    gameObjects.splice(i, 1);
+                    continue;
+                 }
+
+                // 生存期間チェック (変更なし)
+                if (obj.userData.life !== Infinity) {
+                    obj.userData.life -= deltaTime;
+                    if (obj.userData.life <= 0) {
+                        removeGameObject(obj);
+                        continue;
+                    }
+                }
+
+                // 物理演算適用 (変更なし)
+                if (obj.userData.mass > 0 || obj.userData.tag === BULLET_TAG) {
+                    if (obj.userData.mass > 0) { // Apply gravity only to massive objects
+                        obj.userData.velocity.addScaledVector(GRAVITY, deltaTime);
+                    }
+                    // Apply damping
+                    obj.userData.velocity.multiplyScalar(DAMPING);
+                    // Update position
+                    obj.position.addScaledVector(obj.userData.velocity, deltaTime);
+
+                    // Apply angular velocity to targets
+                    if (obj.userData.tag === TARGET_TAG && obj.userData.angularVelocity) {
+                        obj.rotation.x += obj.userData.angularVelocity.x * deltaTime; // デルタタイムを適用
+                        obj.rotation.y += obj.userData.angularVelocity.y * deltaTime;
+                        obj.rotation.z += obj.userData.angularVelocity.z * deltaTime;
+                        // Dampen angular velocity
+                        obj.userData.angularVelocity.x *= DAMPING;
+                        obj.userData.angularVelocity.y *= DAMPING;
+                        obj.userData.angularVelocity.z *= DAMPING;
+                    }
+                }
+
+                 // 地面衝突 (衝撃音追加)
+                if (obj.userData.mass > 0) { // Only check for massive objects
+                    let objectBottomY = obj.position.y;
+                    const collider = obj.userData.collider;
+                    let effectiveRadius = 0.5; // Default radius if no collider
+
+                    if (collider) {
+                        if (collider.type === 'sphere') {
+                            objectBottomY -= collider.radius; effectiveRadius = collider.radius;
+                        } else if (collider.type === 'box') {
+                            // Use half height for box bottom
+                            objectBottomY -= collider.size.y / 2; effectiveRadius = collider.size.y / 2;
+                        } else if (collider.type === 'cylinder') {
+                            // Use half height for cylinder bottom
+                            objectBottomY -= collider.height / 2; effectiveRadius = collider.height / 2;
+                        } else if (collider.boundingRadius) { // Fallback to bounding radius
+                            objectBottomY -= collider.boundingRadius; effectiveRadius = collider.boundingRadius;
+                        }
+                    } else {
+                         // Use default radius if no collider defined
+                         objectBottomY -= effectiveRadius;
+                    }
+
+                    if (objectBottomY <= GROUND_LEVEL) {
+                        // 修正前の速度が有意だった場合にのみ衝撃音を再生
+                        const impactSpeed = Math.abs(obj.userData.velocity.y);
+                        if (impactSpeed > 1.0) { // 小さなバウンドでの音を避けるためのしきい値
+                             playSound(impactSoundBuffer, Math.min(impactSpeed * 0.1, 0.8), 0.9 + Math.random() * 0.2);
+                             // オプション: 強い衝撃で小さなパーティクルを発生
+                             if (impactSpeed > 5.0) {
+                                 createParticleExplosion(obj.position.clone().setY(GROUND_LEVEL + 0.1), 5, 0xaaaaaa, 0.1, 2, 0.3, 0.1, 'smoke');
+                             }
+                        }
+
+                        obj.position.y = GROUND_LEVEL + effectiveRadius; // 位置補正
+
+                        if (obj.userData.velocity.y < 0) { // バウンドロジック (変更なし)
+                            obj.userData.velocity.y *= -RESTITUTION; // Reverse and reduce vertical velocity
+                        }
+                        // Apply friction
+                        obj.userData.velocity.x *= 0.8; // 摩擦 (変更なし)
+                        obj.userData.velocity.z *= 0.8;
+                        if (obj.userData.angularVelocity) {
+                             obj.userData.angularVelocity.x *= 0.8;
+                             obj.userData.angularVelocity.y *= 0.8;
+                             obj.userData.angularVelocity.z *= 0.8;
+                        }
+
+                        if (Math.abs(obj.userData.velocity.y) < 0.1) { // 小さなバウンドを停止 (変更なし)
+                            obj.userData.velocity.y = 0;
+                        }
+                    }
+                 }
+
+                 // 範囲外チェック (変更なし)
+                 if (obj.position.y < -20) { // Remove objects falling too far
+                    console.log("Removing object that fell out of bounds:", obj.userData.tag);
+                    removeGameObject(obj);
+                    if (obj.userData.tag === TARGET_TAG) {
+                        // Respawn target after a delay
+                        setTimeout(spawnTarget, 500 + Math.random() * 500);
+                    }
+                    continue; // Skip further processing for this removed object
+                 }
+            }
+        }
+
+
+        // --- 衝突処理 ---
+        function checkCollisions() { // (大部分変更なし、コンボロジック統合)
+            if (!gameObjects) return;
+            for (let i = gameObjects.length - 1; i >= 0; i--) {
+                const obj1 = gameObjects[i];
+                // Ensure obj1 is a valid bullet
+                if (!obj1 || !obj1.userData || obj1.userData.tag !== BULLET_TAG) continue;
+
+                for (let j = gameObjects.length - 1; j >= 0; j--) {
+                    if (i === j) continue; // Don't check collision with self
+                    const obj2 = gameObjects[j];
+                    // Ensure obj2 is a valid target
+                    if (!obj2 || !obj2.userData || obj2.userData.tag !== TARGET_TAG) continue;
+
+                    if (checkObjectCollision(obj1, obj2)) {
+                        const contactPoint = obj1.position.clone(); // Position of the bullet at impact
+
+                        // コンボ処理
+                        const currentTime = clock.getElapsedTime();
+                        const timeSinceLastHit = currentTime - lastHitTime;
+                        lastHitTime = currentTime;
+                        if (timeSinceLastHit < COMBO_TIMEOUT) {
+                            incrementCombo(); // サウンド、スコア、ビジュアルを処理
+                        } else {
+                            comboCount = 1; // コンボをリセット
+                            comboTimer = COMBO_TIMEOUT; // Reset combo timer
+                            comboCounter.textContent = `x${comboCount}`; // Show combo counter even for 1
+                            comboCounter.style.display = 'block';
+                            // 潜在的なコンボの最初のヒットで基本的なヒット音を再生
+                            playSound(hitSoundBuffer, 0.7, 1.0 + Math.random() * 0.2);
+                        }
+
+                        // コンボに基づいたヒットエフェクト
+                        const comboFactor = Math.min(1.0 + (comboCount - 1) * 0.1, 1.5);
+                        // incrementCombo で処理されなかった場合、最初のヒットでのみヒット音を再生
+                        // (コンボがリセットされた場合は既にサウンド再生済み)
+
+                        if (comboCount >= 3) { // Critical hit effect for higher combos
+                             createComplexEffect(contactPoint, 'critical');
+                        } else { // Standard hit effect
+                             createComplexEffect(contactPoint, 'hit');
+                        }
+
+                        triggerHitStop();
+                        triggerScreenShake(0.15 * comboFactor); // Shake intensity based on combo
+                        triggerScreenFlash(0.7 * comboFactor); // Flash intensity based on combo
+
+                        // ターゲットヒットロジック (変更なし)
+                        if (obj2.userData.health > 0) {
+                            obj2.userData.health -= 1; // Decrease health
+                            score += 10; // Base score per hit
+                            updateScoreDisplay();
+
+                            // 力積を適用 (変更なし)
+                            const impulseDirection = new THREE.Vector3().subVectors(obj2.position, obj1.position).normalize();
+                            const impulseMagnitude = (obj1.userData.velocity.length() * obj1.userData.mass * 1.5) / obj2.userData.mass; // Simple impulse calculation
+                            obj2.userData.velocity.addScaledVector(impulseDirection, impulseMagnitude);
+                            // Add some random angular impulse
+                            if (obj2.userData.angularVelocity) {
+                                obj2.userData.angularVelocity.x += (Math.random() - 0.5) * 0.2 * impulseMagnitude;
+                                obj2.userData.angularVelocity.y += (Math.random() - 0.5) * 0.2 * impulseMagnitude;
+                                obj2.userData.angularVelocity.z += (Math.random() - 0.5) * 0.2 * impulseMagnitude;
+                            }
+
+                            // 視覚的なダメージフィードバック (変更なし)
+                            const healthRatio = Math.max(0, obj2.userData.health / obj2.userData.maxHealth);
+                            const damagedColor = obj2.userData.originalColor ? obj2.userData.originalColor.clone().lerp(new THREE.Color(0xff0000), 1.0 - healthRatio * 0.8) : new THREE.Color(0xff0000);
+                            if (obj2.material && typeof obj2.material.color !== 'undefined') {
+                                // Flash white briefly, then set to damaged color
+                                obj2.material.color.set(0xffffff);
+                                setTimeout(() => {
+                                    if (obj2.material) { // Check if object still exists
+                                        obj2.material.color.copy(damagedColor);
+                                    }
+                                }, 80); // Short flash duration
+                            }
+
+                            // 破壊を確認
+                            if (obj2.userData.health <= 0) {
+                                handleTargetDestroyed(obj2, contactPoint);
+                                // Respawn target after a delay
+                                setTimeout(spawnTarget, 1000 + Math.random() * 1000);
+                            }
+                        }
+
+                        // 弾を削除 (変更なし)
+                        removeGameObject(obj1);
+                        break; // Bullet hits only one target
+                    }
+                }
+            }
+        }
+
+        function checkObjectCollision(obj1, obj2) {
+            const collider1 = obj1?.userData?.collider;
+            const collider2 = obj2?.userData?.collider;
+            if (!collider1 || !collider2) { // Need colliders on both
+                // console.warn("Collision check skipped: Missing collider info.", obj1?.userData?.tag, obj2?.userData?.tag);
+                return false;
+            }
+            // Use bounding radius for a simple sphere-sphere check first
+            const radius1 = collider1.boundingRadius || 0.1; // Default small radius if missing
+            const radius2 = collider2.boundingRadius || 1.0; // Default target radius if missing
+            const distanceSq = obj1.position.distanceToSquared(obj2.position);
+            const radiiSum = radius1 + radius2;
+            const radiiSumSq = radiiSum * radiiSum;
+
+            // Simple bounding sphere check
+            return distanceSq < radiiSumSq;
+
+            // TODO: Implement more precise collision checks (AABB, OBB, Sphere-Box etc.) if needed
+            // For now, bounding sphere is sufficient.
+        }
+
+        function handleTargetDestroyed(target, impactPosition) { // (大部分変更なし)
+            if (!target) return;
+
+            // Play explosion sound, scaled by combo
+            const volumeFactor = Math.min(1.0 + (comboCount - 1) * 0.05, 1.3);
+            const pitchFactor = Math.min(1.0 + (comboCount - 1) * 0.03, 1.2);
+            playSound(explosionSoundBuffer, 1.0 * volumeFactor, 1.0 * pitchFactor);
+
+            // Stronger screen effects on destruction
+            triggerScreenShake(0.4);
+            triggerScreenFlash(1.0);
+
+            // Chance to trigger bullet time on destruction
+            if (!bulletTimeActive && Math.random() < 0.3) { // 30% chance
+                activateBulletTime();
+            }
+
+            // Complex explosion visual effect
+            const targetColor = target.material?.color?.getHex() || 0xff8844; // Use target color or default
+            createComplexEffect(impactPosition, 'explosion');
+
+            // 破片パーティクル (変更なし)
+            const debrisCount = Math.floor(15 + Math.random() * 10);
+            const debrisPosition = target.position.clone(); // Spawn from target's center
+            createParticleExplosion(debrisPosition, debrisCount, targetColor, 0.2, 15, 1.5, 1.0, 'standard');
+
+            // スコアボーナス (変更なし) - Higher bonus for combos
+            const destroyBonus = 50 * (1 + Math.min(comboCount * 0.1, 1.0)); // Bonus scales with combo, capped
+            score += Math.floor(destroyBonus);
+            updateScoreDisplay();
+
+            // スコアパルスアニメーション (変更なし)
+            scoreElement.classList.remove('pulse');
+            void scoreElement.offsetWidth; // Trigger reflow to restart animation
+            scoreElement.classList.add('pulse');
+            setTimeout(() => scoreElement.classList.remove('pulse'), 200); // アニメーション後に pulse クラスを削除
+
+            removeGameObject(target);
+        }
+
+        function removeGameObject(obj) {
+            if (!obj) return;
+            // Remove from scene
+            if (obj.parent) { obj.parent.remove(obj); }
+            // Remove children (like lights attached to bullets)
+            for (let i = obj.children.length - 1; i >= 0; i--) { obj.remove(obj.children[i]); }
+            // Remove from physics list
+            const index = gameObjects.indexOf(obj);
+            if (index > -1) { gameObjects.splice(index, 1); }
+            // Dispose geometry and material to free GPU memory
+            if (obj.geometry) { obj.geometry.dispose(); }
+            if (obj.material) {
+                 if (Array.isArray(obj.material)) {
+                     obj.material.forEach(m => m.dispose());
+                 } else {
+                     obj.material.dispose();
+                 }
+            }
+            // Clear user data to help garbage collection
+            obj.userData = {};
+         }
+
+
+        // --- ゲームループ ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (!renderer || !scene || !camera || !clock) {
+                console.error("Rendering components not ready, skipping frame.");
+                return;
+            }
+
+            const realDeltaTime = Math.min(0.05, clock.getDelta()); // Cap delta time to prevent large jumps
+            // 現在の timeScale を使用してゲーム時間のデルタを計算
+            const deltaTime = realDeltaTime * timeScale;
+
+            // 実時間に基づいてエフェクトを更新
+            updateEffects(realDeltaTime); // Effects timers should usually run on real time
+
+            // ヒットストップチェック
+            if (isHitStopping) {
+                renderer.render(scene, camera); // Render one frame during hit stop
+                return; // Skip updates during hit stop
+            }
+
+            // ゲーム時間のデルタ (deltaTime) を使用してゲームロジックを更新
+            if (controlsEnabled) { // Only update physics/collisions when pointer lock is active
+                updatePhysics(deltaTime);
+                checkCollisions(); // Check collisions after physics updates
+            }
+
+            // ゲーム時間のデルタを使用してパーティクルを更新
+            updateParticles(deltaTime); // Particles affected by timeScale
+
+            // バレットタイムの視覚効果 (変更なし)
+            if (bulletTimeActive) {
+                // Example: pulsing vignette effect during bullet time
+                const pulseIntensity = 0.7 + Math.sin(clock.getElapsedTime() * 3) * 0.1; // Gentle pulse
+                vignette.style.opacity = pulseIntensity.toString();
+            }
+
+            // リグ内のカメラを使用してシーンをレンダリング
+            renderer.render(scene, camera); // THREE はリグからカメラのワールド行列を使用します
+        }
+
+
+        // --- ユーティリティ関数 ---
+        function updateScoreDisplay() {
+             if(scoreElement) {
+                scoreElement.textContent = `Score: ${score}`;
+            }
+        }
+
+        function onWindowResize() {
+             if (!camera || !renderer) return;
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+    </script>
+</body>
+</html>
