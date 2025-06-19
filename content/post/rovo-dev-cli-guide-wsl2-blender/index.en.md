@@ -1,6 +1,6 @@
 ---
-title: A Practical Guide to Rovo Dev CLI: How to Use It Comfortably with VSCode and WSL2
-description: This guide provides a clear explanation of Atlassian's AI development agent, Rovo Dev CLI, from the basics to comfortably using it on Windows with VSCode and WSL2, and even advanced techniques like using the MCP feature to have AI control Blender.
+title: "A Practical Guide to Rovo Dev CLI: How to Use It Comfortably with VSCode and WSL2"
+description: "This guide provides a clear explanation of Atlassian's AI development agent, Rovo Dev CLI, from the basics to comfortably using it on Windows with VSCode and WSL2, and even advanced techniques like using the MCP feature to have AI control Blender."
 slug: rovo-dev-cli-guide-wsl2-blender
 date: '2025-06-19 15:05:00+09:00'
 image: rovo-dev-cli-guide-wsl2-blender.webp

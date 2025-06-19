@@ -1,6 +1,6 @@
 ---
-title: Rovo Dev CLI実践ガイド：VSCodeとWSL2で快適に使う方法
-description: Atlassianの開発AIエージェント「Rovo Dev CLI」の基本から、WindowsでVSCodeとWSL2を使って快適に使う方法、さらにMCPっていう機能を利用してBlenderをAIに操作させる応用テクニックまで、分かりやすく解説します。
+title: "Rovo Dev CLI実践ガイド：VSCodeとWSL2で快適に使う方法"
+description: "Atlassianの開発AIエージェント「Rovo Dev CLI」の基本から、WindowsでVSCodeとWSL2を使って快適に使う方法、さらにMCPっていう機能を利用してBlenderをAIに操作させる応用テクニックまで、分かりやすく解説します。"
 slug: rovo-dev-cli-guide-wsl2-blender
 date: '2025-06-19 15:05:00+09:00'
 image: rovo-dev-cli-guide-wsl2-blender.webp
