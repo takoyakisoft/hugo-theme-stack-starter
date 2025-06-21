@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Roblox on TakoyakiSoft</title><link>https://takoyakisoft.com/zh-cn/tags/roblox/</link><description>Recent content in Roblox on TakoyakiSoft</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 22 Jun 2025 00:00:00 +0900</lastBuildDate><atom:link href="https://takoyakisoft.com/zh-cn/tags/roblox/index.xml" rel="self" type="application/rss+xml"/><item><title>使用 Roblox (TypeScript) 和 VSCode 的现代开发环境模板</title><link>https://takoyakisoft.com/zh-cn/p/roblox-ts-template-for-modern-development/</link><pubDate>Sun, 22 Jun 2025 00:00:00 +0900</pubDate><guid>https://takoyakisoft.com/zh-cn/p/roblox-ts-template-for-modern-development/</guid><description>&lt;img src="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development.webp" alt="Featured image of post 使用 Roblox (TypeScript) 和 VSCode 的现代开发环境模板" />&lt;h1 id="github-模板">GitHub 模板
+&lt;/h1>&lt;p>&lt;a class="link" href="https://github.com/takoyakisoft/roblox-ts-rojo-template" target="_blank" rel="noopener"
+>roblox-ts-rojo-template&lt;/a>&lt;/p>
+&lt;h1 id="这是什么">这是什么？
+&lt;/h1>&lt;p>这是一个使用 VSCode 为 Roblox (TypeScript) 开发的现代开发环境模板。&lt;/p>
+&lt;ul>
+&lt;li>VSCode 👉 Roblox Studio 同步: &lt;a class="link" href="https://github.com/rojo-rbx/rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;li>Linter: &lt;a class="link" href="https://github.com/eslint/eslint" target="_blank" rel="noopener"
+>ESlint&lt;/a>&lt;/li>
+&lt;li>Formatter: &lt;a class="link" href="https://github.com/prettier/prettier" target="_blank" rel="noopener"
+>Prettier&lt;/a>&lt;/li>
+&lt;li>包管理器: &lt;a class="link" href="https://github.com/pnpm/pnpm" target="_blank" rel="noopener"
+>pnpm&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-caution">
+&lt;p class="alert-heading">
+❗
+Caution
+&lt;/p>
+&lt;p>虽然尚未确认其功能，但已包含了一些知名的包。&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&amp;ldquo;@rbxts/janitor&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/profileservice&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/replicaservice&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/cmdr&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/testez&amp;rdquo;&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-note">
+&lt;p class="alert-heading">
+ℹ️
+Note
+&lt;/p>
+&lt;p>确认运行&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&amp;ldquo;@rbxts/react&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/react-roblox&amp;rdquo;&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-warning">
+&lt;p class="alert-heading">
+ℹ️
+Warning
+&lt;/p>
+&lt;p>不包含 CI/CD。&lt;/p>
+&lt;/blockquote>
+&lt;h1 id="安装">安装
+&lt;/h1>
+&lt;blockquote class="alert alert-tip">
+&lt;p class="alert-heading">
+💡
+Tip
+&lt;/p>
+&lt;p>您可以通过点击 &amp;ldquo;Use this template&amp;rdquo; 按钮来使用。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="安装包">安装包
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">pnpm install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装-vscode-扩展">安装 VSCode 扩展
+&lt;/h2>&lt;p>当您打开此项目时，VSCode 会提示您安装以下扩展，请进行安装。&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=Roblox-TS.vscode-roblox-ts" target="_blank" rel="noopener"
+>roblox-ts&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint" target="_blank" rel="noopener"
+>ESLint&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode" target="_blank" rel="noopener"
+>Prettier&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=evaera.vscode-rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h1 id="使用方法">使用方法
+&lt;/h1>&lt;h2 id="从-vscode-启动-rojo">从 VSCode 启动 Rojo
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">pnpm run watch
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>按下“Ctrl + Shift + P”&lt;/p>
+&lt;p>选择“Rojo: Open Menu”&lt;/p>
+&lt;blockquote class="alert alert-note">
+&lt;p class="alert-heading">
+ℹ️
+Note
+&lt;/p>
+&lt;p>如果是首次使用，请启动 Roblox Studio 并安装 Roblox Studio 插件（Install Roblox Studio Plugin）。&lt;/p>
+&lt;/blockquote>
+&lt;p>点击“▶ default.project.json”&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/Code_m5RjRhSECe.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/Code_m5RjRhSECe_hu_f5c6a58a949c0197.webp 480w, https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/Code_m5RjRhSECe_hu_67808a5262379ac3.webp 1024w"
+loading="lazy"
+alt="从VSCode启动Rojo的方法"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;h2 id="从-roblox-studio-连接-rojo">从 Roblox Studio 连接 Rojo
+&lt;/h2>&lt;p>“插件”选项卡&lt;/p>
+&lt;p>Rojo 功能区&lt;/p>
+&lt;p>“Connect”按钮&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development.webp"
+width="1342"
+height="983"
+srcset="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development_hu_8ffd71bbf5e6b12f.webp 480w, https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development_hu_230b7f572a692276.webp 1024w"
+loading="lazy"
+alt="从Roblox Studio连接Rojo的方法"
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="327px"
+>&lt;/p></description></item><item><title>Roblox (Luau) 与 VSCode 的现代开发环境模板</title><link>https://takoyakisoft.com/zh-cn/p/roblox-luau-template-for-modern-development/</link><pubDate>Sat, 21 Jun 2025 00:00:00 +0900</pubDate><guid>https://takoyakisoft.com/zh-cn/p/roblox-luau-template-for-modern-development/</guid><description>&lt;img src="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development.webp" alt="Featured image of post Roblox (Luau) 与 VSCode 的现代开发环境模板" />&lt;h1 id="github-模板">GitHub 模板
+&lt;/h1>&lt;p>&lt;a class="link" href="https://github.com/takoyakisoft/roblox-rojo-wally-template" target="_blank" rel="noopener"
+>roblox-rojo-wally-template&lt;/a>&lt;/p>
+&lt;h1 id="这是什么">这是什么？
+&lt;/h1>&lt;p>这是一个使用 VSCode 为 Roblox (Luau) 进行开发的现代开发环境模板。&lt;/p>
+&lt;ul>
+&lt;li>从 VSCode 同步到 Roblox Studio: &lt;a class="link" href="https://github.com/rojo-rbx/rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;li>代码检查器 (Linter): &lt;a class="link" href="https://github.com/Kampfkarren/selene" target="_blank" rel="noopener"
+>Selene&lt;/a>&lt;/li>
+&lt;li>代码格式化器 (Formatter): &lt;a class="link" href="https://github.com/JohnnyMorganz/StyLua" target="_blank" rel="noopener"
+>StyLua&lt;/a>&lt;/li>
+&lt;li>包管理器 (Package Manager): &lt;a class="link" href="https://github.com/UpliftGames/wally" target="_blank" rel="noopener"
+>Wally&lt;/a>&lt;/li>
+&lt;li>Rojo 和 Wally 的管理器: &lt;a class="link" href="https://github.com/rojo-rbx/rokit" target="_blank" rel="noopener"
+>Rokit&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-warning">
+&lt;p class="alert-heading">
+ℹ️
+Warning
+&lt;/p>
+&lt;p>不包含 CI/CD: &lt;a class="link" href="https://github.com/Roblox/place-ci-cd-demo" target="_blank" rel="noopener"
+>CI/CD&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h1 id="安装">安装
+&lt;/h1>
+&lt;blockquote class="alert alert-tip">
+&lt;p class="alert-heading">
+💡
+Tip
+&lt;/p>
+&lt;p>您可以通过点击 “Use this template” 按钮来使用。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="安装-rokit">安装 Rokit
+&lt;/h2>&lt;p>Windows (PowerShell)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-RestMethod&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="p">//&lt;/span>&lt;span class="n">raw&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">githubusercontent&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="nb">rojo-rbx&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">rokit&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">main&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">scripts&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">install&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ps1&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Invoke-Expression&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>macOS / Linux&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">curl -fsSL https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh &lt;span class="p">|&lt;/span> sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装-rojowally-等工具">安装 Rojo、Wally 等工具
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">rokit add rojo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rokit add wally
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rokit add wally-package-types
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装包">安装包
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">wally install
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rojo sourcemap default.project.json --output sourcemap.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wally-package-types -s sourcemap.json Packages/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wally-package-types -s sourcemap.json ServerPackages/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wally-package-types -s sourcemap.json DevPackages/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装-vscode-扩展">安装 VSCode 扩展
+&lt;/h2>&lt;p>在 VSCode 中打开此项目时，会提示安装以下扩展，请进行安装。&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=evaera.vscode-rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.luau-lsp" target="_blank" rel="noopener"
+>Luau Language Server&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=Kampfkarren.selene-vscode" target="_blank" rel="noopener"
+>Selene&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.stylua" target="_blank" rel="noopener"
+>StyLua&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h1 id="使用方法">使用方法
+&lt;/h1>&lt;h2 id="从-vscode-启动-rojo">从 VSCode 启动 Rojo
+&lt;/h2>&lt;p>“Ctrl + Shift + P”&lt;/p>
+&lt;p>“Rojo: Open Menu”&lt;/p>
+&lt;blockquote class="alert alert-note">
+&lt;p class="alert-heading">
+ℹ️
+Note
+&lt;/p>
+&lt;p>如果是首次使用，请启动 Roblox Studio 并安装 Roblox Studio 插件（Install Roblox Studio Plugin）。&lt;/p>
+&lt;/blockquote>
+&lt;p>“▶ default.project.json”&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/Code_m5RjRhSECe.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/Code_m5RjRhSECe_hu_f5c6a58a949c0197.webp 480w, https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/Code_m5RjRhSECe_hu_67808a5262379ac3.webp 1024w"
+loading="lazy"
+alt="从 VSCode 启动 Rojo 的方法"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;h2 id="从-roblox-studio-连接-rojo">从 Roblox Studio 连接 Rojo
+&lt;/h2>&lt;p>“插件” (Plugins) 选项卡&lt;/p>
+&lt;p>“Rojo” 功能区&lt;/p>
+&lt;p>“Connect” 按钮&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development.webp"
+width="1342"
+height="983"
+srcset="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development_hu_8ffd71bbf5e6b12f.webp 480w, https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development_hu_230b7f572a692276.webp 1024w"
+loading="lazy"
+alt="从 Roblox Studio 连接 Rojo 的方法"
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="327px"
+>&lt;/p>
+&lt;h2 id="向-wally-添加包">向 Wally 添加包
+&lt;/h2>&lt;p>在 VSCode 中编辑 wally.toml 文件。&lt;/p>
+&lt;p>请访问 &lt;a class="link" href="https://wally.run/" target="_blank" rel="noopener"
+>wally.run&lt;/a> 网站，查找您需要的包，并通过“Install”复制其名称。&lt;/p>
+&lt;p>各个部分的分类如下：&lt;/p>
+&lt;p>[dependencies] 用于客户端和服务器&lt;/p>
+&lt;p>[server-dependencies] 仅用于服务器&lt;/p>
+&lt;p>[dev-dependencies] 仅用于开发和测试&lt;/p>
+&lt;p>编辑完成后，请再次执行&lt;a class="link" href="#%e5%ae%89%e8%a3%85%e5%8c%85" >安装包&lt;/a>的步骤。&lt;/p>
+&lt;h1 id="参考资料">参考资料
+&lt;/h1>&lt;p>&lt;a class="link" href="https://www.youtube.com/watch?v=IJDg6tRJmHo" target="_blank" rel="noopener"
+>How Big Studios Develop on Roblox&lt;/a>&lt;/p></description></item></channel></rss>

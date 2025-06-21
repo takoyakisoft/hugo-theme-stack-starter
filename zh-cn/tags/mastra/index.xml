@@ -1,0 +1,1207 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Mastra on TakoyakiSoft</title><link>https://takoyakisoft.com/zh-cn/tags/mastra/</link><description>Recent content in Mastra on TakoyakiSoft</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 03 Apr 2025 21:00:34 +0900</lastBuildDate><atom:link href="https://takoyakisoft.com/zh-cn/tags/mastra/index.xml" rel="self" type="application/rss+xml"/><item><title>使用mastra自由定制LLM工作流！从Grok-2和think工具到文章克隆提示生成</title><link>https://takoyakisoft.com/zh-cn/p/build-llm-workflow-with-mastra/</link><pubDate>Thu, 03 Apr 2025 21:00:34 +0900</pubDate><guid>https://takoyakisoft.com/zh-cn/p/build-llm-workflow-with-mastra/</guid><description>&lt;img src="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/build-llm-workflow-with-mastra.webp" alt="Featured image of post 使用mastra自由定制LLM工作流！从Grok-2和think工具到文章克隆提示生成" />&lt;p>大家好！这次，我将分享一下使用名为mastra的库来运行Grok-2和Gemini 2.5 Pro exp等LLM的经验。&lt;/p>
+&lt;p>mastra是一个库，它允许你决定使用哪个LLM来创建“AI代理”，并构建这些代理按何种顺序运行的“工作流”。对我个人来说，可以用TypeScript编写这一点非常吸引人，我认为这样或许可以将其廉价地集成到Cloudflare Workers或Deno等环境中的Web服务中。&lt;/p>
+&lt;p>虽然有像LangChain这样类似且著名的库，但mastra在部署便利性方面可能略有优势。另外，之前我试用过的名为Dify的工具，在处理重复操作（循环）方面感觉有些不擅长，所以我想试试mastra会怎么样，这也是尝试的背景之一。&lt;/p>
+&lt;p>那么，我们马上开始试试吧！&lt;/p>
+&lt;h2 id="安装-mastra">安装 mastra
+&lt;/h2>&lt;p>这次我将在Windows 11上，使用AI编辑器“Trae”和高速包管理器“pnpm”。&lt;/p>
+&lt;p>首先，按照mastra官网上的步骤创建项目。
+（参考：&lt;a class="link" href="https://mastra.ai/docs/getting-started/installation#create-a-new-project" target="_blank" rel="noopener"
+>Create a New Project&lt;/a>）&lt;/p>
+&lt;p>打开终端，执行以下命令。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">pnpm create mastra@latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>会问几个问题，我们来回答一下。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/WindowsTerminal_UXtTR1rp9W.webp"
+width="1127"
+height="1032"
+srcset="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/WindowsTerminal_UXtTR1rp9W_hu_e5736a7229396e4d.webp 480w, https://takoyakisoft.com/p/build-llm-workflow-with-mastra/WindowsTerminal_UXtTR1rp9W_hu_7e216cf636dd59ff.webp 1024w"
+loading="lazy"
+alt="mastra项目创建界面"
+class="gallery-image"
+data-flex-grow="109"
+data-flex-basis="262px"
+>&lt;/p>
+&lt;p>询问项目名称。这次我命名为 &lt;code>my-mastra-app&lt;/code>。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">◇ What do you want to name your project?
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ my-mastra-app
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>询问源文件的存放位置。默认的 &lt;code>src/&lt;/code> 就可以了。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">◆ Where should we create the Mastra files? (default: src/)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ src/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>选择需要的组件。Agents（代理）、Workflows（工作流）和Tools（工具）之后会用到，所以选 Yes 吧。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">◆ Choose components to install:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ◼ Agents
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ◼ Workflows
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">◇ Add tools?
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ Yes
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>选择默认使用的LLM提供商。这次我选择了Google，但这个之后可以自由更改。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">◇ Select default provider:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ Google
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>API密钥的设置。之后会在 &lt;code>.env.development&lt;/code> 文件中设置，所以这里选择跳过（Skip for now）没关系。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">◆ Enter your google API key?
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ ● Skip for now (default)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>是否添加示例，这次选择 Yes。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">◇ Add example
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ Yes
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>与AI IDE的集成，这次也跳过了。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">◇ Make your AI IDE into a Mastra expert? (installs Mastra docs MCP server)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ Skip for now
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这样项目的模板就创建好了！
+移动到创建的项目文件夹，安装所需的库。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">&lt;span class="k">cd&lt;/span> my-mastra-app
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">pnpm i
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>启动开发服务器。可以用Ctrl+C停止。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">pnpm run dev
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="查看设置">查看设置
+&lt;/h2>&lt;p>安装完成后，我们来看几个文件吧。&lt;/p>
+&lt;p>查看 &lt;code>package.json&lt;/code>，可以看到 &lt;code>dependencies&lt;/code> 里有 &lt;code>@ai-sdk/google&lt;/code>。这是Vercel公司提供的库，看起来不仅支持Gemini，还支持DeepSeek、Grok、OpenRouter等其他LLM提供商。感觉很方便呢！
+（参考：&lt;a class="link" href="https://sdk.vercel.ai/providers/ai-sdk-providers" target="_blank" rel="noopener"
+>AI SDK Providers&lt;/a>）&lt;/p>
+&lt;p>&lt;code>scripts&lt;/code> 里只有 &lt;code>dev&lt;/code>。也许将来会添加用于构建或测试的脚本。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;my-mastra-app&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;version&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;1.0.0&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;main&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;index.js&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;scripts&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;test&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;echo \&amp;#34;Error: no test specified\&amp;#34; &amp;amp;&amp;amp; exit 1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;dev&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;mastra dev&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;keywords&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;author&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;license&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ISC&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;description&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;module&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;dependencies&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;@ai-sdk/google&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;^1.2.5&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;@mastra/core&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;^0.7.0&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;mastra&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;^0.4.4&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;zod&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;^3.24.2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;devDependencies&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;@types/node&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;^22.14.0&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;tsx&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;^4.19.3&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;typescript&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;^5.8.2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这次我们还想使用xAI的Grok，所以添加相应的库。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">pnpm add @ai-sdk/xai
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如果不再需要，可以用 &lt;code>pnpm remove @ai-sdk/xai&lt;/code> 删除。&lt;/p>
+&lt;p>接下来是API密钥的设置。在项目根目录下创建名为 &lt;code>.env.development&lt;/code> 和 &lt;code>.env&lt;/code> 的文件，并分别写入各自的API密钥。（&lt;code>.env&lt;/code> 用于生产环境，&lt;code>.env.development&lt;/code> 用于开发环境）&lt;/p>
+&lt;p>&lt;code>.env.development&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-env" data-lang="env">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">GOOGLE_GENERATIVE_AI_API_KEY&lt;/span>&lt;span class="o">=&lt;/span>your-google-api-key
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">XAI_API_KEY&lt;/span>&lt;span class="o">=&lt;/span>your-xai-api-key
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如果想更改LLM模型，可以在定义代理的文件（例如 &lt;code>src/mastra/agents/index.ts&lt;/code>）或工作流文件（例如 &lt;code>src/mastra/workflows/index.ts&lt;/code>）中指定。&lt;/p>
+&lt;p>例如，使用Grok-2的情况是这样的。&lt;/p>
+&lt;p>&lt;code>src/mastra/agents/index.ts&lt;/code> 示例:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">xai&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@ai-sdk/xai&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 导入 xAI 库
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Agent&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/agent&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">weatherTool&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;../tools&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 也导入要使用的工具
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">weatherAgent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Agent&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">name&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;Weather Agent&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">instructions&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="sb">`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> You are a helpful weather assistant that provides accurate weather information.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> Your primary function is to help users get weather details for specific locations. When responding:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - Always ask for a location if none is provided
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - If the location name isn’t in English, please translate it
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - If giving a location with multiple parts (e.g. &amp;#34;New York, NY&amp;#34;), use the most relevant part (e.g. &amp;#34;New York&amp;#34;)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - Include relevant details like humidity, wind conditions, and precipitation
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - Keep responses concise but informative
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> Use the weatherTool to fetch current weather data.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">`&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">model&lt;/span>: &lt;span class="kt">xai&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;grok-2-latest&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="c1">// 在这里指定模型！
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">tools&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">weatherTool&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在工作流中也可以同样指定。&lt;/p>
+&lt;p>&lt;code>src/mastra/workflows/index.ts&lt;/code> 示例:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">xai&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@ai-sdk/xai&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Agent&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/agent&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Step&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">Workflow&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/workflows&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">z&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;zod&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">llm&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">xai&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;grok-2-latest&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 在这里定义要使用的模型
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="确认运行情况">确认运行情况
+&lt;/h2>&lt;p>设置完成后，我们再启动一次开发服务器吧。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">pnpm run dev
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在浏览器中访问 &lt;a class="link" href="http://localhost:4111/" target="_blank" rel="noopener"
+>http://localhost:4111/&lt;/a>，应该会显示mastra的界面。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_DllHdtTB78.webp"
+width="1920"
+height="1032"
+srcset="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_DllHdtTB78_hu_523f3c38bccd80b5.webp 480w, https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_DllHdtTB78_hu_b6bd473c52d66d37.webp 1024w"
+loading="lazy"
+alt="weather代理选择界面"
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>可以选择代理，用聊天形式试试呢。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_8z5OEtWoym.webp"
+width="1920"
+height="1032"
+srcset="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_8z5OEtWoym_hu_67c7256000ecd96a.webp 480w, https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_8z5OEtWoym_hu_28642c119fbb0cc5.webp 1024w"
+loading="lazy"
+alt="weather代理的聊天界面"
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>使用Grok-2时，有时会返回英文回答。&lt;/p>
+&lt;h2 id="实现think工具">实现“think工具”
+&lt;/h2>&lt;p>接下来，我们来实现一个有点意思的工具，叫做“think工具”。&lt;/p>
+&lt;p>这是Anthropic文章中介绍的一种技巧，据说在让LLM执行某项操作之前加入一个“思考”步骤，可以提高性能。
+（参考：&lt;a class="link" href="https://www.anthropic.com/engineering/claude-think-tool" target="_blank" rel="noopener"
+>The &amp;ldquo;think&amp;rdquo; tool: Enabling Claude to stop and think in complex tool use situations&lt;/a>）&lt;/p>
+&lt;p>这个工具本身并不获取任何外部信息，仅仅是模仿“思考”这个过程。但是，据说这样能在需要复杂推理的情况下产生效果。很有趣吧！&lt;/p>
+&lt;p>那么，我们用mastra来创建think工具吧。&lt;/p>
+&lt;p>首先，创建一个定义工具的文件。&lt;/p>
+&lt;p>&lt;code>src/mastra/tools/thinkTool.ts&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">createTool&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/tools&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">z&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;zod&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 用于输入数据验证
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">thinkTool&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">createTool&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;think&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="c1">// 工具的ID
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">description&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;Use the tool to think about something. It will not obtain new information or change the database, but just append the thought to the log. Use it when complex reasoning or some cache memory is needed.&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="c1">// 工具的描述
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">inputSchema&lt;/span>: &lt;span class="kt">z.object&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="c1">// 工具接收的输入的定义
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">thought&lt;/span>: &lt;span class="kt">z.string&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;A thought to think about.&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">outputSchema&lt;/span>: &lt;span class="kt">z.object&lt;/span>&lt;span class="p">({}),&lt;/span> &lt;span class="c1">// 工具输出的数据的定义（这次为空）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">execute&lt;/span>: &lt;span class="kt">async&lt;/span> &lt;span class="p">({&lt;/span> &lt;span class="nx">context&lt;/span> &lt;span class="p">})&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 实际处理什么也不做
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;Thinking:&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">thought&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 或许可以在控制台输出思考内容
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>接下来，创建使用这个think工具的代理。关键在于通过提示指示何时应该使用think工具呢。&lt;/p>
+&lt;p>&lt;code>src/mastra/agents/thinkAgent.ts&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Agent&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/agent&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">thinkTool&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;../tools/thinkTool&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 导入创建的 thinkTool
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">xai&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@ai-sdk/xai&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 也导入要使用的LLM模型
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">thinkAgent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Agent&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">name&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;Think Agent&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">instructions&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="sb">`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> ## Using the think tool
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> Before taking any action or responding to the user after receiving tool results, use the think tool as a scratchpad to:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - List the specific rules that apply to the current request
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - Check if all required information is collected
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - Verify that the planned action complies with all policies
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - Iterate over tool results for correctness
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> Here are some examples of what to iterate over inside the think tool:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> &amp;lt;think_tool_example_1&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> User wants to [specific scenario]
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - Need to verify: [key information]
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - Check relevant rules: [list rules]
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - Verify [important conditions]
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> - Plan: [outline steps]
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> &amp;lt;/think_tool_example_1&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">`&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">model&lt;/span>: &lt;span class="kt">xai&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;grok-2-latest&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="c1">// 这里也试试用Grok-2吧
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">tools&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">thinkTool&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="c1">// 注册为该代理使用的工具
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>最后，将创建的工具和代理注册到mastra。&lt;/p>
+&lt;p>&lt;code>src/mastra/index.ts&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Mastra&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/mastra&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">createLogger&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/logger&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">weatherWorkflow&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;./workflows&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">weatherAgent&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;./agents&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">thinkAgent&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;./agents/thinkAgent&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 导入创建的 thinkAgent
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">mastra&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Mastra&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">workflows&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">weatherWorkflow&lt;/span> &lt;span class="p">},&lt;/span> &lt;span class="c1">// 现有的工作流
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">agents&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">weatherAgent&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">thinkAgent&lt;/span> &lt;span class="p">},&lt;/span> &lt;span class="c1">// 添加代理
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">logger&lt;/span>: &lt;span class="kt">createLogger&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">name&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;Mastra&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">level&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;info&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这样 think 工具的实现就完成了！&lt;/p>
+&lt;h2 id="think工具的运行确认">think工具的运行确认
+&lt;/h2>&lt;p>再次启动开发服务器来确认一下吧。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">pnpm run dev
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>访问 &lt;a class="link" href="http://localhost:4111/" target="_blank" rel="noopener"
+>http://localhost:4111/&lt;/a>，这次请选择“Think Agent”。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_rklEm6XM9m.webp"
+width="1920"
+height="1032"
+srcset="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_rklEm6XM9m_hu_942fbf387f6e2674.webp 480w, https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_rklEm6XM9m_hu_9f44214b9918d7a4.webp 1024w"
+loading="lazy"
+alt="think代理选择界面"
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>发出一些指示后，think 工具应该会在后台运行，然后给出回应。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_kSY1rEClJW.webp"
+width="1920"
+height="1032"
+srcset="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_kSY1rEClJW_hu_f16017b4d425c115.webp 480w, https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_kSY1rEClJW_hu_215aa6865a0bf9ed.webp 1024w"
+loading="lazy"
+alt="think代理的聊天界面"
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>这样一来，即使是稍微复杂的事情，也许也能更准确地思考了！&lt;/p>
+&lt;h2 id="实现创建文章克隆提示的工作流">实现创建文章克隆提示的工作流
+&lt;/h2>&lt;p>那么，从这里开始，我们来挑战一下结合mastra的循环功能和评估功能的稍微进阶的工作流吧！&lt;/p>
+&lt;h3 id="这个工作流的目标让-ai-学习自己的文风">这个工作流的目标：让 AI 学习“自己的文风”
+&lt;/h3>&lt;p>主题是“让AI自己创建模仿给定文章写作风格的AI提示”。总觉得像是让AI思考如何使用AI，不觉得这是一个有趣的尝试吗？&lt;/p>
+&lt;p>最近，也经常听到“分不清是AI写的文章还是人写的文章！”这样的话吧。既然如此，干脆让AI学习自己文章的习惯，让它帮忙写博客文章的草稿之类的，不就能减少打字量，变得更轻松了吗？这就是我尝试创建这个工作流的契机。&lt;/p>
+&lt;h3 id="准备添加评估库和注册工作流">准备：添加评估库和注册工作流
+&lt;/h3>&lt;p>&lt;strong>首先是准备：添加评估库&lt;/strong>&lt;/p>
+&lt;p>在这个工作流中，为了让另一个AI评估生成的提示的好坏，我们将使用mastra的评估库。在终端执行以下命令进行安装。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-batch" data-lang="batch">&lt;span class="line">&lt;span class="cl">pnpm add @mastra/evals
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>将工作流注册到mastra&lt;/strong>&lt;/p>
+&lt;p>接下来，为了让 mastra 本体识别我们将要创建的工作流 (&lt;code>clonePromptGeneratorWorkflow&lt;/code>)，我们更新配置文件 (&lt;code>src/mastra/index.ts&lt;/code>)。&lt;/p>
+&lt;p>&lt;code>src/mastra/index.ts&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Mastra&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/mastra&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">createLogger&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/logger&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">weatherWorkflow&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;./workflows&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ↓ 导入新的工作流
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">clonePromptGeneratorWorkflow&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;./workflows/clonePromptGeneratorWorkflow&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">weatherAgent&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;./agents&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">thinkAgent&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;./agents/thinkAgent&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">mastra&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Mastra&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ↓ 将新的工作流添加到 workflows 对象
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">workflows&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">weatherWorkflow&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">clonePromptGeneratorWorkflow&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">agents&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">weatherAgent&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">thinkAgent&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">logger&lt;/span>: &lt;span class="kt">createLogger&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">name&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;Mastra&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">level&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;info&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这样准备就绪了！&lt;/p>
+&lt;h3 id="ai改进提示的机制处理流程解说">AI改进提示的机制：处理流程解说
+&lt;/h3>&lt;p>那么，我们来看看实际上是以怎样的流程让AI生成和改进提示的吧。&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>提示创建AI (Prompt Creator Agent):
+首先，让它分析你准备的作为“范本”的文章 (&lt;code>originalText&lt;/code>)。然后，捕捉该文章作者的特征（人格、文风、口头禅等），创建用于指示其他AI“请模仿这个人来写文章！”的“模仿指示提示”的初版。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>主题提取AI (Theme Abstractor Agent):
+接下来，从范本文章中去除具体的专有名词（如 mastra、Grok-2 等），提取出像“使用软件工具包创建 AI 处理流程的步骤”这样的一般性的“抽象主题”。这是为了在测试模仿程度时，避免生成与范本完全相同的内容。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>文章生成AI (Text Generator Agent):
+使用步骤1中创建的“模仿指示提示”和步骤2中提取的“抽象主题”，让它实际生成模仿文章。大概就是“关于‘抽象主题’，请按照模仿指示提示来写”这样的感觉。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>评估AI (Authorship Similarity Judge/Metric):
+终于到了评估环节。让它比较范本文章和步骤3中 AI 生成的模仿文章，以 0.0（完全不像）到 1.0（一模一样！）的分数来评定“写作风格的相似度”。只看“写作风格”，比如词语选择、句子长度、语气、标点符号用法等，不问内容的正确性。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>循环判断 &amp;amp; 反馈:&lt;/p>
+&lt;ul>
+&lt;li>如果评估分数超过预先设定的阈值（在代码中设为 &lt;code>SIMILARITY_THRESHOLD = 0.7&lt;/code>），则视为“合格！”，工作流结束，并输出成功的“模仿指示提示”。&lt;/li>
+&lt;li>如果分数未达到阈值，则表示“还需要努力”。评估 AI 创建指出“分数为何低（例如：标点符号用法更不像、语气太生硬等）”的反馈，并将该反馈附加到步骤1的提示创建 AI，指示“请参考这个反馈，创建更好的提示！”，然后进行循环。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>通过重复这个循环，AI 在不断试错中，逐渐改进为能够生成越来越接近范本写作风格的文章的“模仿指示提示”，就是这样的机制。&lt;/p>
+&lt;p>&lt;strong>提示:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>模型选择: 这次的代码中使用了 &lt;code>xai('grok-2-latest')&lt;/code>，但如果你可以通过 Google AI Studio 等访问 &lt;code>gemini('gemini-2.5-pro-exp-03-25')&lt;/code> 这样的更高性能模型，尝试一下，或许一次循环就能得到相当好的结果！请尝试修改各个 Agent 或 Metric 的 &lt;code>model: llm&lt;/code> 部分。&lt;/li>
+&lt;li>相似度分数阈值: &lt;code>SIMILARITY_THRESHOLD&lt;/code> 的值 (0.7) 是评估严格程度的标准。如果循环迟迟不结束，可以尝试稍微降低一点，如果想提高精度，可以尝试提高一点，请手动调整试试看。&lt;/li>
+&lt;/ul>
+&lt;h3 id="运行试试工作流执行步骤">运行试试！工作流执行步骤
+&lt;/h3>&lt;p>在开发服务器 (&lt;code>pnpm run dev&lt;/code>) 启动的状态下，从浏览器访问 &lt;a class="link" href="http://localhost:4111/" target="_blank" rel="noopener"
+>http://localhost:4111/&lt;/a>。&lt;/p>
+&lt;p>从左侧菜单中选择“Workflows”，然后选择这次创建的 &lt;code>clone-prompt-generator-workflow-with-eval&lt;/code>。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_xCr7Im1oMY.webp"
+width="1920"
+height="1032"
+srcset="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_xCr7Im1oMY_hu_cb87b9a8b1a11d3f.webp 480w, https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_xCr7Im1oMY_hu_7e30e7d904eb448f.webp 1024w"
+loading="lazy"
+alt="工作流选择界面"
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>右侧名为“Run”的选项卡中应该会显示一个名为 &lt;code>OriginalText&lt;/code> 的输入字段。在这里，粘贴你想要作为范本的文章（例如，过去写的博客文章的一部分等）。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_bRgLzPZ7ea.webp"
+width="1920"
+height="1032"
+srcset="https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_bRgLzPZ7ea_hu_8f82ae0720adb291.webp 480w, https://takoyakisoft.com/p/build-llm-workflow-with-mastra/Trae_bRgLzPZ7ea_hu_79a54b40e6c919b0.webp 1024w"
+loading="lazy"
+alt="工作流执行界面"
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>粘贴文章后，点击“Submit”按钮！&lt;/p>
+&lt;p>之后，就请关注终端（或 VS Code 等的 OUTPUT 面板）中滚动的日志吧。每次循环时，应该会显示评估分数和反馈。&lt;/p>
+&lt;h3 id="完整的工作流代码">完整的工作流代码
+&lt;/h3>&lt;p>实际运行的工作流代码如下所示。&lt;/p>
+&lt;p>&lt;code>src/mastra/workflows/clonePromptGeneratorWorkflow.ts&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;span class="lnt">107
+&lt;/span>&lt;span class="lnt">108
+&lt;/span>&lt;span class="lnt">109
+&lt;/span>&lt;span class="lnt">110
+&lt;/span>&lt;span class="lnt">111
+&lt;/span>&lt;span class="lnt">112
+&lt;/span>&lt;span class="lnt">113
+&lt;/span>&lt;span class="lnt">114
+&lt;/span>&lt;span class="lnt">115
+&lt;/span>&lt;span class="lnt">116
+&lt;/span>&lt;span class="lnt">117
+&lt;/span>&lt;span class="lnt">118
+&lt;/span>&lt;span class="lnt">119
+&lt;/span>&lt;span class="lnt">120
+&lt;/span>&lt;span class="lnt">121
+&lt;/span>&lt;span class="lnt">122
+&lt;/span>&lt;span class="lnt">123
+&lt;/span>&lt;span class="lnt">124
+&lt;/span>&lt;span class="lnt">125
+&lt;/span>&lt;span class="lnt">126
+&lt;/span>&lt;span class="lnt">127
+&lt;/span>&lt;span class="lnt">128
+&lt;/span>&lt;span class="lnt">129
+&lt;/span>&lt;span class="lnt">130
+&lt;/span>&lt;span class="lnt">131
+&lt;/span>&lt;span class="lnt">132
+&lt;/span>&lt;span class="lnt">133
+&lt;/span>&lt;span class="lnt">134
+&lt;/span>&lt;span class="lnt">135
+&lt;/span>&lt;span class="lnt">136
+&lt;/span>&lt;span class="lnt">137
+&lt;/span>&lt;span class="lnt">138
+&lt;/span>&lt;span class="lnt">139
+&lt;/span>&lt;span class="lnt">140
+&lt;/span>&lt;span class="lnt">141
+&lt;/span>&lt;span class="lnt">142
+&lt;/span>&lt;span class="lnt">143
+&lt;/span>&lt;span class="lnt">144
+&lt;/span>&lt;span class="lnt">145
+&lt;/span>&lt;span class="lnt">146
+&lt;/span>&lt;span class="lnt">147
+&lt;/span>&lt;span class="lnt">148
+&lt;/span>&lt;span class="lnt">149
+&lt;/span>&lt;span class="lnt">150
+&lt;/span>&lt;span class="lnt">151
+&lt;/span>&lt;span class="lnt">152
+&lt;/span>&lt;span class="lnt">153
+&lt;/span>&lt;span class="lnt">154
+&lt;/span>&lt;span class="lnt">155
+&lt;/span>&lt;span class="lnt">156
+&lt;/span>&lt;span class="lnt">157
+&lt;/span>&lt;span class="lnt">158
+&lt;/span>&lt;span class="lnt">159
+&lt;/span>&lt;span class="lnt">160
+&lt;/span>&lt;span class="lnt">161
+&lt;/span>&lt;span class="lnt">162
+&lt;/span>&lt;span class="lnt">163
+&lt;/span>&lt;span class="lnt">164
+&lt;/span>&lt;span class="lnt">165
+&lt;/span>&lt;span class="lnt">166
+&lt;/span>&lt;span class="lnt">167
+&lt;/span>&lt;span class="lnt">168
+&lt;/span>&lt;span class="lnt">169
+&lt;/span>&lt;span class="lnt">170
+&lt;/span>&lt;span class="lnt">171
+&lt;/span>&lt;span class="lnt">172
+&lt;/span>&lt;span class="lnt">173
+&lt;/span>&lt;span class="lnt">174
+&lt;/span>&lt;span class="lnt">175
+&lt;/span>&lt;span class="lnt">176
+&lt;/span>&lt;span class="lnt">177
+&lt;/span>&lt;span class="lnt">178
+&lt;/span>&lt;span class="lnt">179
+&lt;/span>&lt;span class="lnt">180
+&lt;/span>&lt;span class="lnt">181
+&lt;/span>&lt;span class="lnt">182
+&lt;/span>&lt;span class="lnt">183
+&lt;/span>&lt;span class="lnt">184
+&lt;/span>&lt;span class="lnt">185
+&lt;/span>&lt;span class="lnt">186
+&lt;/span>&lt;span class="lnt">187
+&lt;/span>&lt;span class="lnt">188
+&lt;/span>&lt;span class="lnt">189
+&lt;/span>&lt;span class="lnt">190
+&lt;/span>&lt;span class="lnt">191
+&lt;/span>&lt;span class="lnt">192
+&lt;/span>&lt;span class="lnt">193
+&lt;/span>&lt;span class="lnt">194
+&lt;/span>&lt;span class="lnt">195
+&lt;/span>&lt;span class="lnt">196
+&lt;/span>&lt;span class="lnt">197
+&lt;/span>&lt;span class="lnt">198
+&lt;/span>&lt;span class="lnt">199
+&lt;/span>&lt;span class="lnt">200
+&lt;/span>&lt;span class="lnt">201
+&lt;/span>&lt;span class="lnt">202
+&lt;/span>&lt;span class="lnt">203
+&lt;/span>&lt;span class="lnt">204
+&lt;/span>&lt;span class="lnt">205
+&lt;/span>&lt;span class="lnt">206
+&lt;/span>&lt;span class="lnt">207
+&lt;/span>&lt;span class="lnt">208
+&lt;/span>&lt;span class="lnt">209
+&lt;/span>&lt;span class="lnt">210
+&lt;/span>&lt;span class="lnt">211
+&lt;/span>&lt;span class="lnt">212
+&lt;/span>&lt;span class="lnt">213
+&lt;/span>&lt;span class="lnt">214
+&lt;/span>&lt;span class="lnt">215
+&lt;/span>&lt;span class="lnt">216
+&lt;/span>&lt;span class="lnt">217
+&lt;/span>&lt;span class="lnt">218
+&lt;/span>&lt;span class="lnt">219
+&lt;/span>&lt;span class="lnt">220
+&lt;/span>&lt;span class="lnt">221
+&lt;/span>&lt;span class="lnt">222
+&lt;/span>&lt;span class="lnt">223
+&lt;/span>&lt;span class="lnt">224
+&lt;/span>&lt;span class="lnt">225
+&lt;/span>&lt;span class="lnt">226
+&lt;/span>&lt;span class="lnt">227
+&lt;/span>&lt;span class="lnt">228
+&lt;/span>&lt;span class="lnt">229
+&lt;/span>&lt;span class="lnt">230
+&lt;/span>&lt;span class="lnt">231
+&lt;/span>&lt;span class="lnt">232
+&lt;/span>&lt;span class="lnt">233
+&lt;/span>&lt;span class="lnt">234
+&lt;/span>&lt;span class="lnt">235
+&lt;/span>&lt;span class="lnt">236
+&lt;/span>&lt;span class="lnt">237
+&lt;/span>&lt;span class="lnt">238
+&lt;/span>&lt;span class="lnt">239
+&lt;/span>&lt;span class="lnt">240
+&lt;/span>&lt;span class="lnt">241
+&lt;/span>&lt;span class="lnt">242
+&lt;/span>&lt;span class="lnt">243
+&lt;/span>&lt;span class="lnt">244
+&lt;/span>&lt;span class="lnt">245
+&lt;/span>&lt;span class="lnt">246
+&lt;/span>&lt;span class="lnt">247
+&lt;/span>&lt;span class="lnt">248
+&lt;/span>&lt;span class="lnt">249
+&lt;/span>&lt;span class="lnt">250
+&lt;/span>&lt;span class="lnt">251
+&lt;/span>&lt;span class="lnt">252
+&lt;/span>&lt;span class="lnt">253
+&lt;/span>&lt;span class="lnt">254
+&lt;/span>&lt;span class="lnt">255
+&lt;/span>&lt;span class="lnt">256
+&lt;/span>&lt;span class="lnt">257
+&lt;/span>&lt;span class="lnt">258
+&lt;/span>&lt;span class="lnt">259
+&lt;/span>&lt;span class="lnt">260
+&lt;/span>&lt;span class="lnt">261
+&lt;/span>&lt;span class="lnt">262
+&lt;/span>&lt;span class="lnt">263
+&lt;/span>&lt;span class="lnt">264
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ts" data-lang="ts">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">xai&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@ai-sdk/xai&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 或者使用 gemini, openai 等
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// import { gemini } from &amp;#39;@ai-sdk/google&amp;#39;; // 使用 Gemini 的示例
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Agent&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/agent&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Step&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">Workflow&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/workflows&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">z&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;zod&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="kr">type&lt;/span> &lt;span class="nx">LanguageModel&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/llm&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">MastraAgentJudge&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/evals/judge&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Metric&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kr">type&lt;/span> &lt;span class="nx">MetricResult&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="kr">from&lt;/span> &lt;span class="s1">&amp;#39;@mastra/core/eval&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// --- 配置 ---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 使用的LLM模型（根据需要更改）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">llm&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">xai&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;grok-2-latest&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// const llm = gemini(&amp;#39;gemini-2.5-pro-exp-03-25&amp;#39;); // 使用 Gemini 2.5 Pro Experimental 的示例
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 判定为同一人物的相似度分数阈值（可调整）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">SIMILARITY_THRESHOLD&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">0.7&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 存储对提示创建 AI 的反馈的变量
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">let&lt;/span> &lt;span class="nx">feedbackForPromptCreator&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 循环计数器
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kd">let&lt;/span> &lt;span class="nx">iteration&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// --- 评估相关定义 ---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * 生成传递给评估 AI 的提示的函数
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">generateSimilarityPrompt&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">originalText&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">generatedText&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">originalText&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">generatedText&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">})&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="sb">`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">您是一位比较分析文章写作风格的专家。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">请比较给定的“范本文章”和“AI生成的文章”，评估两者是否**看起来像是同一个人写的**。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">**评估标准：**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">请关注以下要素，判断综合的写作风格相似度。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">* **文风：** 第一人称、语气（敬语、随便等）、句尾（～です、～だ、～よね等）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">* **词语选择：** 偏爱的词语、表达方式、专业术语使用频率
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">* **文章结构：** 句子长度、段落使用、连接词使用、逻辑展开
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">* **节奏感：** 标点符号使用、名词结尾（体言止め）频率
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">* **情感表达：** 积极/消极、情感表达方式、有无幽默感
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">* **习惯：** 特征性的表达方式、错别字倾向（如果有的话）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">**重要：** 请仅评估**写作风格**的相似性，而非主题或内容的正确性。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">**输出格式：**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">请按以下JSON格式返回评估结果。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">* \`similarityScore\`: 请用 0.0（完全不像）到 1.0（看起来完全是同一个人）之间的**数值**来评估写作风格的相似度。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">* \`reason\`: 请简要说明得到该分数的原因。特别是分数较低时，请指出您觉得哪些地方不同。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">\`\`\`json
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">{
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> &amp;#34;similarityScore&amp;#34;: number (0.0 ~ 1.0),
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> &amp;#34;reason&amp;#34;: string
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">}
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">\`\`\`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">**范本文章：**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">\`\`\`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">originalText&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">\`\`\`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">**AI生成的文章：**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">\`\`\`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">generatedText&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">\`\`\`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">请按照上述格式，以JSON输出评估结果。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb">`&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * 评估结果的类型定义（zod 模式）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">SimilarityEvaluationSchema&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">z&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kt">object&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">similarityScore&lt;/span>: &lt;span class="kt">z.number&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="nx">min&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">max&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;写作风格相似度分数（0.0 到 1.0）&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">reason&lt;/span>: &lt;span class="kt">z.string&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;评估理由&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">type&lt;/span> &lt;span class="nx">SimilarityEvaluation&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">z&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="k">infer&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">typeof&lt;/span> &lt;span class="na">SimilarityEvaluationSchema&lt;/span>&lt;span class="p">&amp;gt;;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * 评估器（Judge）类
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">AuthorshipSimilarityJudge&lt;/span> &lt;span class="kr">extends&lt;/span> &lt;span class="nx">MastraAgentJudge&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">model&lt;/span>: &lt;span class="kt">LanguageModel&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">super&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;Authorship Similarity Judge&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;您是一位比较分析文章写作风格的专家。请按照给定的指示，评估两篇文章的相似度。&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">model&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">evaluate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">originalText&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">generatedText&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">SimilarityEvaluation&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">prompt&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">generateSimilarityPrompt&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">originalText&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">generatedText&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 如果模型支持JSON模式或模式强制，则加以利用
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">try&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">agent&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">generate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">prompt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">output&lt;/span>: &lt;span class="kt">SimilarityEvaluationSchema&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="kt">object&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">catch&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nx">error&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;解析评估结果失败。将返回原始文本。&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">error&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 回退：如果JSON解析失败，则视为分数0等
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">fallbackResult&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">agent&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">generate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">prompt&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">similarityScore&lt;/span>: &lt;span class="kt">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">reason&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="sb">`评估 AI 的输出格式不正确： &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">fallbackResult&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">text&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">`&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * 评估指标（Metric）类
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">interface&lt;/span> &lt;span class="nx">AuthorshipSimilarityMetricResult&lt;/span> &lt;span class="kr">extends&lt;/span> &lt;span class="nx">MetricResult&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">info&lt;/span>: &lt;span class="kt">SimilarityEvaluation&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">class&lt;/span> &lt;span class="nx">AuthorshipSimilarityMetric&lt;/span> &lt;span class="kr">extends&lt;/span> &lt;span class="nx">Metric&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">private&lt;/span> &lt;span class="nx">judge&lt;/span>: &lt;span class="kt">AuthorshipSimilarityJudge&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">constructor&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">model&lt;/span>: &lt;span class="kt">LanguageModel&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">super&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">judge&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">AuthorshipSimilarityJudge&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">model&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">async&lt;/span> &lt;span class="nx">measure&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">originalText&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">generatedText&lt;/span>: &lt;span class="kt">string&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">Promise&lt;/span>&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">AuthorshipSimilarityMetricResult&lt;/span>&lt;span class="p">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">evaluationResult&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">judge&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">evaluate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">originalText&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">generatedText&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">score&lt;/span>: &lt;span class="kt">evaluationResult.similarityScore&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">info&lt;/span>: &lt;span class="kt">evaluationResult&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// --- 工作流定义 ---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">clonePromptGeneratorWorkflow&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Workflow&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">name&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;clone-prompt-generator-workflow-with-eval&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="c1">// 工作流名称
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">triggerSchema&lt;/span>: &lt;span class="kt">z.object&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">originalText&lt;/span>: &lt;span class="kt">z.string&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;The original text written by the user to be cloned.&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// --- 步骤1：生成模仿指示提示 ---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">generateClonePromptStep&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Step&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;generate-clone-prompt&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">execute&lt;/span>: &lt;span class="kt">async&lt;/span> &lt;span class="p">({&lt;/span> &lt;span class="nx">context&lt;/span> &lt;span class="p">})&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">promptCreatorAgent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Agent&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">name&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;Prompt Creator Agent&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">instructions&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="sb">`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> # 指示：请创建最佳的“模仿文章生成提示”
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> 您是提示工程师 AI。您的任务是分析给定的**【例文】**，准确把握其作者的**特征（人格、文风、习惯）**，并创建一个**通用的指示提示**，以便让其他 AI 模仿该作者生成**像人一样自然的**文章。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> （省略... 提示的条件和思考过程不变）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> **那么，综合以上所有内容，请创建最佳的“模仿文章生成提示”。**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">feedbackForPromptCreator&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> `&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">model&lt;/span>: &lt;span class="kt">llm&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">originalText&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">triggerData&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">originalText&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;[generate-clone-prompt] 开始生成提示。&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="nx">promptCreatorAgent&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">generate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> 【例文】:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">originalText&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> `&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;[generate-clone-prompt] 提示生成完成。&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="sb">`&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">text&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">`&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// --- 最后步骤：输出成功的提示 ---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">outputFinalPromptStep&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Step&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">id&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;output-final-prompt&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">execute&lt;/span>: &lt;span class="kt">async&lt;/span> &lt;span class="p">({&lt;/span> &lt;span class="nx">context&lt;/span> &lt;span class="p">})&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">finalPrompt&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getStepResult&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">generateClonePromptStep&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kr">as&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;--------------------------------------------------&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;工作流已完成！&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;成功的模仿指示提示：&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;--------------------------------------------------&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">finalPrompt&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 在控制台输出最终提示
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;--------------------------------------------------&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">finalPrompt&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// --- 工作流组装 ---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">clonePromptGeneratorWorkflow&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="nx">step&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">generateClonePromptStep&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="nx">until&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kr">async&lt;/span> &lt;span class="p">({&lt;/span> &lt;span class="nx">context&lt;/span> &lt;span class="p">})&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// 接收 iteration
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">iteration&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`&lt;/span>&lt;span class="err">\&lt;/span>&lt;span class="sb">n--- 循环 &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">iteration&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb"> 开始 ---`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 1. 获取生成的“模仿指示提示”
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">generatedClonePrompt&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">getStepResult&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">generateClonePromptStep&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="kr">as&lt;/span> &lt;span class="kt">string&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">originalText&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">context&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">triggerData&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">originalText&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 2. 抽象化 originalText 的主题
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">themeAbstractorAgent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Agent&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">name&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;Theme Abstractor Agent&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">instructions&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="sb">`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> 请分析给定文章的主要主题或话题，**避免使用具体的专有名词、产品名、技术名、服务名等**，用更通用、抽象的语言来表达。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> 输出请仅包含该抽象主题的说明文字，不要包含其他解说或前言。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> 示例：（省略...）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> `&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">model&lt;/span>: &lt;span class="kt">llm&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`[循环 &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">iteration&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">] 正在从 originalText 抽象化主题...`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">abstractionResult&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="nx">themeAbstractorAgent&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">generate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> 请抽象化以下文章的主题：&lt;/span>&lt;span class="err">\&lt;/span>&lt;span class="sb">n---&lt;/span>&lt;span class="err">\&lt;/span>&lt;span class="sb">n&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">originalText&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="err">\&lt;/span>&lt;span class="sb">n---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> `&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">abstractedTheme&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">abstractionResult&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">text&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">trim&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`[循环 &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">iteration&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">] 抽象化后的主题： &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">abstractedTheme&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 3. 使用抽象化主题生成模仿文章
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">textGeneratorAgent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">Agent&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">name&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s1">&amp;#39;Text Generator Agent&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">instructions&lt;/span>: &lt;span class="kt">generatedClonePrompt&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">model&lt;/span>: &lt;span class="kt">llm&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`[循环 &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">iteration&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">] 正在使用抽象化主题生成文章...`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">generatedTextResult&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="nx">textGeneratorAgent&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">generate&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="sb">`请针对“&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">abstractedTheme&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">”，创建一篇即使是初学者也能容易理解的解说文章。`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">generatedText&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">generatedTextResult&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">text&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 4. 评估相似度
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`[循环 &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">iteration&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">] 正在评估生成的文章与范本文章的相似度...`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">authorshipMetric&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">AuthorshipSimilarityMetric&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">llm&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 使用评估指标
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">metricResult&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">await&lt;/span> &lt;span class="nx">authorshipMetric&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">measure&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">originalText&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">generatedText&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">currentScore&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">metricResult&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">score&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">reason&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">metricResult&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">info&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">reason&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`[循环 &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">iteration&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">] 评估结果 - 分数： &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">currentScore&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">toFixed&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">, 理由： &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">reason&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 5. 根据评估分数判断循环继续/结束
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kr">const&lt;/span> &lt;span class="nx">shouldStop&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">currentScore&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="nx">SIMILARITY_THRESHOLD&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="nx">shouldStop&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">feedbackForPromptCreator&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="sb">`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> ---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> **来自上次尝试的反馈（循环 &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">iteration&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">）：**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> 使用生成的“模仿指示提示”让其书写关于“&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">abstractedTheme&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">”的内容后，与范本文章的相似度未达到目标（分数： &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">currentScore&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">toFixed&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">）。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> 评估 AI 指出了以下几点。请参考这些内容改进提示。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> **失败的提示：**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> \`\`\`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">generatedClonePrompt&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> \`\`\`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> **评估 AI 的指正：**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> \`\`\`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">reason&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> \`\`\`
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> ---
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sb"> `&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`[循环 &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">iteration&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">] 由于分数低于阈值，将创建反馈并重试。`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`[循环 &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">iteration&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">] 由于分数达到或超过阈值 (&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">SIMILARITY_THRESHOLD&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">)，将结束循环。`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">feedbackForPromptCreator&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 成功后清除反馈
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sb">`--- 循环 &lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">iteration&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb"> 结束 ---`&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">shouldStop&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// true 则结束循环，false 则继续
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span> &lt;span class="nx">generateClonePromptStep&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 指定循环执行的步骤
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="nx">then&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">outputFinalPromptStep&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 指定循环结束后执行的步骤
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="nx">commit&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="c1">// 确定工作流定义
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">export&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">clonePromptGeneratorWorkflow&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="完成模仿指示提示及其使用方法">完成！“模仿指示提示”及其使用方法
+&lt;/h3>&lt;p>&lt;strong>最终输出&lt;/strong>&lt;/p>
+&lt;p>当工作流顺利达到阈值以上的分数并结束后，最终完成的“模仿指示提示”将输出到终端控制台。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">--------------------------------------------------
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">工作流已完成！
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">最终相似度分数： 0.75（示例）
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">成功的模仿指示提示：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--------------------------------------------------
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 指示提示
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">您是一个 AI，需要模仿具有以下特征的人物，根据【文章内容】生成像人一样自然的文本。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## 要模仿的人物特征：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">### 人格：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">* 基本态度：礼貌且亲切。努力高效地传达信息。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">* 说话方式：语气温和。也会使用像“～な感じです”这样的表达，但步骤说明很干练。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">* 思维：逻辑性强但灵活。注重实践。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">...（以下是 AI 生成的提示内容）...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">--------------------------------------------------
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>将这个输出的提示复制下来，活用到今后的文章生成中（例如，在 ChatGPT 或 Claude 等其他工具中使用时），应该就能让 AI 制作模仿您文风的草稿了！&lt;/p>
+&lt;h3 id="总结">总结
+&lt;/h3>&lt;p>这次我们使用 mastra 的循环功能和评估功能，尝试创建了一个工作流，让 AI 学习自己的写作风格，并自动生成和改进用于模仿该风格的提示本身。&lt;/p>
+&lt;p>这是一个让 AI 思考如何使用 AI 的稍微有点元认知意味的方法，但如果顺利的话，应该能提高文章写作的效率吧。特别是对于那些想要用自己的风格写博客文章或报告，但又觉得打字很麻烦的人来说，这也许值得一试。&lt;/p>
+&lt;p>mastra 真是一个相当有深度且有趣的库！大家也请务必尝试创建各种各样的工作流吧。&lt;/p></description></item></channel></rss>

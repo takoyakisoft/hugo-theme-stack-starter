@@ -1,0 +1,910 @@
+<!doctype html><html lang=ja dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="mastraライブラリとTypeScriptで、Grok-2やGemini 2.5 Proを使ったLLMワークフローを構築しませんか？インストールからthinkツールの実装、さらにAI自身にプロンプトを改善させるループ処理まで、具体的な手順を分かりやすく解説します！"><title>mastraでLLMワークフロー自由自在！Grok-2とthinkツール、文章クローンプロンプト生成まで</title><link rel=canonical href=https://takoyakisoft.com/p/build-llm-workflow-with-mastra/><link rel=stylesheet href=/scss/style.min.e2eb4d863e5f9e2d94c38679d645929c395fbab1ed23bbebd5526b205d5c473b.css><meta property='og:title' content="mastraでLLMワークフロー自由自在！Grok-2とthinkツール、文章クローンプロンプト生成まで"><meta property='og:description' content="mastraライブラリとTypeScriptで、Grok-2やGemini 2.5 Proを使ったLLMワークフローを構築しませんか？インストールからthinkツールの実装、さらにAI自身にプロンプトを改善させるループ処理まで、具体的な手順を分かりやすく解説します！"><meta property='og:url' content='https://takoyakisoft.com/p/build-llm-workflow-with-mastra/'><meta property='og:site_name' content='TakoyakiSoft'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='mastra'><meta property='article:tag' content='TypeScript'><meta property='article:tag' content='Grok'><meta property='article:tag' content='Gemini'><meta property='article:published_time' content='2025-04-03T21:00:34+09:00'><meta property='article:modified_time' content='2025-04-03T21:00:34+09:00'><meta property='og:image' content='https://takoyakisoft.com/p/build-llm-workflow-with-mastra/build-llm-workflow-with-mastra.webp'><meta name=twitter:site content="@takoyakisoft"><meta name=twitter:creator content="@takoyakisoft"><meta name=twitter:title content="mastraでLLMワークフロー自由自在！Grok-2とthinkツール、文章クローンプロンプト生成まで"><meta name=twitter:description content="mastraライブラリとTypeScriptで、Grok-2やGemini 2.5 Proを使ったLLMワークフローを構築しませんか？インストールからthinkツールの実装、さらにAI自身にプロンプトを改善させるループ処理まで、具体的な手順を分かりやすく解説します！"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://takoyakisoft.com/p/build-llm-workflow-with-mastra/build-llm-workflow-with-mastra.webp'><link rel="shortcut icon" href=/favicon.ico></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=メニューを開く・閉じる>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_f78e84f1474a9757.webp width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🕹️</span></figure><div class=site-meta><h1 class=site-name><a href=/>TakoyakiSoft</a></h1><h2 class=site-description>様々なソフトウェアの使い方を分かりやすく解説します。</h2></div></header><ol class=menu-social><li><a href=https://bsky.app/profile/takoyakisoft.bsky.social target=_blank title=Bluesky rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bluesky"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6.335 5.144C4.681 3.945 2 3.017 2 5.97c0 .59.35 4.953.556 5.661C3.269 14.094 5.686 14.381 8 14c-4.045.665-4.889 3.208-2.667 5.41C6.363 20.428 7.246 21 8 21c2 0 3.134-2.769 3.5-3.5.333-.667.5-1.167.5-1.5.0.333.167.833.5 1.5.366.731 1.5 3.5 3.5 3.5.754.0 1.637-.571 2.667-1.59C20.889 17.207 20.045 14.664 16 14c2.314.38 4.73.094 5.444-2.369.206-.708.556-5.072.556-5.661.0-2.953-2.68-2.025-4.335-.826C15.372 6.806 12.905 10.192 12 12c-.905-1.808-3.372-5.194-5.665-6.856z"/></svg></a></li><li><a href=https://github.com/takoyakisoft target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://x.com/takoyakisoft target=_blank title=X rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4l11.733 16H20L8.267 4z"/><path d="M4 20l6.768-6.768m2.46-2.46L20 4"/></svg></a></li><li><a href=https://www.youtube.com/@takoyaki-soft target=_blank title=YouTube rel=me><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M2 8a4 4 0 014-4h12a4 4 0 014 4v8a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><path d="M10 9l5 3-5 3z"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>ホーム</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>検索</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>アーカイブ</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>SNSのリンク</span></a></li><li><a href=/about/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-exclamation"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 108 0A4 4 0 008 7"/><path d="M6 21v-2a4 4 0 014-4h4c.348.0.686.045 1.008.128"/><path d="M19 16v3"/><path d="M19 22v.01"/></svg>
+<span>サイトについて</span></a></li><li><a href=/terms-of-service/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-notes"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 3m0 2a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2z"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>
+<span>利用規約</span></a></li><li><a href=/privacy-policy/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-shield-lock"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3a12 12 0 008.5 3A12 12 0 0112 21 12 12 0 013.5 6 12 12 0 0012 3"/><path d="M12 11m-1 0a1 1 0 102 0 1 1 0 10-2 0"/><path d="M12 12v2.5"/></svg>
+<span>プライバシーポリシー</span></a></li><li><a href=/disclaimer/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-exclamation-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1018 0A9 9 0 103 12"/><path d="M12 9v4"/><path d="M12 16v.01"/></svg>
+<span>免責事項</span></a></li><li><a href=/contact/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M3 7l9 6 9-6"/></svg>
+<span>お問い合わせ</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://takoyakisoft.com/en/>English</option><option value=https://takoyakisoft.com/ selected>日本語</option><option value=https://takoyakisoft.com/zh-cn/>简体中文</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>ダークモード</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目次</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#mastraのインストール>mastraのインストール</a></li><li><a href=#設定を見てみよう>設定を見てみよう</a></li><li><a href=#動作確認してみよう>動作確認してみよう</a></li><li><a href=#thinkツールを実装してみる>「thinkツール」を実装してみる</a></li><li><a href=#thinkツールの動作確認>thinkツールの動作確認</a></li><li><a href=#文章をクローンするプロンプトを作成するワークフローを実装してみる>文章をクローンするプロンプトを作成するワークフローを実装してみる</a><ol><li><a href=#このワークフローで目指すことaiに自分の文体を学習させる>このワークフローで目指すこと：AIに「自分の文体」を学習させる</a></li><li><a href=#準備評価ライブラリの追加とワークフロー登録>準備：評価ライブラリの追加とワークフロー登録</a></li><li><a href=#aiがプロンプトを改善していく仕組み処理フローを解説>AIがプロンプトを改善していく仕組み：処理フローを解説</a></li><li><a href=#動かしてみようワークフローの実行手順>動かしてみよう！ワークフローの実行手順</a></li><li><a href=#ワークフロー全体のコード>ワークフロー全体のコード</a></li><li><a href=#完成なりきり指示プロンプトとその活用法>完成！「なりきり指示プロンプト」とその活用法</a></li><li><a href=#まとめ>まとめ</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/build-llm-workflow-with-mastra/><img src=/p/build-llm-workflow-with-mastra/build-llm-workflow-with-mastra_hu_d1208c176298e21f.webp srcset="/p/build-llm-workflow-with-mastra/build-llm-workflow-with-mastra_hu_d1208c176298e21f.webp 800w, /p/build-llm-workflow-with-mastra/build-llm-workflow-with-mastra_hu_e2dcb93dee202248.webp 1600w" width=800 height=411 loading=lazy alt="Featured image of post mastraでLLMワークフロー自由自在！Grok-2とthinkツール、文章クローンプロンプト生成まで"></a></div><div class=article-details><header class=article-category><a href=/categories/ai/>AI
+</a><a href=/categories/%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0/>プログラミング</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/build-llm-workflow-with-mastra/>mastraでLLMワークフロー自由自在！Grok-2とthinkツール、文章クローンプロンプト生成まで</a></h2><h3 class=article-subtitle>mastraライブラリとTypeScriptで、Grok-2やGemini 2.5 Proを使ったLLMワークフローを構築しませんか？インストールからthinkツールの実装、さらにAI自身にプロンプトを改善させるループ処理まで、具体的な手順を分かりやすく解説します！</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>2025年04月03日</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>読了時間: 19分</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://takoyakisoft.com/en/p/build-llm-workflow-with-mastra/ class=link>English</a>
+<a href=https://takoyakisoft.com/zh-cn/p/build-llm-workflow-with-mastra/ class=link>简体中文</a></div></footer></div></header><section class=article-content><p>こんにちは！今回は、mastraっていうライブラリを使って、Grok-2とGemini 2.5 Pro expなどのLLMを動かしてみたお話です。</p><p>mastraは、プロンプトを使うLLMを決めて「AIエージェント」を作って、それらをどういう順番で動かすかの「ワークフロー」を組めるライブラリです。TypeScriptで書けるっていうのが個人的には嬉しいポイントで、これならCloudflare WorkersとかDenoみたいな環境で、安価にWebサービスに組み込めるかもしれないなと思ってます。</p><p>似たようなライブラリだとLangChainとか有名ですけど、mastraはデプロイのしやすさでちょっと有利かもしれませんね。あと、以前試したDifyっていうツールが、繰り返し処理（ループ）が少し苦手な感じだったので、mastraならどうかな？と思って試してみた、という背景もあります。</p><p>では、さっそく試していきましょう！</p><h2 id=mastraのインストール>mastraのインストール</h2><p>今回はWindows 11で、AIエディターの「Trae」と、高速なパッケージマネージャー「pnpm」を使ってみます。</p><p>まずは、mastraの公式サイトにある手順でプロジェクトを作っていきます。
+（参考: <a class=link href=https://mastra.ai/docs/getting-started/installation#create-a-new-project target=_blank rel=noopener>Create a New Project</a>）</p><p>ターミナルを開いて、次のコマンドを実行します。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm create mastra@latest
+</span></span></code></pre></td></tr></table></div></div><p>いくつか質問されるので、答えていきましょう。</p><p><img src=/p/build-llm-workflow-with-mastra/WindowsTerminal_UXtTR1rp9W.webp width=1127 height=1032 srcset="/p/build-llm-workflow-with-mastra/WindowsTerminal_UXtTR1rp9W_hu_e5736a7229396e4d.webp 480w, /p/build-llm-workflow-with-mastra/WindowsTerminal_UXtTR1rp9W_hu_7e216cf636dd59ff.webp 1024w" loading=lazy alt=mastraプロジェクト作成画面 class=gallery-image data-flex-grow=109 data-flex-basis=262px></p><p>プロジェクト名を聞かれます。今回は<code>my-mastra-app</code>にしました。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◇  What do you want to name your project?
+</span></span><span class=line><span class=cl>│  my-mastra-app
+</span></span></code></pre></td></tr></table></div></div><p>ソースファイルを置く場所ですね。デフォルトの<code>src/</code>でOKです。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◆  Where should we create the Mastra files? (default: src/)
+</span></span><span class=line><span class=cl>│  src/
+</span></span></code></pre></td></tr></table></div></div><p>必要なコンポーネントを選びます。Agents（エージェント）、Workflows（ワークフロー）とTools（ツール）は後で使うので、Yesを選んでおきましょう。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◆  Choose components to install:
+</span></span><span class=line><span class=cl>│  ◼ Agents
+</span></span><span class=line><span class=cl>│  ◼ Workflows
+</span></span><span class=line><span class=cl>◇  Add tools?
+</span></span><span class=line><span class=cl>│  Yes
+</span></span></code></pre></td></tr></table></div></div><p>デフォルトで使うLLMプロバイダーを選びます。今回はGoogleを選んでみましたが、これは後で自由に変更できます。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◇  Select default provider:
+</span></span><span class=line><span class=cl>│  Google
+</span></span></code></pre></td></tr></table></div></div><p>APIキーの設定です。あとで<code>.env.development</code>ファイルに設定するので、ここではスキップ（Skip for now）で大丈夫です。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◆  Enter your google API key?
+</span></span><span class=line><span class=cl>│  ● Skip for now (default)
+</span></span></code></pre></td></tr></table></div></div><p>サンプルの追加は、今回はYesにします。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◇  Add example
+</span></span><span class=line><span class=cl>│  Yes
+</span></span></code></pre></td></tr></table></div></div><p>AI IDEとの連携も、今回はスキップしました。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◇  Make your AI IDE into a Mastra expert? (installs Mastra docs MCP server)
+</span></span><span class=line><span class=cl>│  Skip for now
+</span></span></code></pre></td></tr></table></div></div><p>これでプロジェクトの雛形ができました！
+作成されたプロジェクトのフォルダに移動して、必要なライブラリをインストールします。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl><span class=k>cd</span> my-mastra-app
+</span></span><span class=line><span class=cl>pnpm i
+</span></span></code></pre></td></tr></table></div></div><p>開発用のサーバーを起動してみましょう。Ctrl+Cで止められます。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm run dev
+</span></span></code></pre></td></tr></table></div></div><h2 id=設定を見てみよう>設定を見てみよう</h2><p>インストールが終わったら、いくつかファイルを見てみましょうか。</p><p><code>package.json</code>を見ると、<code>dependencies</code>に<code>@ai-sdk/google</code>が入ってますね。これはVercel社が提供しているライブラリで、GeminiだけじゃなくてDeepSeekやGrok、OpenRouterみたいな他のLLMプロバイダーにも対応しているみたいです。便利そうですね！
+（参考: <a class=link href=https://sdk.vercel.ai/providers/ai-sdk-providers target=_blank rel=noopener>AI SDK Providers</a>）</p><p><code>scripts</code>には<code>dev</code>しかないです。これは今後、ビルドとかテスト用のスクリプトが追加されるのかもしれません。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;my-mastra-app&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;version&#34;</span><span class=p>:</span> <span class=s2>&#34;1.0.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;main&#34;</span><span class=p>:</span> <span class=s2>&#34;index.js&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;scripts&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;test&#34;</span><span class=p>:</span> <span class=s2>&#34;echo \&#34;Error: no test specified\&#34; &amp;&amp; exit 1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;dev&#34;</span><span class=p>:</span> <span class=s2>&#34;mastra dev&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;keywords&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;author&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;license&#34;</span><span class=p>:</span> <span class=s2>&#34;ISC&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;description&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;module&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;dependencies&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@ai-sdk/google&#34;</span><span class=p>:</span> <span class=s2>&#34;^1.2.5&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@mastra/core&#34;</span><span class=p>:</span> <span class=s2>&#34;^0.7.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;mastra&#34;</span><span class=p>:</span> <span class=s2>&#34;^0.4.4&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;zod&#34;</span><span class=p>:</span> <span class=s2>&#34;^3.24.2&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;devDependencies&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@types/node&#34;</span><span class=p>:</span> <span class=s2>&#34;^22.14.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;tsx&#34;</span><span class=p>:</span> <span class=s2>&#34;^4.19.3&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;typescript&#34;</span><span class=p>:</span> <span class=s2>&#34;^5.8.2&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>今回はxAIのGrokも使いたいので、対応するライブラリを追加します。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm add @ai-sdk/xai
+</span></span></code></pre></td></tr></table></div></div><p>もし不要になったら、<code>pnpm remove @ai-sdk/xai</code>で消せます。</p><p>次にAPIキーの設定です。プロジェクトのルートに<code>.env.development</code>と<code>.env</code>というファイルを作って、それぞれのAPIキーを記述します。（<code>.env</code>は本番用、<code>.env.development</code>は開発用です）</p><p><code>.env.development</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-env data-lang=env><span class=line><span class=cl><span class=nv>GOOGLE_GENERATIVE_AI_API_KEY</span><span class=o>=</span>your-google-api-key
+</span></span><span class=line><span class=cl><span class=nv>XAI_API_KEY</span><span class=o>=</span>your-xai-api-key
+</span></span></code></pre></td></tr></table></div></div><p>LLMのモデルを変更したい場合は、エージェントを定義しているファイル（例えば <code>src/mastra/agents/index.ts</code>）とか、ワークフローのファイル（例えば <code>src/mastra/workflows/index.ts</code>）で指定します。</p><p>例えば、Grok-2を使う場合はこんな感じです。</p><p><code>src/mastra/agents/index.ts</code> の例:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>xai</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@ai-sdk/xai&#39;</span><span class=p>;</span> <span class=c1>// xAIのライブラリをインポート
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>import</span> <span class=p>{</span> <span class=nx>Agent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/agent&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>weatherTool</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;../tools&#39;</span><span class=p>;</span> <span class=c1>// 使うツールもインポート
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>const</span> <span class=nx>weatherAgent</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Agent</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Weather Agent&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>instructions</span><span class=o>:</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>      You are a helpful weather assistant that provides accurate weather information.
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>      Your primary function is to help users get weather details for specific locations. When responding:
+</span></span></span><span class=line><span class=cl><span class=sb>      - Always ask for a location if none is provided
+</span></span></span><span class=line><span class=cl><span class=sb>      - If the location name isn’t in English, please translate it
+</span></span></span><span class=line><span class=cl><span class=sb>      - If giving a location with multiple parts (e.g. &#34;New York, NY&#34;), use the most relevant part (e.g. &#34;New York&#34;)
+</span></span></span><span class=line><span class=cl><span class=sb>      - Include relevant details like humidity, wind conditions, and precipitation
+</span></span></span><span class=line><span class=cl><span class=sb>      - Keep responses concise but informative
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>      Use the weatherTool to fetch current weather data.
+</span></span></span><span class=line><span class=cl><span class=sb>`</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>model</span>: <span class=kt>xai</span><span class=p>(</span><span class=s1>&#39;grok-2-latest&#39;</span><span class=p>),</span> <span class=c1>// ここでモデルを指定！
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>tools</span><span class=o>:</span> <span class=p>{</span> <span class=nx>weatherTool</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>ワークフロー内でも同様に指定できます。</p><p><code>src/mastra/workflows/index.ts</code> の例:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>xai</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@ai-sdk/xai&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Agent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/agent&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Step</span><span class=p>,</span> <span class=nx>Workflow</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/workflows&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>z</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;zod&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>llm</span> <span class=o>=</span> <span class=nx>xai</span><span class=p>(</span><span class=s1>&#39;grok-2-latest&#39;</span><span class=p>);</span> <span class=c1>// ここで使うモデルを定義
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=動作確認してみよう>動作確認してみよう</h2><p>設定ができたら、もう一度開発サーバーを起動してみましょう。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm run dev
+</span></span></code></pre></td></tr></table></div></div><p>ブラウザで <a class=link href=http://localhost:4111/ target=_blank rel=noopener>http://localhost:4111/</a>にアクセスすると、mastraのインターフェースが表示されるはずです。</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_DllHdtTB78.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_DllHdtTB78_hu_523f3c38bccd80b5.webp 480w, /p/build-llm-workflow-with-mastra/Trae_DllHdtTB78_hu_b6bd473c52d66d37.webp 1024w" loading=lazy alt=weatherエージェント選択画面 class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>エージェントを選んで、チャット形式で試せますね。</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_8z5OEtWoym.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_8z5OEtWoym_hu_67c7256000ecd96a.webp 480w, /p/build-llm-workflow-with-mastra/Trae_8z5OEtWoym_hu_28642c119fbb0cc5.webp 1024w" loading=lazy alt=weatherエージェントのチャット画面 class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>Grok-2を使うと、答えが英語で返ってくることがあります。</p><h2 id=thinkツールを実装してみる>「thinkツール」を実装してみる</h2><p>次に、ちょっと面白いツールを実装してみます。「thinkツール」っていうものです。</p><p>これは、Anthropicの記事で紹介されていたテクニックで、LLMに何かを実行させる前に「考えさせる」ステップを入れると性能が上がる、というものらしいです。
+（参考: <a class=link href=https://www.anthropic.com/engineering/claude-think-tool target=_blank rel=noopener>The &ldquo;think&rdquo; tool: Enabling Claude to stop and think in complex tool use situations</a>）</p><p>このツール自体は、特に何か外部の情報を持ってきたりするわけではなくて、ただ「考える」というプロセスを模倣させるだけなんです。でも、これで複雑な推論とかが必要な場合に効果があるみたいです。面白いですよね！</p><p>では、mastraでthinkツールを作ってみましょう。</p><p>まず、ツールを定義するファイルを作ります。</p><p><code>src/mastra/tools/thinkTool.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>createTool</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/tools&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>z</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;zod&#39;</span><span class=p>;</span> <span class=c1>// 入力データのバリデーション用
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>const</span> <span class=nx>thinkTool</span> <span class=o>=</span> <span class=nx>createTool</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=nx>id</span><span class=o>:</span> <span class=s1>&#39;think&#39;</span><span class=p>,</span> <span class=c1>// ツールのID
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>description</span><span class=o>:</span> <span class=s1>&#39;Use the tool to think about something. It will not obtain new information or change the database, but just append the thought to the log. Use it when complex reasoning or some cache memory is needed.&#39;</span><span class=p>,</span> <span class=c1>// ツールの説明
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>inputSchema</span>: <span class=kt>z.object</span><span class=p>({</span> <span class=c1>// ツールが受け取る入力の定義
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>thought</span>: <span class=kt>z.string</span><span class=p>().</span><span class=nx>describe</span><span class=p>(</span><span class=s1>&#39;A thought to think about.&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>  <span class=p>}),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>outputSchema</span>: <span class=kt>z.object</span><span class=p>({}),</span> <span class=c1>// ツールが出力するデータの定義 (今回は空)
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>execute</span>: <span class=kt>async</span> <span class=p>({</span> <span class=nx>context</span> <span class=p>})</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 実際の処理は何もしない
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;Thinking:&#39;</span><span class=p>,</span> <span class=nx>context</span><span class=p>.</span><span class=nx>thought</span><span class=p>);</span> <span class=c1>// コンソールに思考内容を出すくらいはしてもいいかも
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>return</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>次に、このthinkツールを使うエージェントを作成します。プロンプトで、いつthinkツールを使うべきかを指示するのがポイントですね。</p><p><code>src/mastra/agents/thinkAgent.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Agent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/agent&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>thinkTool</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;../tools/thinkTool&#39;</span><span class=p>;</span> <span class=c1>// 作成したthinkToolをインポート
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>import</span> <span class=p>{</span> <span class=nx>xai</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@ai-sdk/xai&#39;</span><span class=p>;</span> <span class=c1>// 使うLLMモデルもインポート
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>const</span> <span class=nx>thinkAgent</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Agent</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Think Agent&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>instructions</span><span class=o>:</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>    ## Using the think tool
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>    Before taking any action or responding to the user after receiving tool results, use the think tool as a scratchpad to:
+</span></span></span><span class=line><span class=cl><span class=sb>    - List the specific rules that apply to the current request
+</span></span></span><span class=line><span class=cl><span class=sb>    - Check if all required information is collected
+</span></span></span><span class=line><span class=cl><span class=sb>    - Verify that the planned action complies with all policies
+</span></span></span><span class=line><span class=cl><span class=sb>    - Iterate over tool results for correctness 
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>    Here are some examples of what to iterate over inside the think tool:
+</span></span></span><span class=line><span class=cl><span class=sb>    &lt;think_tool_example_1&gt;
+</span></span></span><span class=line><span class=cl><span class=sb>    User wants to [specific scenario]
+</span></span></span><span class=line><span class=cl><span class=sb>    - Need to verify: [key information]
+</span></span></span><span class=line><span class=cl><span class=sb>    - Check relevant rules: [list rules]
+</span></span></span><span class=line><span class=cl><span class=sb>    - Verify [important conditions]
+</span></span></span><span class=line><span class=cl><span class=sb>    - Plan: [outline steps]
+</span></span></span><span class=line><span class=cl><span class=sb>    &lt;/think_tool_example_1&gt;
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>    ## Think in English and answer in Japanese
+</span></span></span><span class=line><span class=cl><span class=sb>`</span><span class=p>,</span> <span class=c1>// 日本語で答えてもらうように指示を追加！
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>model</span>: <span class=kt>xai</span><span class=p>(</span><span class=s1>&#39;grok-2-latest&#39;</span><span class=p>),</span> <span class=c1>// ここもGrok-2にしてみましょう
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>tools</span><span class=o>:</span> <span class=p>{</span> <span class=nx>thinkTool</span> <span class=p>}</span> <span class=c1>// このエージェントが使うツールとして登録
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>最後に、作成したツールとエージェントをmastraに登録します。</p><p><code>src/mastra/index.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Mastra</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/mastra&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>createLogger</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/logger&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>weatherWorkflow</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./workflows&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>weatherAgent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./agents&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>thinkAgent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./agents/thinkAgent&#39;</span><span class=p>;</span> <span class=c1>// 作成したthinkAgentをインポート
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>const</span> <span class=nx>mastra</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Mastra</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=nx>workflows</span><span class=o>:</span> <span class=p>{</span> <span class=nx>weatherWorkflow</span> <span class=p>},</span> <span class=c1>// 既存のワークフロー
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>agents</span><span class=o>:</span> <span class=p>{</span> <span class=nx>weatherAgent</span><span class=p>,</span> <span class=nx>thinkAgent</span> <span class=p>},</span> <span class=c1>// エージェントを追加
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>logger</span>: <span class=kt>createLogger</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Mastra&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>level</span><span class=o>:</span> <span class=s1>&#39;info&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>}),</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>これでthinkツールの実装は完了です！</p><h2 id=thinkツールの動作確認>thinkツールの動作確認</h2><p>再度、開発サーバーを起動して確認してみましょう。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm run dev
+</span></span></code></pre></td></tr></table></div></div><p><a class=link href=http://localhost:4111/ target=_blank rel=noopener>http://localhost:4111/</a>にアクセスして、今度は「Think Agent」を選んでみてください。</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_rklEm6XM9m.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_rklEm6XM9m_hu_942fbf387f6e2674.webp 480w, /p/build-llm-workflow-with-mastra/Trae_rklEm6XM9m_hu_9f44214b9918d7a4.webp 1024w" loading=lazy alt=thinkエージェント選択画面 class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>何か指示を出すと、裏側でthinkツールが動いて、その後に応答してくれるはずです。</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_kSY1rEClJW.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_kSY1rEClJW_hu_f16017b4d425c115.webp 480w, /p/build-llm-workflow-with-mastra/Trae_kSY1rEClJW_hu_215aa6865a0bf9ed.webp 1024w" loading=lazy alt=thinkエージェントのチャット画面 class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>これで、少し複雑なことでも、より正確に考えてくれるようになったかもしれません！</p><h2 id=文章をクローンするプロンプトを作成するワークフローを実装してみる>文章をクローンするプロンプトを作成するワークフローを実装してみる</h2><p>さて、ここからはmastraのループ機能と評価機能を組み合わせた、ちょっと応用的なワークフローに挑戦してみましょう！</p><h3 id=このワークフローで目指すことaiに自分の文体を学習させる>このワークフローで目指すこと：AIに「自分の文体」を学習させる</h3><p>テーマは「与えられた文章の書き方を真似するAIプロンプトを、AI自身に作らせる」です。なんだかAIにAIの使い方を考えさせるみたいで、面白い試みだと思いませんか？</p><p>最近、「AIが書いた文章か、人間が書いた文章か、見分けがつかない！」なんて話もよく聞きますよね。それなら、いっそ自分の文章のクセをAIに学習させて、ブログ記事の下書きとかを作ってもらえたら、タイピング量が減って楽になるんじゃないか？と思ったのが、このワークフローを作ってみたきっかけです。</p><h3 id=準備評価ライブラリの追加とワークフロー登録>準備：評価ライブラリの追加とワークフロー登録</h3><p><strong>まずは準備：評価ライブラリの追加</strong></p><p>このワークフローでは、生成されたプロンプトの良し悪しを別のAIに評価させるために、mastraの評価用ライブラリを使います。ターミナルで以下を実行してインストールしましょう。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm add @mastra/evals
+</span></span></code></pre></td></tr></table></div></div><p><strong>ワークフローをmastraに登録</strong></p><p>次に、これから作成するワークフロー (<code>clonePromptGeneratorWorkflow</code>) をmastra本体に認識させるため、設定ファイル (<code>src/mastra/index.ts</code>) を更新します。</p><p><code>src/mastra/index.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Mastra</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/mastra&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>createLogger</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/logger&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>weatherWorkflow</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./workflows&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// ↓ 新しいワークフローをインポート
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>import</span> <span class=p>{</span> <span class=nx>clonePromptGeneratorWorkflow</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./workflows/clonePromptGeneratorWorkflow&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>weatherAgent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./agents&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>thinkAgent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./agents/thinkAgent&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>const</span> <span class=nx>mastra</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Mastra</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// ↓ workflowsオブジェクトに新しいワークフローを追加
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>workflows</span><span class=o>:</span> <span class=p>{</span> <span class=nx>weatherWorkflow</span><span class=p>,</span> <span class=nx>clonePromptGeneratorWorkflow</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nx>agents</span><span class=o>:</span> <span class=p>{</span> <span class=nx>weatherAgent</span><span class=p>,</span> <span class=nx>thinkAgent</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nx>logger</span>: <span class=kt>createLogger</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Mastra&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>level</span><span class=o>:</span> <span class=s1>&#39;info&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>}),</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>これで準備OKです！</p><h3 id=aiがプロンプトを改善していく仕組み処理フローを解説>AIがプロンプトを改善していく仕組み：処理フローを解説</h3><p>では、実際にどんな流れでAIがプロンプトを生成・改善していくのかを見ていきましょう。</p><ol><li><p>プロンプト作成AI (Prompt Creator Agent):
+まず、あなたが用意した「お手本」となる文章（<code>originalText</code>）を分析させます。そして、その文章の書き手の特徴（人格、文体、口癖など）を捉えて、他のAIに「この人になりきって文章を書いてね！」と指示するための「なりきり指示プロンプト」の初版を作成します。</p></li><li><p>テーマ抽出AI (Theme Abstractor Agent):
+次に、お手本文章から具体的な固有名詞（mastra、Grok-2など）を取り除き、「ソフトウェアツールキットを使ってAI処理の流れを作る手順」のような、一般的な「抽象化テーマ」を抽出します。これは、なりきり具合をテストする際に、お手本と全く同じ内容になってしまわないようにするためです。</p></li><li><p>文章生成AI (Text Generator Agent):
+ステップ1で作った「なりきり指示プロンプト」と、ステップ2で抽出した「抽象化テーマ」を使って、実際になりきり文章を生成させます。「『抽象化テーマ』について、なりきり指示プロンプトに従って書いてみて」という感じです。</p></li><li><p>評価AI (Authorship Similarity Judge/Metric):
+いよいよ評価です。お手本文章と、ステップ3でAIが生成したなりきり文章を比較させ、「書き方の類似度」を0.0（全然似てない）から1.0（瓜二つ！）のスコアで採点します。単語選び、文の長さ、口調、句読点の使い方など、あくまで「書き方」だけを見て、内容の正しさは問いません。</p></li><li><p>ループ判定 & フィードバック:</p><ul><li>評価スコアが、あらかじめ設定した閾値（コード内では <code>SIMILARITY_THRESHOLD = 0.7</code> としています）を超えていれば、「合格！」としてワークフローは終了し、成功した「なりきり指示プロンプト」を出力します。</li><li>スコアが閾値に満たなければ、「もっと頑張りましょう」となります。評価AIが「なぜスコアが低いのか（例: もっと句読点の使い方が似ていない、口調が硬すぎるなど）」を指摘したフィードバックを作成し、そのフィードバックを添えてステップ1のプロンプト作成AIに「このフィードバックを参考に、もっと良いプロンプトを作って！」と指示を出し、ループします。</li></ul></li></ol><p>このループを繰り返すことで、AIが試行錯誤しながら、どんどんお手本の書き方に近い文章を生成できるような「なりきり指示プロンプト」へと改善していく、という仕組みです。</p><p><strong>Tips:</strong></p><ul><li>モデル選択: 今回のコードでは <code>xai('grok-2-latest')</code> を使っていますが、もしGoogle AI Studioなどでアクセスできるなら <code>gemini('gemini-2.5-pro-exp-03-25')</code> のような、より高性能なモデルを試してみると、1回のループでかなり良い結果が出るかもしれません！ 各AgentやMetricの <code>model: llm</code> の部分を書き換えてみてください。</li><li>類似度スコアの閾値: <code>SIMILARITY_THRESHOLD</code> の値 (0.7) は、どれくらい厳しく評価するかの基準です。なかなかループが終わらない場合は少し下げてみたり、もっと精度を高めたい場合は上げてみたりと、手動で調整してみてください。</li></ul><h3 id=動かしてみようワークフローの実行手順>動かしてみよう！ワークフローの実行手順</h3><p>開発サーバー (<code>pnpm run dev</code>) を起動した状態で、ブラウザから <a class=link href=http://localhost:4111/ target=_blank rel=noopener>http://localhost:4111/</a> にアクセスします。</p><p>左側のメニューから「Workflows」を選び、今回作成した <code>clone-prompt-generator-workflow-with-eval</code> を選択します。</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_xCr7Im1oMY.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_xCr7Im1oMY_hu_cb87b9a8b1a11d3f.webp 480w, /p/build-llm-workflow-with-mastra/Trae_xCr7Im1oMY_hu_7e30e7d904eb448f.webp 1024w" loading=lazy alt=ワークフロー選択画面 class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>右側の「Run」というタブに <code>OriginalText</code> という入力フィールドが表示されるはずです。ここに、あなたがお手本にしたい文章（例えば、過去に書いたブログ記事の一部など）を貼り付けます。</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_bRgLzPZ7ea.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_bRgLzPZ7ea_hu_8f82ae0720adb291.webp 480w, /p/build-llm-workflow-with-mastra/Trae_bRgLzPZ7ea_hu_79a54b40e6c919b0.webp 1024w" loading=lazy alt=ワークフロー実行画面 class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>文章を貼り付けたら、「Submit」ボタンをクリック！</p><p>あとは、ターミナル（またはVS CodeなどのOUTPUTパネル）に流れるログを見守りましょう。ループが回るたびに、評価スコアやフィードバックが表示されるはずです。</p><h3 id=ワークフロー全体のコード>ワークフロー全体のコード</h3><p>実際に動作するワークフローのコードは以下のようになります。</p><p><code>src/mastra/workflows/clonePromptGeneratorWorkflow.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span><span class=lnt>240
+</span><span class=lnt>241
+</span><span class=lnt>242
+</span><span class=lnt>243
+</span><span class=lnt>244
+</span><span class=lnt>245
+</span><span class=lnt>246
+</span><span class=lnt>247
+</span><span class=lnt>248
+</span><span class=lnt>249
+</span><span class=lnt>250
+</span><span class=lnt>251
+</span><span class=lnt>252
+</span><span class=lnt>253
+</span><span class=lnt>254
+</span><span class=lnt>255
+</span><span class=lnt>256
+</span><span class=lnt>257
+</span><span class=lnt>258
+</span><span class=lnt>259
+</span><span class=lnt>260
+</span><span class=lnt>261
+</span><span class=lnt>262
+</span><span class=lnt>263
+</span><span class=lnt>264
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>xai</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@ai-sdk/xai&#39;</span><span class=p>;</span> <span class=c1>// or use gemini, openai, etc.
+</span></span></span><span class=line><span class=cl><span class=c1>// import { gemini } from &#39;@ai-sdk/google&#39;; // Geminiを使う場合の例
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>import</span> <span class=p>{</span> <span class=nx>Agent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/agent&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Step</span><span class=p>,</span> <span class=nx>Workflow</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/workflows&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>z</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;zod&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=kr>type</span> <span class=nx>LanguageModel</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/llm&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>MastraAgentJudge</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/evals/judge&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Metric</span><span class=p>,</span> <span class=kr>type</span> <span class=nx>MetricResult</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/eval&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- 設定 ---
+</span></span></span><span class=line><span class=cl><span class=c1>// 使用するLLMモデル (必要に応じて変更)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>const</span> <span class=nx>llm</span> <span class=o>=</span> <span class=nx>xai</span><span class=p>(</span><span class=s1>&#39;grok-2-latest&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=c1>// const llm = gemini(&#39;gemini-2.5-pro-exp-03-25&#39;); // Gemini 2.5 Pro Experimentalを使う場合の例
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// 同一人物と判定する類似度スコアの閾値 (調整可能)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>const</span> <span class=nx>SIMILARITY_THRESHOLD</span> <span class=o>=</span> <span class=mf>0.7</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// プロンプト作成AIへのフィードバックを格納する変数
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>let</span> <span class=nx>feedbackForPromptCreator</span> <span class=o>=</span> <span class=s2>&#34;&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// ループのカウンタ
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>let</span> <span class=nx>iteration</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- 評価関連の定義 ---
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * 評価AIに渡すプロンプトを生成する関数
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>generateSimilarityPrompt</span> <span class=o>=</span> <span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>originalText</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>generatedText</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>}</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>originalText</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>generatedText</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>})</span> <span class=o>=&gt;</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>あなたは、文章の書き方を比較分析する専門家です。
+</span></span></span><span class=line><span class=cl><span class=sb>与えられた「お手本の文章」と「AIが生成した文章」を比較し、両者が**同じ人物によって書かれたように見えるか**どうかを評価してください。
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>**評価基準:**
+</span></span></span><span class=line><span class=cl><span class=sb>以下の要素に着目し、総合的な書き方の類似度を判断してください。
+</span></span></span><span class=line><span class=cl><span class=sb>*   **文体:** 一人称、口調（丁寧語、タメ口など）、語尾（〜です、〜だ、〜よね等）
+</span></span></span><span class=line><span class=cl><span class=sb>*   **単語選び:** 好んで使う単語、言い回し、専門用語の使用頻度
+</span></span></span><span class=line><span class=cl><span class=sb>*   **文章構成:** 文の長さ、段落の使い方、接続詞の使い方、論理展開
+</span></span></span><span class=line><span class=cl><span class=sb>*   **リズム・テンポ:** 句読点の使い方、体言止めの頻度
+</span></span></span><span class=line><span class=cl><span class=sb>*   **感情表現:** ポジティブ/ネガティブ、感情の表し方、ユーモアの有無
+</span></span></span><span class=line><span class=cl><span class=sb>*   **癖:** 特徴的な言い回し、誤字脱字の傾向（もしあれば）
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>**重要:** トピックや内容の正しさではなく、あくまで**書き方**の類似性のみを評価してください。
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>**出力形式:**
+</span></span></span><span class=line><span class=cl><span class=sb>以下のJSON形式で、評価結果を返してください。
+</span></span></span><span class=line><span class=cl><span class=sb>*   \`similarityScore\`: 書き方の類似度を 0.0 (全く似ていない) から 1.0 (完全に同じ人物に見える) の間の**数値**で評価してください。
+</span></span></span><span class=line><span class=cl><span class=sb>*   \`reason\`: なぜそのスコアになったのか、具体的な理由を簡潔に説明してください。特にスコアが低い場合は、どの点が異なると感じたかを指摘してください。
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`json
+</span></span></span><span class=line><span class=cl><span class=sb>{
+</span></span></span><span class=line><span class=cl><span class=sb>  &#34;similarityScore&#34;: number (0.0 ~ 1.0),
+</span></span></span><span class=line><span class=cl><span class=sb>  &#34;reason&#34;: string
+</span></span></span><span class=line><span class=cl><span class=sb>}
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>---
+</span></span></span><span class=line><span class=cl><span class=sb>**お手本の文章:**
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb></span><span class=si>${</span><span class=nx>originalText</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>---
+</span></span></span><span class=line><span class=cl><span class=sb>**AIが生成した文章:**
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb></span><span class=si>${</span><span class=nx>generatedText</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>---
+</span></span></span><span class=line><span class=cl><span class=sb>上記の形式に従って、評価結果をJSONで出力してください。
+</span></span></span><span class=line><span class=cl><span class=sb>`</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * 評価結果の型定義 (zodスキーマ)
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>SimilarityEvaluationSchema</span> <span class=o>=</span> <span class=nx>z</span><span class=p>.</span><span class=kt>object</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>similarityScore</span>: <span class=kt>z.number</span><span class=p>().</span><span class=nx>min</span><span class=p>(</span><span class=mi>0</span><span class=p>).</span><span class=nx>max</span><span class=p>(</span><span class=mi>1</span><span class=p>).</span><span class=nx>describe</span><span class=p>(</span><span class=s2>&#34;書き方の類似度スコア (0.0から1.0)&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=nx>reason</span>: <span class=kt>z.string</span><span class=p>().</span><span class=nx>describe</span><span class=p>(</span><span class=s2>&#34;評価の理由&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=kr>type</span> <span class=nx>SimilarityEvaluation</span> <span class=o>=</span> <span class=nx>z</span><span class=p>.</span><span class=k>infer</span><span class=p>&lt;</span><span class=nt>typeof</span> <span class=na>SimilarityEvaluationSchema</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * 評価者 (Judge) クラス
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kr>class</span> <span class=nx>AuthorshipSimilarityJudge</span> <span class=kr>extends</span> <span class=nx>MastraAgentJudge</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>constructor</span><span class=p>(</span><span class=nx>model</span>: <span class=kt>LanguageModel</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>super</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;Authorship Similarity Judge&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;あなたは文章の書き方を比較分析する専門家です。与えられた指示に従って、二つの文章の類似度を評価してください。&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>model</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kr>async</span> <span class=nx>evaluate</span><span class=p>(</span><span class=nx>originalText</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>generatedText</span>: <span class=kt>string</span><span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>SimilarityEvaluation</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>prompt</span> <span class=o>=</span> <span class=nx>generateSimilarityPrompt</span><span class=p>({</span> <span class=nx>originalText</span><span class=p>,</span> <span class=nx>generatedText</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// JSONモードやスキーマ強制がモデルでサポートされていれば活用
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kr>const</span> <span class=nx>result</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>agent</span><span class=p>.</span><span class=nx>generate</span><span class=p>(</span><span class=nx>prompt</span><span class=p>,</span> <span class=p>{</span> <span class=nx>output</span>: <span class=kt>SimilarityEvaluationSchema</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=nx>result</span><span class=p>.</span><span class=kt>object</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>console</span><span class=p>.</span><span class=nx>error</span><span class=p>(</span><span class=s2>&#34;評価結果のパースに失敗しました。生テキストを返します。&#34;</span><span class=p>,</span> <span class=nx>error</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// フォールバック: JSONパースに失敗した場合、スコア0として扱うなど
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=kr>const</span> <span class=nx>fallbackResult</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>agent</span><span class=p>.</span><span class=nx>generate</span><span class=p>(</span><span class=nx>prompt</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span> <span class=nx>similarityScore</span>: <span class=kt>0.0</span><span class=p>,</span> <span class=nx>reason</span><span class=o>:</span> <span class=sb>`評価AIの出力形式が不正でした: </span><span class=si>${</span><span class=nx>fallbackResult</span><span class=p>.</span><span class=nx>text</span><span class=si>}</span><span class=sb>`</span> <span class=p>};</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * 評価メトリクス (Metric) クラス
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kr>interface</span> <span class=nx>AuthorshipSimilarityMetricResult</span> <span class=kr>extends</span> <span class=nx>MetricResult</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>info</span>: <span class=kt>SimilarityEvaluation</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>class</span> <span class=nx>AuthorshipSimilarityMetric</span> <span class=kr>extends</span> <span class=nx>Metric</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=nx>judge</span>: <span class=kt>AuthorshipSimilarityJudge</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>constructor</span><span class=p>(</span><span class=nx>model</span>: <span class=kt>LanguageModel</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>super</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=nx>judge</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>AuthorshipSimilarityJudge</span><span class=p>(</span><span class=nx>model</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kr>async</span> <span class=nx>measure</span><span class=p>(</span><span class=nx>originalText</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>generatedText</span>: <span class=kt>string</span><span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>AuthorshipSimilarityMetricResult</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>evaluationResult</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>judge</span><span class=p>.</span><span class=nx>evaluate</span><span class=p>(</span><span class=nx>originalText</span><span class=p>,</span> <span class=nx>generatedText</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>score</span>: <span class=kt>evaluationResult.similarityScore</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>info</span>: <span class=kt>evaluationResult</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>};</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- ワークフローの定義 ---
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>const</span> <span class=nx>clonePromptGeneratorWorkflow</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Workflow</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>name</span><span class=o>:</span> <span class=s2>&#34;clone-prompt-generator-workflow-with-eval&#34;</span><span class=p>,</span> <span class=c1>// ワークフロー名
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>triggerSchema</span>: <span class=kt>z.object</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>        <span class=nx>originalText</span>: <span class=kt>z.string</span><span class=p>().</span><span class=nx>describe</span><span class=p>(</span><span class=s2>&#34;The original text written by the user to be cloned.&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=p>}),</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- ステップ1: なりきり指示プロンプトの生成 ---
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>const</span> <span class=nx>generateClonePromptStep</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Step</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>id</span><span class=o>:</span> <span class=s2>&#34;generate-clone-prompt&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>execute</span>: <span class=kt>async</span> <span class=p>({</span> <span class=nx>context</span> <span class=p>})</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>promptCreatorAgent</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Agent</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>            <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Prompt Creator Agent&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>instructions</span><span class=o>:</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>            # 指示: 最高の「なりきり文章生成プロンプト」を作成してください
+</span></span></span><span class=line><span class=cl><span class=sb>            あなたは、プロンプトエンジニアAIです。あなたの任務は、与えられた**【例文】**を分析し、その書き手の**特徴（人格、文体、癖）**を正確に捉え、その書き手になりきって**人間らしく自然な文章**を生成させるための**「汎用的な指示プロンプト」**を作成することです。
+</span></span></span><span class=line><span class=cl><span class=sb>            (中略... プロンプトの条件や思考プロセスは変更なし)
+</span></span></span><span class=line><span class=cl><span class=sb>            **さあ、上記すべてを踏まえ、最高の「なりきり文章生成プロンプト」を作成してください。**
+</span></span></span><span class=line><span class=cl><span class=sb>            </span><span class=si>${</span><span class=nx>feedbackForPromptCreator</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>            `</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>model</span>: <span class=kt>llm</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>});</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>originalText</span> <span class=o>=</span> <span class=nx>context</span><span class=p>.</span><span class=nx>triggerData</span><span class=p>.</span><span class=nx>originalText</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;[generate-clone-prompt] プロンプト生成を開始します。&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>result</span> <span class=o>=</span> <span class=k>await</span> <span class=nx>promptCreatorAgent</span><span class=p>.</span><span class=nx>generate</span><span class=p>(</span><span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>        【例文】:
+</span></span></span><span class=line><span class=cl><span class=sb>        </span><span class=si>${</span><span class=nx>originalText</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>        `</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;[generate-clone-prompt] プロンプト生成が完了しました。&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=sb>`</span><span class=si>${</span><span class=nx>result</span><span class=p>.</span><span class=nx>text</span><span class=si>}</span><span class=sb>`</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- 最終ステップ: 成功したプロンプトの出力 ---
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>const</span> <span class=nx>outputFinalPromptStep</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Step</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>id</span><span class=o>:</span> <span class=s2>&#34;output-final-prompt&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>execute</span>: <span class=kt>async</span> <span class=p>({</span> <span class=nx>context</span> <span class=p>})</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>finalPrompt</span> <span class=o>=</span> <span class=nx>context</span><span class=p>.</span><span class=nx>getStepResult</span><span class=p>(</span><span class=nx>generateClonePromptStep</span><span class=p>)</span> <span class=kr>as</span> <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;--------------------------------------------------&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;ワークフローが完了しました！&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;成功したなりきり指示プロンプト:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;--------------------------------------------------&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>finalPrompt</span><span class=p>);</span> <span class=c1>// 最終的なプロンプトをコンソールに出力
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;--------------------------------------------------&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>finalPrompt</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- ワークフローの組み立て ---
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>clonePromptGeneratorWorkflow</span>
+</span></span><span class=line><span class=cl>    <span class=p>.</span><span class=nx>step</span><span class=p>(</span><span class=nx>generateClonePromptStep</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>.</span><span class=nx>until</span><span class=p>(</span><span class=kr>async</span> <span class=p>({</span> <span class=nx>context</span> <span class=p>})</span> <span class=o>=&gt;</span> <span class=p>{</span> <span class=c1>// iteration を受け取る
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>iteration</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`</span><span class=err>\</span><span class=sb>n--- ループ </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb> 開始 ---`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 1. 生成された「なりきり指示プロンプト」を取得
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kr>const</span> <span class=nx>generatedClonePrompt</span> <span class=o>=</span> <span class=nx>context</span><span class=p>.</span><span class=nx>getStepResult</span><span class=p>(</span><span class=nx>generateClonePromptStep</span><span class=p>)</span> <span class=kr>as</span> <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>originalText</span> <span class=o>=</span> <span class=nx>context</span><span class=p>.</span><span class=nx>triggerData</span><span class=p>.</span><span class=nx>originalText</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 2. originalTextのテーマを抽象化
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kr>const</span> <span class=nx>themeAbstractorAgent</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Agent</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>            <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Theme Abstractor Agent&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>instructions</span><span class=o>:</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>            与えられた文章の主要なテーマやトピックを分析し、**具体的な固有名詞、製品名、技術名、サービス名などを避け**、より一般的で抽象的な言葉で表現してください。
+</span></span></span><span class=line><span class=cl><span class=sb>            出力は、その抽象化されたテーマの説明文のみとし、他の解説や前置きは含めないでください。
+</span></span></span><span class=line><span class=cl><span class=sb>            例: (省略...)
+</span></span></span><span class=line><span class=cl><span class=sb>          `</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>model</span>: <span class=kt>llm</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>});</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[ループ </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] originalTextからテーマを抽象化中...`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>abstractionResult</span> <span class=o>=</span> <span class=k>await</span> <span class=nx>themeAbstractorAgent</span><span class=p>.</span><span class=nx>generate</span><span class=p>(</span><span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>        以下の文章のテーマを抽象化してください:</span><span class=err>\</span><span class=sb>n---</span><span class=err>\</span><span class=sb>n</span><span class=si>${</span><span class=nx>originalText</span><span class=si>}</span><span class=err>\</span><span class=sb>n---
+</span></span></span><span class=line><span class=cl><span class=sb>        `</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>abstractedTheme</span> <span class=o>=</span> <span class=nx>abstractionResult</span><span class=p>.</span><span class=nx>text</span><span class=p>.</span><span class=nx>trim</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[ループ </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] 抽象化されたテーマ: </span><span class=si>${</span><span class=nx>abstractedTheme</span><span class=si>}</span><span class=sb>`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 3. 抽象化されたテーマで、なりきり文章を生成
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kr>const</span> <span class=nx>textGeneratorAgent</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Agent</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>            <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Text Generator Agent&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>instructions</span>: <span class=kt>generatedClonePrompt</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>model</span>: <span class=kt>llm</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>});</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[ループ </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] 抽象化されたテーマで文章を生成中...`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>generatedTextResult</span> <span class=o>=</span> <span class=k>await</span> <span class=nx>textGeneratorAgent</span><span class=p>.</span><span class=nx>generate</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=sb>`「</span><span class=si>${</span><span class=nx>abstractedTheme</span><span class=si>}</span><span class=sb>」について、初心者にも分かりやすく解説する文章を作成してください。`</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>generatedText</span> <span class=o>=</span> <span class=nx>generatedTextResult</span><span class=p>.</span><span class=nx>text</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 4. 類似度を評価
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[ループ </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] 生成された文章とお手本の文章の類似度を評価中...`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>authorshipMetric</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>AuthorshipSimilarityMetric</span><span class=p>(</span><span class=nx>llm</span><span class=p>);</span> <span class=c1>// 評価メトリクスを使用
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kr>const</span> <span class=nx>metricResult</span> <span class=o>=</span> <span class=k>await</span> <span class=nx>authorshipMetric</span><span class=p>.</span><span class=nx>measure</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=nx>originalText</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>generatedText</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>currentScore</span> <span class=o>=</span> <span class=nx>metricResult</span><span class=p>.</span><span class=nx>score</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>reason</span> <span class=o>=</span> <span class=nx>metricResult</span><span class=p>.</span><span class=nx>info</span><span class=p>.</span><span class=nx>reason</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[ループ </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] 評価結果 - スコア: </span><span class=si>${</span><span class=nx>currentScore</span><span class=p>.</span><span class=nx>toFixed</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span><span class=si>}</span><span class=sb>, 理由: </span><span class=si>${</span><span class=nx>reason</span><span class=si>}</span><span class=sb>`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 5. 評価スコアに基づいてループ継続/終了を判断
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kr>const</span> <span class=nx>shouldStop</span> <span class=o>=</span> <span class=nx>currentScore</span> <span class=o>&gt;=</span> <span class=nx>SIMILARITY_THRESHOLD</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=nx>shouldStop</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>feedbackForPromptCreator</span> <span class=o>=</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>          ---
+</span></span></span><span class=line><span class=cl><span class=sb>          **前回の試行からのフィードバック (ループ </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>):**
+</span></span></span><span class=line><span class=cl><span class=sb>          生成した「なりきり指示プロンプト」を使って「</span><span class=si>${</span><span class=nx>abstractedTheme</span><span class=si>}</span><span class=sb>」について書かせた結果、お手本の文章との類似度が目標に達しませんでした (スコア: </span><span class=si>${</span><span class=nx>currentScore</span><span class=p>.</span><span class=nx>toFixed</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span><span class=si>}</span><span class=sb>)。
+</span></span></span><span class=line><span class=cl><span class=sb>          評価AIは以下の点を指摘しています。これを参考にプロンプトを改善してください。
+</span></span></span><span class=line><span class=cl><span class=sb>          **失敗したプロンプト:**
+</span></span></span><span class=line><span class=cl><span class=sb>          \`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>          </span><span class=si>${</span><span class=nx>generatedClonePrompt</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>          \`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>          **評価AIによる指摘:**
+</span></span></span><span class=line><span class=cl><span class=sb>          \`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>          </span><span class=si>${</span><span class=nx>reason</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>          \`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>          ---
+</span></span></span><span class=line><span class=cl><span class=sb>            `</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[ループ </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] スコアが閾値未満のため、フィードバックを作成し再試行します。`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[ループ </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] スコアが閾値 (</span><span class=si>${</span><span class=nx>SIMILARITY_THRESHOLD</span><span class=si>}</span><span class=sb>) 以上のため、ループを終了します。`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=nx>feedbackForPromptCreator</span> <span class=o>=</span> <span class=s2>&#34;&#34;</span><span class=p>;</span> <span class=c1>// 成功したらフィードバックをクリア
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`--- ループ </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb> 終了 ---`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>shouldStop</span><span class=p>;</span> <span class=c1>// trueならループ終了、falseなら継続
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span> <span class=nx>generateClonePromptStep</span><span class=p>)</span> <span class=c1>// ループで回すステップを指定
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>.</span><span class=nx>then</span><span class=p>(</span><span class=nx>outputFinalPromptStep</span><span class=p>)</span> <span class=c1>// ループ終了後に実行するステップを指定
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>.</span><span class=nx>commit</span><span class=p>();</span> <span class=c1>// ワークフロー定義を確定
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=p>{</span> <span class=nx>clonePromptGeneratorWorkflow</span> <span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=完成なりきり指示プロンプトとその活用法>完成！「なりきり指示プロンプト」とその活用法</h3><p><strong>最終的な出力</strong></p><p>ワークフローが無事に閾値以上のスコアを達成して終了すると、ターミナルのコンソールに、最終的に完成した「なりきり指示プロンプト」が出力されます。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>--------------------------------------------------
+</span></span><span class=line><span class=cl>ワークフローが完了しました！
+</span></span><span class=line><span class=cl>最終的な類似度スコア: 0.75 (例)
+</span></span><span class=line><span class=cl>成功したなりきり指示プロンプト:
+</span></span><span class=line><span class=cl>--------------------------------------------------
+</span></span><span class=line><span class=cl># 指示プロンプト
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>あなたは、以下に示す特徴を持つ人物になりきって、【記事の内容】から人間らしく自然な文章を生成するAIです。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>## なりきる人物の特徴:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>### 人格:
+</span></span><span class=line><span class=cl>*   基本姿勢: 丁寧で親しみやすい。効率的に情報を伝えようと努める。
+</span></span><span class=line><span class=cl>*   話し方: 柔らかい物腰。「〜な感じです」のような表現も使うが、手順説明はテキパキ。
+</span></span><span class=line><span class=cl>*   思考: 論理的だが柔軟。実践的。
+</span></span><span class=line><span class=cl>... (以下、AIが生成したプロンプトが続く) ...
+</span></span><span class=line><span class=cl>--------------------------------------------------
+</span></span></code></pre></td></tr></table></div></div><p>この出力されたプロンプトをコピーして、今後の文章生成（例えばChatGPTやClaudeなど他のツールで使う場合も）に活用すれば、あなたの文体を模倣した下書きをAIに作ってもらうことができるはずです！</p><h3 id=まとめ>まとめ</h3><p>今回はmastraのループ機能と評価機能を使って、AIに自分の文章スタイルを学習させ、それになりきるためのプロンプト自体を自動生成・改善させるワークフローを作ってみました。</p><p>AIにAIの使い方を考えさせるという、少しメタ的なアプローチでしたが、うまくいけば文章作成の効率化に繋がりそうですよね。特に、ブログ記事やレポートなど、ある程度自分のスタイルで書きたいけど、タイピングが大変…と感じている方には試してみる価値があるかもしれません。</p><p>mastra、なかなか奥が深くて面白いライブラリです！皆さんもぜひ、色々なワークフロー作りに挑戦してみてくださいね。</p></section><footer class=article-footer><section class=article-tags><a href=/tags/mastra/>Mastra</a>
+<a href=/tags/typescript/>TypeScript</a>
+<a href=/tags/grok/>Grok</a>
+<a href=/tags/gemini/>Gemini</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>関連するコンテンツ</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/p/free-ai-models-create-threejs-game/><div class=article-image><img src=/p/free-ai-models-create-threejs-game/free-ai-models-create-threejs-game.e58640b9f9c13966bf9452e6e067ce58_hu_2de51dcfcd3d618.webp width=250 height=150 loading=lazy alt="Featured image of post 最新無料AIモデル Gemini 2.5 Pro と Trae Builder を使ってThree.jsゲーム開発に挑戦！" data-key=free-ai-models-create-threejs-game data-hash="md5-5YZAufnBOWa/lFLm4GfOWA=="></div><div class=article-details><h2 class=article-title>最新無料AIモデル Gemini 2.5 Pro と Trae Builder を使ってThree.jsゲーム開発に挑戦！</h2></div></a></article><article class=has-image><a href=/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/><div class=article-image><img src=/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_payment.73082bdeae438bad3640804a6a26137b_hu_d6b0f5dfbe541e27.webp width=250 height=150 loading=lazy alt="Featured image of post xAI（Grok API）の登録とVSCode拡張機能（Cody、Cline、Roo Code）での使い方" data-key=registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code data-hash="md5-cwgr3q5Di602QIBKaiYTew=="></div><div class=article-details><h2 class=article-title>xAI（Grok API）の登録とVSCode拡張機能（Cody、Cline、Roo Code）での使い方</h2></div></a></article><article class=has-image><a href=/p/rovo-dev-cli-guide-wsl2-blender/><div class=article-image><img src=/p/rovo-dev-cli-guide-wsl2-blender/rovo-dev-cli-guide-wsl2-blender.53c9331e345d1bef53c80de3491be75f_hu_8a9726256bf4bc98.webp width=250 height=150 loading=lazy alt="Featured image of post Rovo Dev CLI実践ガイド：VSCodeとWSL2で快適に使う方法" data-key=rovo-dev-cli-guide-wsl2-blender data-hash="md5-U8kzHjRdG+9TyA3jSRvnXw=="></div><div class=article-details><h2 class=article-title>Rovo Dev CLI実践ガイド：VSCodeとWSL2で快適に使う方法</h2></div></a></article><article class=has-image><a href=/p/roblox-ts-template-for-modern-development/><div class=article-image><img src=/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development.7af396fd154e0b9d345e3a313784cbbd_hu_f03d539097d9cc41.webp width=250 height=150 loading=lazy alt="Featured image of post Roblox（TypeScript）とVSCodeでモダンな開発環境のテンプレート" data-key=roblox-ts-template-for-modern-development data-hash="md5-evOW/RVOC500XjoxN4TLvQ=="></div><div class=article-details><h2 class=article-title>Roblox（TypeScript）とVSCodeでモダンな開発環境のテンプレート</h2></div></a></article><article class=has-image><a href=/p/roblox-luau-template-for-modern-development/><div class=article-image><img src=/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development.7af396fd154e0b9d345e3a313784cbbd_hu_f03d539097d9cc41.webp width=250 height=150 loading=lazy alt="Featured image of post Roblox（Luau）とVSCodeでモダンな開発環境のテンプレート" data-key=roblox-luau-template-for-modern-development data-hash="md5-evOW/RVOC500XjoxN4TLvQ=="></div><div class=article-details><h2 class=article-title>Roblox（Luau）とVSCodeでモダンな開発環境のテンプレート</h2></div></a></article></div></div></aside><link rel=stylesheet href=/scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"takoyakisoft",siteName:"TakoyakiSoft",apikey:"eL3QpmMQaI2omMQ6bzIOJQaX35h7aYJz4zB1kn3puW2xAkjuN7N5rx2kq0WNeOrC",api:"https://disqus.skk.moe/disqus/",admin:"takoyakisoft",adminLabel:"takoyaki"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
+2024 -
+2025 TakoyakiSoft</section><section class=powerby><a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> で構築されています。<br>テーマ <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> は <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> によって設計されています。</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

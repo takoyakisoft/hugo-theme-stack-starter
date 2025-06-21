@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Claude on TakoyakiSoft</title><link>https://takoyakisoft.com/en/tags/claude/</link><description>Recent content in Claude on TakoyakiSoft</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 30 Mar 2025 23:43:05 +0900</lastBuildDate><atom:link href="https://takoyakisoft.com/en/tags/claude/index.xml" rel="self" type="application/rss+xml"/><item><title>Trying to Develop a Three.js Game Using the Latest Free AI Models Gemini 2.5 Pro and Trae Builder!</title><link>https://takoyakisoft.com/en/p/free-ai-models-create-threejs-game/</link><pubDate>Sun, 30 Mar 2025 23:43:05 +0900</pubDate><guid>https://takoyakisoft.com/en/p/free-ai-models-create-threejs-game/</guid><description>&lt;img src="https://takoyakisoft.com/p/free-ai-models-create-threejs-game/free-ai-models-create-threejs-game.webp" alt="Featured image of post Trying to Develop a Three.js Game Using the Latest Free AI Models Gemini 2.5 Pro and Trae Builder!" />&lt;p>Hello!&lt;/p>
+&lt;p>Today, I&amp;rsquo;d like to share my experience trying to develop a simple web game using some incredibly powerful AI models that are currently available for free (as of March 30, 2025).&lt;/p>
+&lt;p>Amazingly, Google&amp;rsquo;s experimental model of &amp;lsquo;Gemini 2.5 Pro&amp;rsquo; (&lt;code>gemini-2.5-pro-exp-03-25&lt;/code>) is available for free on the website &lt;a class="link" href="https://ai.dev" target="_blank" rel="noopener"
+>ai.dev&lt;/a>! It&amp;rsquo;s said to be one of the state-of-the-art (SOTA) models currently available, which is quite impressive!&lt;/p>
+&lt;p>Furthermore, I also tried the &amp;lsquo;Builder&amp;rsquo; feature (beta version) in the editor called &amp;lsquo;&lt;a class="link" href="https://trae.ai" target="_blank" rel="noopener"
+>Trae&lt;/a>&amp;rsquo; by ByteDance. Here, you can use an AI agent similar to Claude, and you can even select &amp;lsquo;Claude 3.7 Sonnet&amp;rsquo; as the model. This is also available for free.&lt;/p>
+&lt;p>However, since both are free plans, it&amp;rsquo;s likely that the data you input might be used for service improvements. Therefore, they might not be suitable for development involving confidential information, but they could be perfect for programs intended for public release or personal experiments!&lt;/p>
+&lt;h2 id="having-ai-create-a-game-with-threejs">Having AI Create a Game with Three.js
+&lt;/h2>&lt;p>So, this time, I challenged myself to have these powerful AIs, especially &amp;lsquo;Gemini 2.5 Pro&amp;rsquo;, assist in creating a game using the JavaScript 3D library Three.js, contained within just a single HTML file.&lt;/p>
+&lt;p>Instead of just generating the code, I communicated the concept of &amp;lsquo;juiciness&amp;rsquo; to the AI and requested several revisions to make the game more engaging. &amp;lsquo;Juiciness&amp;rsquo; refers to elements that enhance the feel of gameplay, such as satisfying controls and flashy effects.&lt;/p>
+&lt;h2 id="the-resulting-game">The Resulting Game
+&lt;/h2>&lt;p>And this is the game that was created!&lt;/p>
+&lt;div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden; max-width: 100%; height: auto;">
+&lt;iframe
+src="https://takoyakisoft.com/game/polygon-impact/index.html"
+style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 1px solid #ccc;"
+title="Embedded Game"
+sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-fullscreen"
+loading="lazy">&lt;/iframe>
+&lt;/div>
+&lt;p>&lt;strong>Controls:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>Move the mouse cursor to change the camera&amp;rsquo;s viewpoint.&lt;/li>
+&lt;li>Click the mouse to fire projectiles.&lt;/li>
+&lt;li>Press the &lt;code>ESC&lt;/code> key to release mouse focus.&lt;/li>
+&lt;/ul>
+&lt;p>It&amp;rsquo;s quite simple, but you might feel a bit of &amp;lsquo;juiciness&amp;rsquo; in the responsiveness to mouse movements and the effects.&lt;/p>
+&lt;h2 id="generation-time-and-points-to-note">Generation Time and Points to Note
+&lt;/h2>&lt;p>This game is actually self-contained within a single &lt;code>index.html&lt;/code> file, and the code amounts to approximately 1500 lines.&lt;/p>
+&lt;p>When generating this with Gemini 2.5 Pro (the &lt;code>gemini-2.5-pro-exp-03-25&lt;/code> model), it took about 180 seconds to output. That&amp;rsquo;s quite a bit of time.&lt;/p>
+&lt;p>Based on this experience, it seems that aiming for around 1000 lines might be a good guideline when asking AI to generate code contained within a single file, in order to proceed with work within a realistic timeframe.&lt;/p>
+&lt;p>Of course, this can vary depending on the model&amp;rsquo;s performance and server load, but please consider it as a general reference point.&lt;/p>
+&lt;h2 id="summary">Summary
+&lt;/h2>&lt;p>In this article, I introduced my attempt to generate a Three.js game using the latest free AI models like &amp;lsquo;Gemini 2.5 Pro&amp;rsquo; and &amp;lsquo;Trae Builder (Claude 3.7 Sonnet)&amp;rsquo;.&lt;/p>
+&lt;p>It&amp;rsquo;s truly surprising that AI with such capabilities is available for free, and it seems like various things can be created depending on the ideas! I believe these are very useful tools, especially for projects intended for public release or for learning purposes.&lt;/p>
+&lt;p>While there might still be some quirks, such as the code generation time, I felt it was definitely worth trying.&lt;/p>
+&lt;p>Thank you for reading this far! I encourage you all to give it a try.&lt;/p></description></item></channel></rss>

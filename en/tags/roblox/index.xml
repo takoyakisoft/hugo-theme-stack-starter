@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Roblox on TakoyakiSoft</title><link>https://takoyakisoft.com/en/tags/roblox/</link><description>Recent content in Roblox on TakoyakiSoft</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 22 Jun 2025 00:00:00 +0900</lastBuildDate><atom:link href="https://takoyakisoft.com/en/tags/roblox/index.xml" rel="self" type="application/rss+xml"/><item><title>A Modern Development Environment Template for Roblox (TypeScript) and VSCode</title><link>https://takoyakisoft.com/en/p/roblox-ts-template-for-modern-development/</link><pubDate>Sun, 22 Jun 2025 00:00:00 +0900</pubDate><guid>https://takoyakisoft.com/en/p/roblox-ts-template-for-modern-development/</guid><description>&lt;img src="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development.webp" alt="Featured image of post A Modern Development Environment Template for Roblox (TypeScript) and VSCode" />&lt;h1 id="github-template">GitHub Template
+&lt;/h1>&lt;p>&lt;a class="link" href="https://github.com/takoyakisoft/roblox-ts-rojo-template" target="_blank" rel="noopener"
+>roblox-ts-rojo-template&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="README.md" >English&lt;/a> &lt;a class="link" href="README.ja.md" >日本語&lt;/a>&lt;/p>
+&lt;h1 id="what-is-this">What is this?
+&lt;/h1>&lt;p>This is a template for a modern development environment using VSCode for Roblox (TypeScript).&lt;/p>
+&lt;ul>
+&lt;li>VSCode 👉 Roblox Studio sync: &lt;a class="link" href="https://github.com/rojo-rbx/rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;li>Linter: &lt;a class="link" href="https://github.com/eslint/eslint" target="_blank" rel="noopener"
+>ESlint&lt;/a>&lt;/li>
+&lt;li>Formatter: &lt;a class="link" href="https://github.com/prettier/prettier" target="_blank" rel="noopener"
+>Prettier&lt;/a>&lt;/li>
+&lt;li>Package Manager: &lt;a class="link" href="https://github.com/pnpm/pnpm" target="_blank" rel="noopener"
+>pnpm&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-caution">
+&lt;p class="alert-heading">
+❗
+Caution
+&lt;/p>
+&lt;p>Functionality is unconfirmed, but popular packages have been included.&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&amp;ldquo;@rbxts/janitor&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/profileservice&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/replicaservice&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/cmdr&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/testez&amp;rdquo;&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-note">
+&lt;p class="alert-heading">
+ℹ️
+Note
+&lt;/p>
+&lt;p>Confirmed to work&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&amp;ldquo;@rbxts/react&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/react-roblox&amp;rdquo;&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-warning">
+&lt;p class="alert-heading">
+ℹ️
+Warning
+&lt;/p>
+&lt;p>CI/CD is not included.&lt;/p>
+&lt;/blockquote>
+&lt;h1 id="installation">Installation
+&lt;/h1>
+&lt;blockquote class="alert alert-tip">
+&lt;p class="alert-heading">
+💡
+Tip
+&lt;/p>
+&lt;p>You can use this via the &amp;ldquo;Use this template&amp;rdquo; button.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="install-packages">Install Packages
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">pnpm install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="install-vscode-extensions">Install VSCode Extensions
+&lt;/h2>&lt;p>When you open this project, VSCode will recommend the following extensions. Please install them.&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=Roblox-TS.vscode-roblox-ts" target="_blank" rel="noopener"
+>roblox-ts&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint" target="_blank" rel="noopener"
+>ESLint&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode" target="_blank" rel="noopener"
+>Prettier&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=evaera.vscode-rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h1 id="usage">Usage
+&lt;/h1>&lt;h2 id="from-vscode-to-rojo">From VSCode to Rojo
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">pnpm run watch
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>Ctrl + Shift + P&lt;/code>&lt;/p>
+&lt;p>&lt;code>Rojo: Open Menu&lt;/code>&lt;/p>
+&lt;blockquote class="alert alert-note">
+&lt;p class="alert-heading">
+ℹ️
+Note
+&lt;/p>
+&lt;p>If this is your first time, launch Roblox Studio and install the Roblox Studio Plugin.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;code>▶ default.project.json&lt;/code>&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/Code_m5RjRhSECe.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/Code_m5RjRhSECe_hu_f5c6a58a949c0197.webp 480w, https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/Code_m5RjRhSECe_hu_67808a5262379ac3.webp 1024w"
+loading="lazy"
+alt="How to start Rojo from VSCode"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;h2 id="from-roblox-studio-to-rojo">From Roblox Studio to Rojo
+&lt;/h2>&lt;p>&amp;ldquo;Plugins&amp;rdquo; tab&lt;/p>
+&lt;p>&amp;ldquo;Rojo&amp;rdquo; ribbon&lt;/p>
+&lt;p>&amp;ldquo;Connect&amp;rdquo; button&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development.webp"
+width="1342"
+height="983"
+srcset="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development_hu_8ffd71bbf5e6b12f.webp 480w, https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development_hu_230b7f572a692276.webp 1024w"
+loading="lazy"
+alt="How to connect Rojo from Roblox Studio"
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="327px"
+>&lt;/p></description></item><item><title>A Modern Development Environment Template for Roblox (Luau) and VSCode</title><link>https://takoyakisoft.com/en/p/roblox-luau-template-for-modern-development/</link><pubDate>Sat, 21 Jun 2025 00:00:00 +0900</pubDate><guid>https://takoyakisoft.com/en/p/roblox-luau-template-for-modern-development/</guid><description>&lt;img src="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development.webp" alt="Featured image of post A Modern Development Environment Template for Roblox (Luau) and VSCode" />&lt;h1 id="github-template">GitHub Template
+&lt;/h1>&lt;p>&lt;a class="link" href="https://github.com/takoyakisoft/roblox-rojo-wally-template" target="_blank" rel="noopener"
+>roblox-rojo-wally-template&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="README.md" >English&lt;/a> &lt;a class="link" href="README.ja.md" >日本語&lt;/a>&lt;/p>
+&lt;h1 id="what-is-this">What is this?
+&lt;/h1>&lt;p>This is a template for a modern development environment for Roblox (Luau) using VSCode.&lt;/p>
+&lt;ul>
+&lt;li>VSCode 👉 Roblox Studio Sync: &lt;a class="link" href="https://github.com/rojo-rbx/rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;li>Linter: &lt;a class="link" href="https://github.com/Kampfkarren/selene" target="_blank" rel="noopener"
+>Selene&lt;/a>&lt;/li>
+&lt;li>Formatter: &lt;a class="link" href="https://github.com/JohnnyMorganz/StyLua" target="_blank" rel="noopener"
+>StyLua&lt;/a>&lt;/li>
+&lt;li>Package Manager: &lt;a class="link" href="https://github.com/UpliftGames/wally" target="_blank" rel="noopener"
+>Wally&lt;/a>&lt;/li>
+&lt;li>Manager for Rojo and Wally: &lt;a class="link" href="https://github.com/rojo-rbx/rokit" target="_blank" rel="noopener"
+>Rokit&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-warning">
+&lt;p class="alert-heading">
+ℹ️
+Warning
+&lt;/p>
+&lt;p>CI/CD is not included: &lt;a class="link" href="https://github.com/Roblox/place-ci-cd-demo" target="_blank" rel="noopener"
+>CI/CD&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h1 id="installation">Installation
+&lt;/h1>
+&lt;blockquote class="alert alert-tip">
+&lt;p class="alert-heading">
+💡
+Tip
+&lt;/p>
+&lt;p>You can use this via the &amp;ldquo;Use this template&amp;rdquo; button.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="installing-rokit">Installing Rokit
+&lt;/h2>&lt;p>Windows (PowerShell)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-RestMethod&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="p">//&lt;/span>&lt;span class="n">raw&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">githubusercontent&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="nb">rojo-rbx&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">rokit&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">main&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">scripts&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">install&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ps1&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Invoke-Expression&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>macOS / Linux&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">curl -fsSL https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh &lt;span class="p">|&lt;/span> sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="installing-rojo-wally-etc">Installing Rojo, Wally, etc.
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">rokit add rojo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rokit add wally
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rokit add wally-package-types
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="installing-packages">Installing Packages
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">wally install
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rojo sourcemap default.project.json --output sourcemap.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wally-package-types -s sourcemap.json Packages/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wally-package-types -s sourcemap.json ServerPackages/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wally-package-types -s sourcemap.json DevPackages/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="installing-vscode-extensions">Installing VSCode Extensions
+&lt;/h2>&lt;p>When you open this project in VSCode, you will be prompted to install the following recommended extensions. Please install them.&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=evaera.vscode-rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.luau-lsp" target="_blank" rel="noopener"
+>Luau Language Server&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=Kampfkarren.selene-vscode" target="_blank" rel="noopener"
+>Selene&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.stylua" target="_blank" rel="noopener"
+>StyLua&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h1 id="usage">Usage
+&lt;/h1>&lt;h2 id="rojo-from-vscode">Rojo from VSCode
+&lt;/h2>&lt;p>Press &lt;code>Ctrl + Shift + P&lt;/code>&lt;/p>
+&lt;p>Select &lt;code>Rojo: Open Menu&lt;/code>&lt;/p>
+&lt;blockquote class="alert alert-note">
+&lt;p class="alert-heading">
+ℹ️
+Note
+&lt;/p>
+&lt;p>If this is your first time, launch Roblox Studio and install the Roblox Studio Plugin.&lt;/p>
+&lt;/blockquote>
+&lt;p>Select &lt;code>▶ default.project.json&lt;/code>&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/Code_m5RjRhSECe.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/Code_m5RjRhSECe_hu_f5c6a58a949c0197.webp 480w, https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/Code_m5RjRhSECe_hu_67808a5262379ac3.webp 1024w"
+loading="lazy"
+alt="How to start Rojo from VSCode"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;h2 id="rojo-from-roblox-studio">Rojo from Roblox Studio
+&lt;/h2>&lt;p>Go to the &amp;ldquo;Plugins&amp;rdquo; tab.&lt;/p>
+&lt;p>In the &amp;ldquo;Rojo&amp;rdquo; ribbon, click the &amp;ldquo;Connect&amp;rdquo; button.&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development.webp"
+width="1342"
+height="983"
+srcset="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development_hu_8ffd71bbf5e6b12f.webp 480w, https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development_hu_230b7f572a692276.webp 1024w"
+loading="lazy"
+alt="How to connect to Rojo from Roblox Studio"
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="327px"
+>&lt;/p>
+&lt;h2 id="adding-packages-with-wally">Adding Packages with Wally
+&lt;/h2>&lt;p>Edit &lt;code>wally.toml&lt;/code> in VSCode.&lt;/p>
+&lt;p>Find the package you want on &lt;a class="link" href="https://wally.run/" target="_blank" rel="noopener"
+>wally.run&lt;/a> and copy its name from the &amp;ldquo;Install&amp;rdquo; section.&lt;/p>
+&lt;p>The sections are categorized as follows:&lt;/p>
+&lt;p>&lt;code>[dependencies]&lt;/code> is for both client and server.
+&lt;code>[server-dependencies]&lt;/code> is for server-only.
+&lt;code>[dev-dependencies]&lt;/code> is for development and testing only.&lt;/p>
+&lt;p>Once you&amp;rsquo;ve finished editing, run the &lt;a class="link" href="#installing-packages" >package installation&lt;/a> steps again.&lt;/p>
+&lt;h1 id="references">References
+&lt;/h1>&lt;p>&lt;a class="link" href="https://www.youtube.com/watch?v=IJDg6tRJmHo" target="_blank" rel="noopener"
+>How Big Studios Develop on Roblox&lt;/a>&lt;/p></description></item></channel></rss>

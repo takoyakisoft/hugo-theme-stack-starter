@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Trae on TakoyakiSoft</title><link>https://takoyakisoft.com/tags/trae/</link><description>Recent content in Trae on TakoyakiSoft</description><generator>Hugo -- gohugo.io</generator><language>ja</language><lastBuildDate>Sun, 30 Mar 2025 23:43:05 +0900</lastBuildDate><atom:link href="https://takoyakisoft.com/tags/trae/index.xml" rel="self" type="application/rss+xml"/><item><title>最新無料AIモデル Gemini 2.5 Pro と Trae Builder を使ってThree.jsゲーム開発に挑戦！</title><link>https://takoyakisoft.com/p/free-ai-models-create-threejs-game/</link><pubDate>Sun, 30 Mar 2025 23:43:05 +0900</pubDate><guid>https://takoyakisoft.com/p/free-ai-models-create-threejs-game/</guid><description>&lt;img src="https://takoyakisoft.com/p/free-ai-models-create-threejs-game/free-ai-models-create-threejs-game.webp" alt="Featured image of post 最新無料AIモデル Gemini 2.5 Pro と Trae Builder を使ってThree.jsゲーム開発に挑戦！" />&lt;p>こんにちは！&lt;/p>
+&lt;p>今回は、現在（2025年3月30日時点）無料で利用できる、非常に高性能なAIモデルを使って、簡単なWebゲーム開発を試してみたお話です。&lt;/p>
+&lt;p>なんと、Googleの「Gemini 2.5 Pro」の実験的モデル（&lt;code>gemini-2.5-pro-exp-03-25&lt;/code>）が、&lt;a class="link" href="https://ai.dev" target="_blank" rel="noopener"
+>ai.dev&lt;/a> というサイトで無料で使えるんです！ これが現時点で最高の性能（SOTA）と言われているモデルの一つらしく、すごいですよね！&lt;/p>
+&lt;p>さらに、ByteDance社の「&lt;a class="link" href="https://trae.ai" target="_blank" rel="noopener"
+>Trae&lt;/a>」というエディターにある「Builder」機能（ベータ版）も試してみました。こちらでは、まるでClaudeのようなAIエージェントが利用できて、しかもモデルとして「Claude 3.7 Sonnet」を選択できるんです。これも無料で使えます。&lt;/p>
+&lt;p>ただし、どちらも無料プランなので、おそらく入力したデータはサービス改善などに利用される可能性があると思います。なので、機密情報を含むような開発には向きませんが、公開するようなプログラムや、個人的な実験にはぴったりかもしれませんね！&lt;/p>
+&lt;h2 id="threejsでゲームを作ってもらう">Three.jsでゲームを作ってもらう
+&lt;/h2>&lt;p>さて、今回はこれらの強力なAI、特に「Gemini 2.5 Pro」に協力してもらって、JavaScriptの3DライブラリであるThree.jsを使ったゲームを、1つのHTMLファイルだけで作ってもらうことに挑戦しました。&lt;/p>
+&lt;p>ただ生成するだけでなく、ゲームとして面白くなるように、「ジューシーさ（Juiciness）」という概念をAIに伝えて、何度か修正をお願いしてみました。「ジューシーさ」というのは、操作したときの気持ちよさや、エフェクトの派手さみたいな、ゲームプレイの感触を良くする要素のことですね。&lt;/p>
+&lt;h2 id="出来上がったゲーム">出来上がったゲーム
+&lt;/h2>&lt;p>そして、出来上がったのがこちらのゲームです！&lt;/p>
+&lt;div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden; max-width: 100%; height: auto;">
+&lt;iframe
+src="https://takoyakisoft.com/game/polygon-impact/index.html"
+style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 1px solid #ccc;"
+title="Embedded Game"
+sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-fullscreen"
+loading="lazy">&lt;/iframe>
+&lt;/div>
+&lt;p>&lt;strong>操作方法:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>マウスカーソルを動かすとカメラの視点が移動します。&lt;/li>
+&lt;li>マウスクリックで弾を発射します。&lt;/li>
+&lt;li>&lt;code>ESC&lt;/code>キーで操作のフォーカスを終了できます。&lt;/li>
+&lt;/ul>
+&lt;p>結構シンプルな内容ですが、マウス操作に対する反応やエフェクトに「ジューシーさ」を少し感じられるかもしれません。&lt;/p>
+&lt;h2 id="生成時間と注意点">生成時間と注意点
+&lt;/h2>&lt;p>このゲーム、実は1つの&lt;code>index.html&lt;/code>ファイルだけで完結していて、コードの行数は約1500行になりました。&lt;/p>
+&lt;p>これをGemini 2.5 Pro（&lt;code>gemini-2.5-pro-exp-03-25&lt;/code>モデル）で生成したところ、出力に約180秒かかっていました。結構時間がかかりますね。&lt;/p>
+&lt;p>この経験からすると、現状では、AIに1ファイルで完結するコードを生成してもらう場合、1000行くらいを目安にするのが、現実的な時間で作業を進める上では良さそうかな、という感じです。&lt;/p>
+&lt;p>もちろん、これはモデルの性能や混雑状況によって変わる可能性はありますが、一つの目安として参考にしてみてください。&lt;/p>
+&lt;h2 id="まとめ">まとめ
+&lt;/h2>&lt;p>今回は、無料で使える最新のAIモデル「Gemini 2.5 Pro」や「Trae Builder (Claude 3.7 Sonnet)」を使って、Three.jsのゲームを生成する試みについてご紹介しました。&lt;/p>
+&lt;p>無料でこれだけの性能のAIが使えるのは本当に驚きですし、アイデア次第で色々なものが作れそうですね！特に、公開前提のプロジェクトや学習目的には、とても有用なツールだと思います。&lt;/p>
+&lt;p>コード生成の時間など、まだ少しクセはあるかもしれませんが、試してみる価値は十分にあると感じました。&lt;/p>
+&lt;p>ここまで読んでくださり、ありがとうございました！皆さんもぜひ試してみてください。&lt;/p></description></item></channel></rss>

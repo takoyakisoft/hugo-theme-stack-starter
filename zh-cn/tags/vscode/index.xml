@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>VSCode on TakoyakiSoft</title><link>https://takoyakisoft.com/zh-cn/tags/vscode/</link><description>Recent content in VSCode on TakoyakiSoft</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 22 Jun 2025 00:00:00 +0900</lastBuildDate><atom:link href="https://takoyakisoft.com/zh-cn/tags/vscode/index.xml" rel="self" type="application/rss+xml"/><item><title>使用 Roblox (TypeScript) 和 VSCode 的现代开发环境模板</title><link>https://takoyakisoft.com/zh-cn/p/roblox-ts-template-for-modern-development/</link><pubDate>Sun, 22 Jun 2025 00:00:00 +0900</pubDate><guid>https://takoyakisoft.com/zh-cn/p/roblox-ts-template-for-modern-development/</guid><description>&lt;img src="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development.webp" alt="Featured image of post 使用 Roblox (TypeScript) 和 VSCode 的现代开发环境模板" />&lt;h1 id="github-模板">GitHub 模板
+&lt;/h1>&lt;p>&lt;a class="link" href="https://github.com/takoyakisoft/roblox-ts-rojo-template" target="_blank" rel="noopener"
+>roblox-ts-rojo-template&lt;/a>&lt;/p>
+&lt;h1 id="这是什么">这是什么？
+&lt;/h1>&lt;p>这是一个使用 VSCode 为 Roblox (TypeScript) 开发的现代开发环境模板。&lt;/p>
+&lt;ul>
+&lt;li>VSCode 👉 Roblox Studio 同步: &lt;a class="link" href="https://github.com/rojo-rbx/rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;li>Linter: &lt;a class="link" href="https://github.com/eslint/eslint" target="_blank" rel="noopener"
+>ESlint&lt;/a>&lt;/li>
+&lt;li>Formatter: &lt;a class="link" href="https://github.com/prettier/prettier" target="_blank" rel="noopener"
+>Prettier&lt;/a>&lt;/li>
+&lt;li>包管理器: &lt;a class="link" href="https://github.com/pnpm/pnpm" target="_blank" rel="noopener"
+>pnpm&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-caution">
+&lt;p class="alert-heading">
+❗
+Caution
+&lt;/p>
+&lt;p>虽然尚未确认其功能，但已包含了一些知名的包。&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&amp;ldquo;@rbxts/janitor&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/profileservice&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/replicaservice&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/cmdr&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/testez&amp;rdquo;&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-note">
+&lt;p class="alert-heading">
+ℹ️
+Note
+&lt;/p>
+&lt;p>确认运行&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&amp;ldquo;@rbxts/react&amp;rdquo;&lt;/li>
+&lt;li>&amp;ldquo;@rbxts/react-roblox&amp;rdquo;&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-warning">
+&lt;p class="alert-heading">
+ℹ️
+Warning
+&lt;/p>
+&lt;p>不包含 CI/CD。&lt;/p>
+&lt;/blockquote>
+&lt;h1 id="安装">安装
+&lt;/h1>
+&lt;blockquote class="alert alert-tip">
+&lt;p class="alert-heading">
+💡
+Tip
+&lt;/p>
+&lt;p>您可以通过点击 &amp;ldquo;Use this template&amp;rdquo; 按钮来使用。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="安装包">安装包
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">pnpm install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装-vscode-扩展">安装 VSCode 扩展
+&lt;/h2>&lt;p>当您打开此项目时，VSCode 会提示您安装以下扩展，请进行安装。&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=Roblox-TS.vscode-roblox-ts" target="_blank" rel="noopener"
+>roblox-ts&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint" target="_blank" rel="noopener"
+>ESLint&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode" target="_blank" rel="noopener"
+>Prettier&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=evaera.vscode-rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h1 id="使用方法">使用方法
+&lt;/h1>&lt;h2 id="从-vscode-启动-rojo">从 VSCode 启动 Rojo
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">pnpm run watch
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>按下“Ctrl + Shift + P”&lt;/p>
+&lt;p>选择“Rojo: Open Menu”&lt;/p>
+&lt;blockquote class="alert alert-note">
+&lt;p class="alert-heading">
+ℹ️
+Note
+&lt;/p>
+&lt;p>如果是首次使用，请启动 Roblox Studio 并安装 Roblox Studio 插件（Install Roblox Studio Plugin）。&lt;/p>
+&lt;/blockquote>
+&lt;p>点击“▶ default.project.json”&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/Code_m5RjRhSECe.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/Code_m5RjRhSECe_hu_f5c6a58a949c0197.webp 480w, https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/Code_m5RjRhSECe_hu_67808a5262379ac3.webp 1024w"
+loading="lazy"
+alt="从VSCode启动Rojo的方法"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;h2 id="从-roblox-studio-连接-rojo">从 Roblox Studio 连接 Rojo
+&lt;/h2>&lt;p>“插件”选项卡&lt;/p>
+&lt;p>Rojo 功能区&lt;/p>
+&lt;p>“Connect”按钮&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development.webp"
+width="1342"
+height="983"
+srcset="https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development_hu_8ffd71bbf5e6b12f.webp 480w, https://takoyakisoft.com/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development_hu_230b7f572a692276.webp 1024w"
+loading="lazy"
+alt="从Roblox Studio连接Rojo的方法"
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="327px"
+>&lt;/p></description></item><item><title>Roblox (Luau) 与 VSCode 的现代开发环境模板</title><link>https://takoyakisoft.com/zh-cn/p/roblox-luau-template-for-modern-development/</link><pubDate>Sat, 21 Jun 2025 00:00:00 +0900</pubDate><guid>https://takoyakisoft.com/zh-cn/p/roblox-luau-template-for-modern-development/</guid><description>&lt;img src="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development.webp" alt="Featured image of post Roblox (Luau) 与 VSCode 的现代开发环境模板" />&lt;h1 id="github-模板">GitHub 模板
+&lt;/h1>&lt;p>&lt;a class="link" href="https://github.com/takoyakisoft/roblox-rojo-wally-template" target="_blank" rel="noopener"
+>roblox-rojo-wally-template&lt;/a>&lt;/p>
+&lt;h1 id="这是什么">这是什么？
+&lt;/h1>&lt;p>这是一个使用 VSCode 为 Roblox (Luau) 进行开发的现代开发环境模板。&lt;/p>
+&lt;ul>
+&lt;li>从 VSCode 同步到 Roblox Studio: &lt;a class="link" href="https://github.com/rojo-rbx/rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;li>代码检查器 (Linter): &lt;a class="link" href="https://github.com/Kampfkarren/selene" target="_blank" rel="noopener"
+>Selene&lt;/a>&lt;/li>
+&lt;li>代码格式化器 (Formatter): &lt;a class="link" href="https://github.com/JohnnyMorganz/StyLua" target="_blank" rel="noopener"
+>StyLua&lt;/a>&lt;/li>
+&lt;li>包管理器 (Package Manager): &lt;a class="link" href="https://github.com/UpliftGames/wally" target="_blank" rel="noopener"
+>Wally&lt;/a>&lt;/li>
+&lt;li>Rojo 和 Wally 的管理器: &lt;a class="link" href="https://github.com/rojo-rbx/rokit" target="_blank" rel="noopener"
+>Rokit&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;blockquote class="alert alert-warning">
+&lt;p class="alert-heading">
+ℹ️
+Warning
+&lt;/p>
+&lt;p>不包含 CI/CD: &lt;a class="link" href="https://github.com/Roblox/place-ci-cd-demo" target="_blank" rel="noopener"
+>CI/CD&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h1 id="安装">安装
+&lt;/h1>
+&lt;blockquote class="alert alert-tip">
+&lt;p class="alert-heading">
+💡
+Tip
+&lt;/p>
+&lt;p>您可以通过点击 “Use this template” 按钮来使用。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="安装-rokit">安装 Rokit
+&lt;/h2>&lt;p>Windows (PowerShell)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">Invoke-RestMethod&lt;/span> &lt;span class="n">https&lt;/span>&lt;span class="err">:&lt;/span>&lt;span class="p">//&lt;/span>&lt;span class="n">raw&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">githubusercontent&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">com&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="nb">rojo-rbx&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">rokit&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">main&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">scripts&lt;/span>&lt;span class="p">/&lt;/span>&lt;span class="n">install&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="py">ps1&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="nb">Invoke-Expression&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>macOS / Linux&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">curl -fsSL https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh &lt;span class="p">|&lt;/span> sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装-rojowally-等工具">安装 Rojo、Wally 等工具
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">rokit add rojo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rokit add wally
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rokit add wally-package-types
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装包">安装包
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">wally install
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rojo sourcemap default.project.json --output sourcemap.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wally-package-types -s sourcemap.json Packages/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wally-package-types -s sourcemap.json ServerPackages/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wally-package-types -s sourcemap.json DevPackages/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装-vscode-扩展">安装 VSCode 扩展
+&lt;/h2>&lt;p>在 VSCode 中打开此项目时，会提示安装以下扩展，请进行安装。&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=evaera.vscode-rojo" target="_blank" rel="noopener"
+>Rojo&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.luau-lsp" target="_blank" rel="noopener"
+>Luau Language Server&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=Kampfkarren.selene-vscode" target="_blank" rel="noopener"
+>Selene&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.stylua" target="_blank" rel="noopener"
+>StyLua&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h1 id="使用方法">使用方法
+&lt;/h1>&lt;h2 id="从-vscode-启动-rojo">从 VSCode 启动 Rojo
+&lt;/h2>&lt;p>“Ctrl + Shift + P”&lt;/p>
+&lt;p>“Rojo: Open Menu”&lt;/p>
+&lt;blockquote class="alert alert-note">
+&lt;p class="alert-heading">
+ℹ️
+Note
+&lt;/p>
+&lt;p>如果是首次使用，请启动 Roblox Studio 并安装 Roblox Studio 插件（Install Roblox Studio Plugin）。&lt;/p>
+&lt;/blockquote>
+&lt;p>“▶ default.project.json”&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/Code_m5RjRhSECe.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/Code_m5RjRhSECe_hu_f5c6a58a949c0197.webp 480w, https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/Code_m5RjRhSECe_hu_67808a5262379ac3.webp 1024w"
+loading="lazy"
+alt="从 VSCode 启动 Rojo 的方法"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;h2 id="从-roblox-studio-连接-rojo">从 Roblox Studio 连接 Rojo
+&lt;/h2>&lt;p>“插件” (Plugins) 选项卡&lt;/p>
+&lt;p>“Rojo” 功能区&lt;/p>
+&lt;p>“Connect” 按钮&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development.webp"
+width="1342"
+height="983"
+srcset="https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development_hu_8ffd71bbf5e6b12f.webp 480w, https://takoyakisoft.com/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development_hu_230b7f572a692276.webp 1024w"
+loading="lazy"
+alt="从 Roblox Studio 连接 Rojo 的方法"
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="327px"
+>&lt;/p>
+&lt;h2 id="向-wally-添加包">向 Wally 添加包
+&lt;/h2>&lt;p>在 VSCode 中编辑 wally.toml 文件。&lt;/p>
+&lt;p>请访问 &lt;a class="link" href="https://wally.run/" target="_blank" rel="noopener"
+>wally.run&lt;/a> 网站，查找您需要的包，并通过“Install”复制其名称。&lt;/p>
+&lt;p>各个部分的分类如下：&lt;/p>
+&lt;p>[dependencies] 用于客户端和服务器&lt;/p>
+&lt;p>[server-dependencies] 仅用于服务器&lt;/p>
+&lt;p>[dev-dependencies] 仅用于开发和测试&lt;/p>
+&lt;p>编辑完成后，请再次执行&lt;a class="link" href="#%e5%ae%89%e8%a3%85%e5%8c%85" >安装包&lt;/a>的步骤。&lt;/p>
+&lt;h1 id="参考资料">参考资料
+&lt;/h1>&lt;p>&lt;a class="link" href="https://www.youtube.com/watch?v=IJDg6tRJmHo" target="_blank" rel="noopener"
+>How Big Studios Develop on Roblox&lt;/a>&lt;/p></description></item><item><title>Rovo Dev CLI实战指南：如何在VSCode与WSL2中舒适地使用</title><link>https://takoyakisoft.com/zh-cn/p/rovo-dev-cli-guide-wsl2-blender/</link><pubDate>Thu, 19 Jun 2025 15:05:00 +0900</pubDate><guid>https://takoyakisoft.com/zh-cn/p/rovo-dev-cli-guide-wsl2-blender/</guid><description>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/rovo-dev-cli-guide-wsl2-blender.webp" alt="Featured image of post Rovo Dev CLI实战指南：如何在VSCode与WSL2中舒适地使用" />&lt;p>大家好！&lt;/p>
+&lt;p>顺便说一句，这篇文章也是在 Rovo Dev CLI 的 AI 助手功能帮助下写成的。很方便吧！&lt;/p>
+&lt;p>这次，我将为大家介绍由 Atlassian 开发的 AI 助手工具“Rovo Dev CLI”。&lt;/p>
+&lt;p>这是一款类似于热门工具“Claude Code”的工具。你可以在终端上与 AI 对话，让它帮助你编码、创建测试、进行重构等等，用途非常广泛。而且，目前它正处于 Beta 测试阶段，可以免费使用。&lt;/p>
+&lt;p>不过，在 Windows 的 PowerShell 中直接使用时，日文会出现乱码……&lt;/p>
+&lt;p>但别担心！
+本文将从基本用法讲起，介绍如何使用“WSL2”和“VSCode”完美解决乱码问题，甚至还会介绍如何利用“MCP 联动”功能让 AI 指挥 3D 建模，并附上具体的操作步骤。&lt;/p>
+&lt;h3 id="rovo-dev-cli-是什么">Rovo Dev CLI 是什么？
+&lt;/h3>&lt;p>Rovo Dev CLI 是由开发了 Jira 和 Confluence 的知名公司 Atlassian 开发的一款命令行 AI 助手。&lt;/p>
+&lt;p>我亲自问了 Rovo Dev 本人“你用的是哪个模型？”，它回答说用的是 Anthropic 公司的 Claude 系列模型。&lt;/p>
+&lt;h3 id="windows-用户请从这里开始wsl2-的设置">Windows 用户请从这里开始！WSL2 的设置
+&lt;/h3>&lt;p>如果你在 Windows 上使用 Rovo Dev CLI，我强烈推荐使用 WSL2 (Windows Subsystem for Linux 2)。
+正如刚才所说，这是因为直接在 PowerShell 中使用时，日文会显示为乱码。&lt;/p>
+&lt;h4 id="wsl2-的安装与配置">WSL2 的安装与配置
+&lt;/h4>&lt;ol>
+&lt;li>安装 WSL2&lt;/li>
+&lt;/ol>
+&lt;p>打开“PowerShell”，执行以下命令。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">wsl&lt;/span> &lt;span class="p">-&lt;/span>&lt;span class="n">-install&lt;/span> &lt;span class="n">-d&lt;/span> &lt;span class="n">Ubuntu&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">24.04&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在我的环境中，需要重启一次电脑才能让 WSL 正常启动。如果你的也无法运行，可以试试这个方法。&lt;/p>
+&lt;ol start="2">
+&lt;li>WSL2 的初始设置&lt;/li>
+&lt;/ol>
+&lt;p>安装完成后，Ubuntu 会启动，这时请设置你的用户名和密码。&lt;/p>
+&lt;ol start="3">
+&lt;li>配置便捷的镜像网络模式&lt;/li>
+&lt;/ol>
+&lt;p>设置 WSL2 的新功能“镜像模式”后，Windows 和 WSL2 之间将共享网络，无论在哪一边都可以通过“localhost”访问。
+这对于后面要介绍的 MCP 联动功能来说非常方便。&lt;/p>
+&lt;p>在你的 Windows 用户文件夹（&lt;code>C:\Users\你的用户名&lt;/code>）中创建一个名为 &lt;code>.wslconfig&lt;/code> 的文件，并写入以下内容。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ini" data-lang="ini">&lt;span class="line">&lt;span class="cl">&lt;span class="k">[wsl2]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">networkingMode&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">mirrored&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>你也可以通过菜单中的“WSL Settings”完成同样的操作。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/wslsettings_mirrored.webp"
+width="1346"
+height="853"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/wslsettings_mirrored_hu_d9bde27503199c09.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/wslsettings_mirrored_hu_e3a460c1274db487.webp 1024w"
+loading="lazy"
+alt="WSL Settings Mirroed"
+class="gallery-image"
+data-flex-grow="157"
+data-flex-basis="378px"
+>&lt;/p>
+&lt;ol start="4">
+&lt;li>重启 WSL2&lt;/li>
+&lt;/ol>
+&lt;p>为了让设置生效，请在 PowerShell 中执行此命令。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">wsl&lt;/span> &lt;span class="p">-&lt;/span>&lt;span class="n">-shutdown&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>之后，请再次启动 WSL2（Ubuntu）。&lt;/p>
+&lt;p>这样，WSL2 的环境就准备好了。
+下一步，我们将从 VSCode 连接到这个 WSL2 环境，以便更舒适地进行操作。&lt;/p>
+&lt;h3 id="从-vscode-连接到-wsl2">从 VSCode 连接到 WSL2
+&lt;/h3>&lt;p>接下来的所有操作，我们都将通过 VSCode 的 WSL 扩展来完成。&lt;/p>
+&lt;h4 id="vscode-wsl-扩展的安装与连接步骤">VSCode WSL 扩展的安装与连接步骤
+&lt;/h4>&lt;ol>
+&lt;li>安装 VSCode&lt;/li>
+&lt;/ol>
+&lt;p>如果你还没有安装，请从&lt;a class="link" href="https://code.visualstudio.com/" target="_blank" rel="noopener"
+>官方网站&lt;/a>下载并安装。&lt;/p>
+&lt;ol start="2">
+&lt;li>安装 WSL 扩展&lt;/li>
+&lt;/ol>
+&lt;p>启动 VSCode，在左侧的扩展标签页（Ctrl+Shift+X）中搜索“WSL”并安装。&lt;/p>
+&lt;ol start="3">
+&lt;li>连接到 WSL2&lt;/li>
+&lt;/ol>
+&lt;p>点击 VSCode 窗口左下角的绿色图标，选择“连接到 WSL&amp;hellip;”。
+&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_WBcZxHa7dq.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_WBcZxHa7dq_hu_32d522f9ee87f2f0.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_WBcZxHa7dq_hu_bc26e0a0fef78f01.webp 1024w"
+loading="lazy"
+alt="连接到 WSL…"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;ol start="4">
+&lt;li>选择 Ubuntu-24.04&lt;/li>
+&lt;/ol>
+&lt;p>选择刚才安装的 Ubuntu-24.04。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ZY48s5zfnI.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ZY48s5zfnI_hu_649fc219f7f3a0c2.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ZY48s5zfnI_hu_76245b7a39596d1e.webp 1024w"
+loading="lazy"
+alt="Ubuntu-24.04"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;ol start="5">
+&lt;li>打开终端&lt;/li>
+&lt;/ol>
+&lt;p>从 VSCode 菜单中选择“终端”→“新建终端”，或者使用快捷键 &lt;code>Ctrl+`&lt;/code> 来打开终端。
+像图中那样打开也可以。
+&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ITaou93KJA.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ITaou93KJA_hu_9a20e5f852c191f9.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ITaou93KJA_hu_e44f23638998901a.webp 1024w"
+loading="lazy"
+alt="打开 bash 终端"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;p>现在，从 VSCode 访问 WSL2 的 Ubuntu 的准备工作就完成了！
+接下来的操作，我们都在这个 VSCode 内的终端里进行。
+编辑和创建文件也可以使用 VSCode 的编辑器，非常方便。&lt;/p>
+&lt;h3 id="安装与初始设置">安装与初始设置
+&lt;/h3>&lt;ol>
+&lt;li>安装 ACLI (Atlassian CLI)&lt;/li>
+&lt;/ol>
+&lt;p>Rovo Dev 是通过一个名为 ACLI 的 Atlassian 通用工具来使用的。首先，我们把它安装到 WSL2 的 Ubuntu 中。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 安装必要的软件包&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt-get install -y wget gnupg2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 配置 APT 仓库&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 创建用于存放密钥的目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mkdir -p -m &lt;span class="m">755&lt;/span> /etc/apt/keyrings
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 下载公钥并转换为 GPG 格式&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget -nv -O- https://acli.atlassian.com/gpg/public-key.asc &lt;span class="p">|&lt;/span> sudo gpg --dearmor -o /etc/apt/keyrings/acli-archive-keyring.gpg
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 设置密钥文件的权限&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo chmod go+r /etc/apt/keyrings/acli-archive-keyring.gpg
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 将仓库信息添加到 APT 配置中&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;deb [arch=&lt;/span>&lt;span class="k">$(&lt;/span>dpkg --print-architecture&lt;span class="k">)&lt;/span>&lt;span class="s2"> signed-by=/etc/apt/keyrings/acli-archive-keyring.gpg] https://acli.atlassian.com/linux/deb stable main&amp;#34;&lt;/span> &lt;span class="p">|&lt;/span> sudo tee /etc/apt/sources.list.d/acli.list &amp;gt; /dev/null
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 安装 ACLI&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install -y acli
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如果你使用其他操作系统，可以参考官网的&lt;a class="link" href="https://developer.atlassian.com/cloud/acli/guides/install-acli/" target="_blank" rel="noopener"
+>Install and update&lt;/a>页面上的步骤。&lt;/p>
+&lt;ol start="2">
+&lt;li>获取 Atlassian API 令牌并进行认证&lt;/li>
+&lt;/ol>
+&lt;p>接下来，我们去获取用于登录 Atlassian 账户的 API 令牌。&lt;/p>
+&lt;ol>
+&lt;li>访问 &lt;a class="link" href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" rel="noopener"
+>Atlassian ID 个人资料&lt;/a>。&lt;/li>
+&lt;li>点击“Create API token”，为令牌起一个容易识别的名字（比如 &lt;code>rovo-dev-cli&lt;/code>），然后创建令牌。&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_0jJE2KADTx.webp"
+width="1020"
+height="831"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_0jJE2KADTx_hu_5ae329d25921ff9a.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_0jJE2KADTx_hu_b6800cc2d16130e5.webp 1024w"
+loading="lazy"
+alt="API 令牌管理界面"
+class="gallery-image"
+data-flex-grow="122"
+data-flex-basis="294px"
+>&lt;/p>
+&lt;ol start="3">
+&lt;li>生成的令牌只会显示一次，请务必复制并保存在某个地方！&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_Nb3KGfQ2yp.webp"
+width="1020"
+height="831"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_Nb3KGfQ2yp_hu_4f397613aae13f7a.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_Nb3KGfQ2yp_hu_e4edfcd1e5c3dea.webp 1024w"
+loading="lazy"
+alt="创建 API 令牌"
+class="gallery-image"
+data-flex-grow="122"
+data-flex-basis="294px"
+>&lt;/p>
+&lt;p>令牌准备好后，在终端中执行此命令进行认证。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">acli rovodev auth login
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>输入你的电子邮箱地址，然后粘贴刚才复制的 API 令牌，即可完成认证。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_d3pJFXWTQN.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_d3pJFXWTQN_hu_d460bb5fecbfdf8a.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_d3pJFXWTQN_hu_fe12b8998d5cfe4e.webp 1024w"
+loading="lazy"
+alt="acli rovodev auth login"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;ol start="3">
+&lt;li>启动！&lt;/li>
+&lt;/ol>
+&lt;p>好了，终于要启动 AI 助手了。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">acli rovodev run
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>执行此命令后，终端将切换到与 AI 的对话模式。是不是很激动人心！&lt;/p>
+&lt;h3 id="了解这些会更方便基本用法">了解这些会更方便！基本用法
+&lt;/h3>&lt;p>Rovo Dev CLI 提供了许多能让开发工作变得轻松愉快的功能。&lt;/p>
+&lt;h4 id="自定义提示自定义指令">自定义提示（自定义指令）
+&lt;/h4>&lt;p>每次都重复提同样的要求，是不是有点麻烦？在这种时候，自定义提示功能就非常方便了。你可以预先告诉 AI一些背景知识。设置方式类似于 Claude 桌面版的 &lt;code>CLAUDE.md&lt;/code>。&lt;/p>
+&lt;p>有三种设置方法：&lt;/p>
+&lt;ol>
+&lt;li>全局配置文件
+在 &lt;code>~/.rovodev/config.yml&lt;/code> 中像这样写入。这是对整个电脑都有效的指令。&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">additionalSystemPrompt&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">|&lt;/span>&lt;span class="sd">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> 你是 Python 和 TypeScript 的专家。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> 编写代码时，请务必包含测试。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> 请用简洁的中文进行说明。&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="2">
+&lt;li>全局 Agent 文件
+在 &lt;code>~/.rovodev/.agent.md&lt;/code> 文件中，写入想让 AI 读取的指令。由于是 Markdown 格式，你可以写得更详细。&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-markdown" data-lang="markdown">&lt;span class="line">&lt;span class="cl">&lt;span class="gh"># 开发者指南
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gh">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">## 编码风格
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">&lt;/span>&lt;span class="k">-&lt;/span> 使用 2 个空格进行缩进
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> 函数名使用 camelCase
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> 类名使用 PascalCase
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">## 测试方针
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">&lt;/span>&lt;span class="k">-&lt;/span> 单元测试是必须的
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> 活用 mock 来加速测试
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="3">
+&lt;li>项目特定指令
+在你正在工作的仓库根目录下创建一个 &lt;code>.agent.md&lt;/code> 文件。这对于编写团队共享的规则非常方便。个人设置可以写在 &lt;code>.agent.local.md&lt;/code> 中，这样可以被 Git 忽略，我非常推荐。&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-markdown" data-lang="markdown">&lt;span class="line">&lt;span class="cl">&lt;span class="gh"># 项目特定指南
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gh">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">本项目是使用 Next.js 和 TypeScript 开发的 Web 应用。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">## 架构
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">&lt;/span>&lt;span class="k">-&lt;/span> pages/ - 用于路由的页面组件
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> components/ - 可复用的 UI 组件
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> lib/ - 工具函数和助手函数
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> styles/ - CSS 模块和全局样式
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">## 开发规则
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">&lt;/span>&lt;span class="k">-&lt;/span> 组件应使用函数式组件创建
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> 状态管理使用 React Hooks
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> API 请求使用 SWR
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>所有这些设置都可以组合使用，AI 会综合考虑所有指令来回答你。通过编写有效的自定义指令，你可以从 AI 那里获得更高质量的回答。&lt;/p>
+&lt;h4 id="命令示例">命令示例
+&lt;/h4>&lt;p>在对话模式中，你可以这样提问。&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>summarize this file ./path/to/file.js&lt;/code>: 总结一下这个文件！&lt;/li>
+&lt;li>&lt;code>add unit tests for UserService&lt;/code>: 为 UserService 编写单元测试！&lt;/li>
+&lt;li>&lt;code>Refactor this complex function to be more readable&lt;/code>: 把这个复杂的函数重构得更容易阅读！&lt;/li>
+&lt;/ul>
+&lt;p>AI 能够正确理解目录结构，所以只需传递文件路径，它就能理解上下文，这点非常聪明。&lt;/p>
+&lt;h4 id="对话模式中的实用命令列表">对话模式中的实用命令列表
+&lt;/h4>&lt;p>对话模式中还有很多其他方便的命令。它们能让你与 AI 的交流更加顺畅。如果你想了解某个命令的详细用法，可以在对话模式中输入 &lt;code>/命令名 help&lt;/code>。&lt;/p>
+&lt;h4 id="会话管理-sessions">会话管理 &lt;code>/sessions&lt;/code>
+&lt;/h4>&lt;p>管理会话的命令。使用它，你可以将对话历史和上下文分开保存，非常方便。&lt;/p>
+&lt;ul>
+&lt;li>主要功能:
+&lt;ul>
+&lt;li>会话管理：可以创建和切换多个对话会话。&lt;/li>
+&lt;li>上下文保持：每个会话都会记住各自的对话历史。&lt;/li>
+&lt;li>工作区分离：可以为每个项目分别创建会话。&lt;/li>
+&lt;li>会话分支：还可以从当前对话中分支出一个新的会话。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>重启 Rovo Dev CLI 时，加上 &lt;code>--restore&lt;/code> 选项，它会自动恢复上一个会话。&lt;/p>
+&lt;h4 id="清除会话-clear">清除会话 &lt;code>/clear&lt;/code>
+&lt;/h4>&lt;p>将当前会话的对话历史全部清除，恢复到初始状态。请注意，此操作无法撤销。如果想保留历史记录，可以使用 &lt;code>/sessions&lt;/code> 命令创建一个新会话，或者使用接下来介绍的 &lt;code>/prune&lt;/code> 命令。&lt;/p>
+&lt;h4 id="优化会话-prune">优化会话 &lt;code>/prune&lt;/code>
+&lt;/h4>&lt;p>当对话变得越来越长时，可以使用这个命令。它是一个聪明的命令，能在保留重要内容的同时节省 Token。它会删除 AI 执行的工具（程序）的结果等，从而精简历史记录。&lt;/p>
+&lt;h4 id="预定义指令模板-instructions">预定义指令模板 &lt;code>/instructions&lt;/code>
+&lt;/h4>&lt;p>对于像代码审查或文档编写这类常见任务，你可以执行预先准备好的指令模板。&lt;/p>
+&lt;ul>
+&lt;li>内置指令模板:
+&lt;ul>
+&lt;li>代码审查与分析&lt;/li>
+&lt;li>文档生成与改进&lt;/li>
+&lt;li>单元测试创建与覆盖率提升&lt;/li>
+&lt;li>总结 Confluence 页面&lt;/li>
+&lt;li>分析 Jira 问题&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>你也可以创建自己的自定义模板！&lt;/p>
+&lt;ol>
+&lt;li>在 &lt;code>.rovodev/instuctions.yml&lt;/code> 中创建指令文件。&lt;/li>
+&lt;li>在 &lt;code>.rovodev&lt;/code> 文件夹中，创建一个 Markdown 文件，写入指令内容。&lt;/li>
+&lt;/ol>
+&lt;p>使用方法很简单，输入 &lt;code>/instructions&lt;/code> 就会显示模板列表。&lt;/p>
+&lt;h4 id="内存管理-memory">内存管理 &lt;code>/memory&lt;/code>
+&lt;/h4>&lt;p>这是一个让 Rovo Dev CLI 记住有关项目和设置的重要信息的功能。&lt;/p>
+&lt;ul>
+&lt;li>内存类型:
+&lt;ul>
+&lt;li>项目内存：保存在当前目录中。（&lt;code>.agent.md&lt;/code> 和 &lt;code>.agent.local.md&lt;/code>）&lt;/li>
+&lt;li>用户内存：全局保存在主目录中。（&lt;code>~/.rovodev/agent.md&lt;/code>）&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>内存文件是 Markdown 格式的，可以用来记录项目规则或编码规范等，非常方便。
+像 &lt;code># 想记录的事情&lt;/code> 这样写，就可以快速添加笔记。&lt;/p>
+&lt;h4 id="反馈-feedback">反馈 &lt;code>/feedback&lt;/code>
+&lt;/h4>&lt;p>用于发送关于 Rovo Dev CLI 的感想或 Bug 报告的命令。&lt;/p>
+&lt;h4 id="使用情况-usage">使用情况 &lt;code>/usage&lt;/code>
+&lt;/h4>&lt;p>可以查看今天 LLM 的 Token 使用量。检查一下有没有用超！&lt;/p>
+&lt;h4 id="退出-exit">退出 &lt;code>/exit&lt;/code>
+&lt;/h4>&lt;p>退出应用程序。使用 &lt;code>/quit&lt;/code> 或 &lt;code>/q&lt;/code> 效果相同。&lt;/p>
+&lt;h3 id="高级篇wsl2-与-windows-之间的联动">【高级篇】WSL2 与 Windows 之间的联动
+&lt;/h3>&lt;p>得益于 VSCode 的 WSL 扩展，WSL2 和 Windows 之间的文件共享与应用联动变得非常顺畅。&lt;/p>
+&lt;h4 id="活用镜像网络模式">活用镜像网络模式
+&lt;/h4>&lt;p>我们一开始设置的 WSL2 镜像网络模式，在这里将大显身手。&lt;/p>
+&lt;ol>
+&lt;li>端口共享：你可以直接从 Windows 的浏览器访问在 WSL2 中启动的服务器（例如 &lt;code>localhost:3000&lt;/code>）。&lt;/li>
+&lt;li>网络服务共享：Windows 和 WSL2 都可以使用同一网络上的服务。&lt;/li>
+&lt;li>与 MCP 服务器的联动：这个功能在接下来要介绍的 MCP 联动中尤为重要。它使得 WSL2 的 Rovo Dev CLI 能够无缝连接到在 Windows 上运行的 Blender 的 MCP 服务器。&lt;/li>
+&lt;/ol>
+&lt;p>благодаря этой интеграции вы можете получить лучшее из обоих миров: удобный интерфейс Windows и мощную командную строку Linux.
+(Note: A Russian sentence was in the original thought process. Translating the intended meaning.)
+得益于这种联动，你可以集 Windows 方便的图形界面和 Linux 强大的命令行于一身，取两家之长。&lt;/p>
+&lt;h3 id="应用篇用-mcp-让-ai-操作-blender">【应用篇】用 MCP 让 AI 操作 Blender！
+&lt;/h3>&lt;p>终于到了最后一步！让我们使用 Rovo Dev 的强大功能——MCP (Model Context Protocol)，从 WSL2 控制 Windows 上的 Blender。这次，我们将使用一个名为 &lt;a class="link" href="https://github.com/ahujasid/blender-mcp" target="_blank" rel="noopener"
+>BlenderMCP&lt;/a> 的便利开源工具。&lt;/p>
+&lt;h4 id="blendermcp-是什么">BlenderMCP 是什么？
+&lt;/h4>&lt;p>BlenderMCP 是一个连接 AI 和 Blender 的工具。使用它，AI 就能直接操作 Blender，完成 3D 建模、场景创建、物体操作等任务！&lt;/p>
+&lt;p>主要功能&lt;/p>
+&lt;ul>
+&lt;li>双向通信：连接 AI 和 Blender&lt;/li>
+&lt;li>物体操作：可以创建、移动、删除物体&lt;/li>
+&lt;li>材质控制：可以上色、设置质感&lt;/li>
+&lt;li>场景检查：AI 可以确认当前 Blender 中的状态&lt;/li>
+&lt;li>代码执行：AI 可以向 Blender 发送并执行 Python 代码&lt;/li>
+&lt;/ul>
+&lt;h4 id="设置步骤">设置步骤
+&lt;/h4>&lt;p>BlenderMCP 由两个部分组成。&lt;/p>
+&lt;ol>
+&lt;li>Windows 端：Blender 插件 (&lt;code>addon.py&lt;/code>)：安装在 Windows 的 Blender 中&lt;/li>
+&lt;li>WSL2 端：MCP 服务器：安装在 WSL2 的 Ubuntu 中，供 Rovo Dev CLI 使用&lt;/li>
+&lt;/ol>
+&lt;p>那么，我们开始设置吧！&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>Windows 端：安装 Blender 插件&lt;/p>
+&lt;ul>
+&lt;li>从 &lt;a class="link" href="https://github.com/ahujasid/blender-mcp" target="_blank" rel="noopener"
+>BlenderMCP 的 GitHub 仓库&lt;/a> 下载 &lt;code>addon.py&lt;/code> 文件&lt;/li>
+&lt;li>打开 Blender，进入“编辑”&amp;gt;“偏好设置”&amp;gt;“插件”&lt;/li>
+&lt;li>点击“从磁盘安装&amp;hellip;”，选择下载的 &lt;code>addon.py&lt;/code> 文件&lt;/li>
+&lt;li>勾选“Blender MCP”旁边的复选框，启用该插件&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_XHT4DlH7dm.webp"
+width="722"
+height="612"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_XHT4DlH7dm_hu_1e1089fa1e9d5605.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_XHT4DlH7dm_hu_6b98af69362a6108.webp 1024w"
+loading="lazy"
+alt="Blender 插件安装界面"
+class="gallery-image"
+data-flex-grow="117"
+data-flex-basis="283px"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>WSL2 端：安装 uv 包管理器&lt;/p>
+&lt;ul>
+&lt;li>在 WSL2 的 Ubuntu 终端中，执行此命令&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 安装 uv 包管理器&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">curl -LsSf https://astral.sh/uv/install.sh &lt;span class="p">|&lt;/span> sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>WSL2 端：配置 Rovo Dev CLI&lt;/p>
+&lt;ul>
+&lt;li>使用 VSCode 编辑配置文件&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">EDITOR&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;code&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">acli rovodev mcp
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>这时 VSCode 会打开配置文件，请添加以下内容。这个设置是为了让 Rovo Dev CLI 启动时自动运行 BlenderMCP。&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;mcpServers&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;blender&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;command&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;uvx&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;args&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;blender-mcp&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>Windows 端：在 Blender 中进行连接设置&lt;/p>
+&lt;ul>
+&lt;li>在 Blender 界面中，打开 3D 视图的侧边栏（如果未显示，请按 N 键）&lt;/li>
+&lt;li>找到名为“BlenderMCP”的标签页，点击“Connect to MCP server”&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_kgZFzsrLFE.webp"
+width="1128"
+height="772"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_kgZFzsrLFE_hu_dbe03a72ecde385f.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_kgZFzsrLFE_hu_cfe479678a85ae3b.webp 1024w"
+loading="lazy"
+alt="连接到 BlenderMCP 服务器"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="350px"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>WSL2 端：用 Rovo Dev CLI 操作 Blender！&lt;/p>
+&lt;ul>
+&lt;li>在 WSL2 的 VSCode 集成终端中执行 &lt;code>acli rovodev run&lt;/code>&lt;/li>
+&lt;li>试着向 AI 这样提问：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">使用 Blender 创建一只猫。
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>结果如何呢？来自 WSL2 的指令，应该会让正在 Windows 上运行的 Blender 画面中出现一个立方体，并向上移动。这就是我们最初设置的镜像网络模式的力量。WSL2 将在 Windows 上运行的 Blender 识别为“localhost 上的服务器”，从而实现了无缝联动。太棒了！&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_mcp_cat.webp"
+width="1200"
+height="900"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_mcp_cat_hu_adefcca0e568179.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_mcp_cat_hu_6a420429aded544a.webp 1024w"
+loading="lazy"
+alt="猫的 3D 模型"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h4 id="mcp-故障排除">MCP 故障排除
+&lt;/h4>&lt;p>如果无法正常工作，请检查以下几点：&lt;/p>
+&lt;ol>
+&lt;li>连接问题：Blender 插件是否已启用？是否在 Blender 的 MCP 标签页中点击了“Connect to MCP server”？&lt;/li>
+&lt;li>WSL2 镜像网络模式：请确认镜像模式是否已正确启用。&lt;/li>
+&lt;li>尝试重启：如果连接错误持续出现，最简单的办法可能是重启 Rovo Dev CLI 和 Blender。&lt;/li>
+&lt;li>命令执行方式：请不要直接执行 &lt;code>uvx blender-mcp&lt;/code> 命令。Rovo Dev CLI 会根据配置文件自动执行它。&lt;/li>
+&lt;/ol>
+&lt;p>最重要的一点是，确保 WSL2 和 Windows 之间的网络连接已正确设置为镜像模式。&lt;/p>
+&lt;h3 id="总结">总结
+&lt;/h3>&lt;p>本文从 Atlassian 的新款 AI 开发工具“Rovo Dev CLI”的基本用法，到 Windows 用户舒适使用它的 WSL2 活用技巧，再到使用 MCP 进行 Blender 联动，内容广泛地进行了介绍。&lt;/p>
+&lt;p>虽然一开始的设置可能有些繁琐，但一旦环境搭建完成，那种足不出终端就能获得 AI 强大支持的开发体验，我认为真的是革命性的。&lt;/p>
+&lt;p>Rovo Dev CLI 目前仍处于 Beta 版，我很期待它未来的发展和进化。
+希望这篇文章能帮助大家找到新的开发方式。&lt;/p>
+&lt;p>请务必尝试一下这款未来的工具。Happy coding! 🎉&lt;/p></description></item><item><title>注册xAI（Grok API）并在VSCode扩展（Cody、Cline、Roo Code）中使用</title><link>https://takoyakisoft.com/zh-cn/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/</link><pubDate>Thu, 20 Feb 2025 00:00:00 +0900</pubDate><guid>https://takoyakisoft.com/zh-cn/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/</guid><description>&lt;img src="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_payment.webp" alt="Featured image of post 注册xAI（Grok API）并在VSCode扩展（Cody、Cline、Roo Code）中使用" />&lt;h2 id="如何支付5美元给xai并每月获得150美元的积分">如何支付5美元给xAI并每月获得150美元的积分
+&lt;/h2>&lt;p>我参考了以下文章注册了xAI：&lt;br>
+&lt;a class="link" href="https://zenn.dev/schroneko/articles/de3a8f574e9ea4" target="_blank" rel="noopener"
+>Grok API：支付5美元即可使用150美元的额度？&lt;/a>&lt;/p>
+&lt;p>首先，访问 &lt;a class="link" href="https://console.x.ai/" target="_blank" rel="noopener"
+>xAI Cloud Console&lt;/a>。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_payment.webp"
+width="2068"
+height="1100"
+srcset="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_payment_hu_81143d937529a41c.webp 480w, https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_payment_hu_9f2016a5d97f89ce.webp 1024w"
+loading="lazy"
+alt="xAI Payment"
+class="gallery-image"
+data-flex-grow="188"
+data-flex-basis="451px"
+>&lt;/p>
+&lt;p>按图中1、2的顺序点击，输入“Billing address”（账单地址）。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_billing_address.webp"
+width="533"
+height="846"
+srcset="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_billing_address_hu_2856e0dd944eac5e.webp 480w, https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_billing_address_hu_40c0645fa7caed74.webp 1024w"
+loading="lazy"
+alt="xAI Billing Address"
+class="gallery-image"
+data-flex-grow="63"
+data-flex-basis="151px"
+>&lt;/p>
+&lt;p>图片仅为示例，我用英文填写。地址应与您的信用卡地址一致。&lt;br>
+“Tax ID Type”（税务ID类型）和“Tax Number”（税务号码）是可选的，我没有填写。&lt;br>
+这可能与税收有关，但我不太确定。&lt;br>
+接下来，输入“Payment methods”（支付方式）。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_payment_methods.webp"
+width="584"
+height="744"
+srcset="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_payment_methods_hu_8713fae58fdd8b00.webp 480w, https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_payment_methods_hu_38144f9d12ffc987.webp 1024w"
+loading="lazy"
+alt="xAI Payment methods"
+class="gallery-image"
+data-flex-grow="78"
+data-flex-basis="188px"
+>&lt;/p>
+&lt;p>我使用的是PayPay的JCB卡，支付成功。（注：PayPay是日本流行的支付服务，但任何有效的信用卡都应该可以。在中国，您可以使用常见的信用卡或支持国际支付的其他方式。）&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_credits.webp"
+width="1956"
+height="997"
+srcset="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_credits_hu_c065380063d48a6e.webp 480w, https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_credits_hu_32da91709b2bc06d.webp 1024w"
+loading="lazy"
+alt="xAI Credits"
+class="gallery-image"
+data-flex-grow="196"
+data-flex-basis="470px"
+>&lt;/p>
+&lt;p>有一个“Redeem Promo code”（兑换促销代码）的输入框，但截至2月20日，即使使用xAI的DeepResearch工具也找不到任何促销代码。可能目前没有可用的代码。&lt;br>
+点击“Purchase credits”（购买积分）来购买积分。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_purchase_credits.webp"
+width="542"
+height="402"
+srcset="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_purchase_credits_hu_415c0f11140c9841.webp 480w, https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_purchase_credits_hu_1a56e4bb6c2f46e8.webp 1024w"
+loading="lazy"
+alt="xAI Purchase Credits"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="323px"
+>&lt;/p>
+&lt;p>支付5美元即可。支付后，会出现“Share Data”（共享数据）按钮（我忘记截图了）。&lt;br>
+根据这篇文章，同意与xAI共享数据后，每月可以获得150美元的积分：&lt;/p>
+&lt;p>&lt;a class="link" href="https://docs.x.ai/docs/data-sharing" target="_blank" rel="noopener"
+>每月获得150美元的免费API积分&lt;/a>&lt;/p>
+&lt;h2 id="在vscode扩展中使用xai的方法">在VSCode扩展中使用xAI的方法
+&lt;/h2>&lt;h3 id="在cody中使用grok-api">在Cody中使用Grok API
+&lt;/h3>&lt;p>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=sourcegraph.cody-ai" target="_blank" rel="noopener"
+>Cody: AI Code Assistant&lt;/a> 是一个AI驱动的扩展，提供代码补全、编辑和聊天功能。&lt;br>
+代码补全始终免费，但代码编辑和聊天有使用次数限制。通过为编辑和聊天设置Grok API，您只需支付5美元即可无限制地使用AI编码功能。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/vscode_settings.webp"
+width="1918"
+height="942"
+srcset="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/vscode_settings_hu_d77133841b6c13c3.webp 480w, https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/vscode_settings_hu_8d42a7283d7622de.webp 1024w"
+loading="lazy"
+alt="VSCode settings.json"
+class="gallery-image"
+data-flex-grow="203"
+data-flex-basis="488px"
+>&lt;/p>
+&lt;p>如图所示，点击“文件”→“首选项”→“设置”，然后点击右上角的图标打开“settings.json”。&lt;br>
+或者，按“Ctrl” + “Shift” + P 并选择“Preferences: Open Settings (JSON)”。&lt;/p>
+&lt;p>以下是如何在&lt;code>&amp;quot;cody.dev.models&amp;quot;&lt;/code>中设置您想要添加的模型。由于Grok是OpenAI兼容的API，因此将提供商指定为&lt;code>&amp;quot;openai&amp;quot;&lt;/code>。&lt;br>
+此外，我还设置了DeepSeek和Gemini API。DeepSeek也是一种价格实惠的API，您可以使用它。&lt;br>
+Gemini是Google提供的API，可以免费使用。（由于连续使用有一定的限制，我使用了多个实例。）&lt;br>
+对于&lt;code>&amp;quot;inputTokens&amp;quot;&lt;/code>、&lt;code>&amp;quot;temperature&amp;quot;&lt;/code>和&lt;code>&amp;quot;stream&amp;quot;&lt;/code>，我直接使用了官方示例中的设置。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;cody.dev.models&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;provider&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;openai&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;model&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;grok-2-latest&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;inputTokens&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">131072&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;outputTokens&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">8192&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;apiKey&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;xai-xxxxxxxxxxxxxxxxxxxxxxxx&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;options&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;temperature&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;stream&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;apiEndpoint&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;https://api.x.ai/v1&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;provider&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;groq&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;model&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;deepseek-chat&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;inputTokens&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">128000&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;outputTokens&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">8192&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;apiKey&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;sk-xxxxxxxxxxxxxxxxxxxxxxxx&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;options&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;temperature&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mf">0.6&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;apiEndpoint&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;https://api.deepseek.com/chat/completions&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;provider&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;google&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;model&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;gemini-2.0-pro-exp-02-05&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;inputTokens&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">2097152&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;outputTokens&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">8192&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;apiKey&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;AIxxxxxxxxxxxxxxxxxxxxxxxx&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;options&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;temperature&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mf">1.0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;provider&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;google&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;model&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;gemini-2.0-flash-exp&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;inputTokens&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1048576&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;outputTokens&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">8192&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;apiKey&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;AIxxxxxxxxxxxxxxxxxxxxxxxx&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;options&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;temperature&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mf">1.0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;cody.edit.preInstruction&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Please think thoughts in English. 输出应为中文。&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;cody.chat.preInstruction&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Please think thoughts in English. 输出应为中文。&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在代码编辑（&amp;ldquo;cody.edit.preInstruction&amp;rdquo;）和聊天（&amp;ldquo;cody.chat.preInstruction&amp;rdquo;）中，您可以设置类似于ChatGPT中的自定义提示。&lt;/p>
+&lt;h3 id="在cline中使用grok-api">在Cline中使用Grok API
+&lt;/h3>&lt;p>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev" target="_blank" rel="noopener"
+>Cline&lt;/a> 似乎是一个AI代理。它可以读写文件、新建文件以及执行命令。由于它与API进行多次交互，因此会消耗大量令牌。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/vscode_cline.webp"
+width="590"
+height="922"
+srcset="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/vscode_cline_hu_5cb5e81943d4dbd4.webp 480w, https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/vscode_cline_hu_bf8b46ac4152fc99.webp 1024w"
+loading="lazy"
+alt="VSCode Cline"
+class="gallery-image"
+data-flex-grow="63"
+data-flex-basis="153px"
+>&lt;/p>
+&lt;p>Cline 可以通过如图所示的“OpenAI Compatible”选项进行设置。设置完成后，点击“Done”保存。&lt;/p>
+&lt;h3 id="在roo-code中使用grok-api">在Roo Code中使用Grok API
+&lt;/h3>&lt;p>&lt;a class="link" href="https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline" target="_blank" rel="noopener"
+>Roo Code（前身为Roo Cline）&lt;/a> 是Cline的一个分支，提供更快的更新和更多功能。&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/vscode_roo_code.webp"
+width="592"
+height="929"
+srcset="https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/vscode_roo_code_hu_75c742f6a01439a.webp 480w, https://takoyakisoft.com/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/vscode_roo_code_hu_f8e5b1048fd0ee98.webp 1024w"
+loading="lazy"
+alt="VSCode Roo Code"
+class="gallery-image"
+data-flex-grow="63"
+data-flex-basis="152px"
+>&lt;/p>
+&lt;p>Roo Code 也可以通过如图所示的“OpenAI Compatible”选项进行设置。设置完成后，点击“Done”保存。&lt;/p></description></item></channel></rss>

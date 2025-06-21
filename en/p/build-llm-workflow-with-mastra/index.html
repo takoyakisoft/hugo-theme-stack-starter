@@ -1,0 +1,906 @@
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Build LLM workflows using Grok-2 and Gemini 2.5 Pro with the mastra library and TypeScript! This guide clearly explains the specific steps, from installation and implementing the 'think' tool to creating a loop process where the AI improves its own prompts."><title>Master LLM Workflows with mastra! From Grok-2 and think Tools to Generating Article Cloning Prompts</title><link rel=canonical href=https://takoyakisoft.com/en/p/build-llm-workflow-with-mastra/><link rel=stylesheet href=/scss/style.min.e2eb4d863e5f9e2d94c38679d645929c395fbab1ed23bbebd5526b205d5c473b.css><meta property='og:title' content="Master LLM Workflows with mastra! From Grok-2 and think Tools to Generating Article Cloning Prompts"><meta property='og:description' content="Build LLM workflows using Grok-2 and Gemini 2.5 Pro with the mastra library and TypeScript! This guide clearly explains the specific steps, from installation and implementing the 'think' tool to creating a loop process where the AI improves its own prompts."><meta property='og:url' content='https://takoyakisoft.com/en/p/build-llm-workflow-with-mastra/'><meta property='og:site_name' content='TakoyakiSoft'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='mastra'><meta property='article:tag' content='TypeScript'><meta property='article:tag' content='Grok'><meta property='article:tag' content='Gemini'><meta property='article:published_time' content='2025-04-03T21:00:34+09:00'><meta property='article:modified_time' content='2025-04-03T21:00:34+09:00'><meta property='og:image' content='https://takoyakisoft.com/p/build-llm-workflow-with-mastra/build-llm-workflow-with-mastra.webp'><meta name=twitter:site content="@takoyakisoft"><meta name=twitter:creator content="@takoyakisoft"><meta name=twitter:title content="Master LLM Workflows with mastra! From Grok-2 and think Tools to Generating Article Cloning Prompts"><meta name=twitter:description content="Build LLM workflows using Grok-2 and Gemini 2.5 Pro with the mastra library and TypeScript! This guide clearly explains the specific steps, from installation and implementing the 'think' tool to creating a loop process where the AI improves its own prompts."><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://takoyakisoft.com/p/build-llm-workflow-with-mastra/build-llm-workflow-with-mastra.webp'><link rel="shortcut icon" href=/favicon.ico></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/en/><img src=/img/avatar_hu_f78e84f1474a9757.webp width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🕹️</span></figure><div class=site-meta><h1 class=site-name><a href=/en>TakoyakiSoft</a></h1><h2 class=site-description>Explaining how to use various software in an easy-to-understand manner.</h2></div></header><ol class=menu-social><li><a href=https://bsky.app/profile/takoyakisoft.bsky.social target=_blank title=Bluesky rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bluesky"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6.335 5.144C4.681 3.945 2 3.017 2 5.97c0 .59.35 4.953.556 5.661C3.269 14.094 5.686 14.381 8 14c-4.045.665-4.889 3.208-2.667 5.41C6.363 20.428 7.246 21 8 21c2 0 3.134-2.769 3.5-3.5.333-.667.5-1.167.5-1.5.0.333.167.833.5 1.5.366.731 1.5 3.5 3.5 3.5.754.0 1.637-.571 2.667-1.59C20.889 17.207 20.045 14.664 16 14c2.314.38 4.73.094 5.444-2.369.206-.708.556-5.072.556-5.661.0-2.953-2.68-2.025-4.335-.826C15.372 6.806 12.905 10.192 12 12c-.905-1.808-3.372-5.194-5.665-6.856z"/></svg></a></li><li><a href=https://github.com/takoyakisoft target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://x.com/takoyakisoft target=_blank title=X rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4l11.733 16H20L8.267 4z"/><path d="M4 20l6.768-6.768m2.46-2.46L20 4"/></svg></a></li><li><a href=https://www.youtube.com/@takoyaki-soft target=_blank title=YouTube rel=me><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M2 8a4 4 0 014-4h12a4 4 0 014 4v8a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><path d="M10 9l5 3-5 3z"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/en/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/en/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/en/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/en/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Social Media Links</span></a></li><li><a href=/en/about/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-exclamation"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 108 0A4 4 0 008 7"/><path d="M6 21v-2a4 4 0 014-4h4c.348.0.686.045 1.008.128"/><path d="M19 16v3"/><path d="M19 22v.01"/></svg>
+<span>About Us</span></a></li><li><a href=/en/terms-of-service/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-notes"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 3m0 2a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2z"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>
+<span>Terms of Service</span></a></li><li><a href=/en/privacy-policy/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-shield-lock"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3a12 12 0 008.5 3A12 12 0 0112 21 12 12 0 013.5 6 12 12 0 0012 3"/><path d="M12 11m-1 0a1 1 0 102 0 1 1 0 10-2 0"/><path d="M12 12v2.5"/></svg>
+<span>Privacy Policy</span></a></li><li><a href=/en/disclaimer/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-exclamation-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1018 0A9 9 0 103 12"/><path d="M12 9v4"/><path d="M12 16v.01"/></svg>
+<span>Disclaimer</span></a></li><li><a href=/en/contact/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M3 7l9 6 9-6"/></svg>
+<span>Contact Us</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://takoyakisoft.com/en/ selected>English</option><option value=https://takoyakisoft.com/>日本語</option><option value=https://takoyakisoft.com/zh-cn/>简体中文</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>Dark Mode</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#installing-mastra>Installing mastra</a></li><li><a href=#lets-look-at-the-configuration>Let&rsquo;s look at the configuration</a></li><li><a href=#lets-check-if-it-works>Let&rsquo;s check if it works</a></li><li><a href=#implementing-the-think-tool>Implementing the &ldquo;think tool&rdquo;</a></li><li><a href=#checking-the-think-tools-operation>Checking the think tool&rsquo;s operation</a></li><li><a href=#implementing-a-workflow-to-create-a-prompt-that-clones-writing-style>Implementing a Workflow to Create a Prompt that Clones Writing Style</a><ol><li><a href=#goal-of-this-workflow-teaching-ai-your-writing-style>Goal of this Workflow: Teaching AI Your &ldquo;Writing Style&rdquo;</a></li><li><a href=#preparation-adding-the-evaluation-library-and-registering-the-workflow>Preparation: Adding the Evaluation Library and Registering the Workflow</a></li><li><a href=#how-the-ai-improves-prompts-explaining-the-process-flow>How the AI Improves Prompts: Explaining the Process Flow</a></li><li><a href=#lets-run-it-workflow-execution-steps>Let&rsquo;s Run It! Workflow Execution Steps</a></li><li><a href=#complete-workflow-code>Complete Workflow Code</a></li><li><a href=#done-the-impersonation-instruction-prompt-and-how-to-use-it>Done! The &ldquo;Impersonation Instruction Prompt&rdquo; and How to Use It</a></li><li><a href=#conclusion>Conclusion</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/en/p/build-llm-workflow-with-mastra/><img src=/p/build-llm-workflow-with-mastra/build-llm-workflow-with-mastra_hu_d1208c176298e21f.webp srcset="/p/build-llm-workflow-with-mastra/build-llm-workflow-with-mastra_hu_d1208c176298e21f.webp 800w, /p/build-llm-workflow-with-mastra/build-llm-workflow-with-mastra_hu_e2dcb93dee202248.webp 1600w" width=800 height=411 loading=lazy alt="Featured image of post Master LLM Workflows with mastra! From Grok-2 and think Tools to Generating Article Cloning Prompts"></a></div><div class=article-details><header class=article-category><a href=/en/categories/ai/>AI
+</a><a href=/en/categories/programming/>Programming</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/en/p/build-llm-workflow-with-mastra/>Master LLM Workflows with mastra! From Grok-2 and think Tools to Generating Article Cloning Prompts</a></h2><h3 class=article-subtitle>Build LLM workflows using Grok-2 and Gemini 2.5 Pro with the mastra library and TypeScript! This guide clearly explains the specific steps, from installation and implementing the 'think' tool to creating a loop process where the AI improves its own prompts.</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 03, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>20 minute read</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://takoyakisoft.com/p/build-llm-workflow-with-mastra/ class=link>日本語</a>
+<a href=https://takoyakisoft.com/zh-cn/p/build-llm-workflow-with-mastra/ class=link>简体中文</a></div></footer></div></header><section class=article-content><p>Hello! Today, I&rsquo;ll share my experience using a library called mastra to run LLMs like Grok-2 and Gemini 2.5 Pro exp.</p><p>mastra is a library that lets you decide which LLM to use for a prompt, create &ldquo;AI agents,&rdquo; and then set up a &ldquo;workflow&rdquo; defining the order in which these agents run. The fact that it&rsquo;s written in TypeScript is personally a big plus for me. I&rsquo;m thinking it might allow for affordable integration into web services in environments like Cloudflare Workers or Deno.</p><p>Similar libraries like LangChain are well-known, but mastra might have a slight advantage in terms of deployment ease. Also, I previously tried a tool called Dify, which seemed a bit weak with iterative processing (loops), so I wanted to see how mastra handles that. That&rsquo;s part of the reason I decided to give it a try.</p><p>Alright, let&rsquo;s dive right in!</p><h2 id=installing-mastra>Installing mastra</h2><p>This time, I&rsquo;m using Windows 11, the AI editor &ldquo;Trae,&rdquo; and the fast package manager &ldquo;pnpm.&rdquo;</p><p>First, let&rsquo;s create a project following the steps on the official mastra website.
+(Reference: <a class=link href=https://mastra.ai/docs/getting-started/installation#create-a-new-project target=_blank rel=noopener>Create a New Project</a>)</p><p>Open your terminal and run the following command:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm create mastra@latest
+</span></span></code></pre></td></tr></table></div></div><p>You&rsquo;ll be asked a few questions. Let&rsquo;s answer them.</p><p><img src=/p/build-llm-workflow-with-mastra/WindowsTerminal_UXtTR1rp9W.webp width=1127 height=1032 srcset="/p/build-llm-workflow-with-mastra/WindowsTerminal_UXtTR1rp9W_hu_e5736a7229396e4d.webp 480w, /p/build-llm-workflow-with-mastra/WindowsTerminal_UXtTR1rp9W_hu_7e216cf636dd59ff.webp 1024w" loading=lazy alt="mastra project creation screen" class=gallery-image data-flex-grow=109 data-flex-basis=262px></p><p>It asks for the project name. I chose <code>my-mastra-app</code> this time.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◇  What do you want to name your project?
+</span></span><span class=line><span class=cl>│  my-mastra-app
+</span></span></code></pre></td></tr></table></div></div><p>This is where the source files will be placed. The default <code>src/</code> is fine.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◆  Where should we create the Mastra files? (default: src/)
+</span></span><span class=line><span class=cl>│  src/
+</span></span></code></pre></td></tr></table></div></div><p>Choose the necessary components. We&rsquo;ll use Agents, Workflows, and Tools later, so let&rsquo;s select Yes for them.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◆  Choose components to install:
+</span></span><span class=line><span class=cl>│  ◼ Agents
+</span></span><span class=line><span class=cl>│  ◼ Workflows
+</span></span><span class=line><span class=cl>◇  Add tools?
+</span></span><span class=line><span class=cl>│  Yes
+</span></span></code></pre></td></tr></table></div></div><p>Select the default LLM provider. I chose Google this time, but you can change this freely later.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◇  Select default provider:
+</span></span><span class=line><span class=cl>│  Google
+</span></span></code></pre></td></tr></table></div></div><p>API key setup. We&rsquo;ll set this in the <code>.env.development</code> file later, so skipping for now (Skip for now) is okay.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◆  Enter your google API key?
+</span></span><span class=line><span class=cl>│  ● Skip for now (default)
+</span></span></code></pre></td></tr></table></div></div><p>Add examples? Yes, for this time.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◇  Add example
+</span></span><span class=line><span class=cl>│  Yes
+</span></span></code></pre></td></tr></table></div></div><p>AI IDE integration? Skipped for now.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>◇  Make your AI IDE into a Mastra expert? (installs Mastra docs MCP server)
+</span></span><span class=line><span class=cl>│  Skip for now
+</span></span></code></pre></td></tr></table></div></div><p>Now the project template is created!
+Navigate to the created project folder and install the necessary libraries.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl><span class=k>cd</span> my-mastra-app
+</span></span><span class=line><span class=cl>pnpm i
+</span></span></code></pre></td></tr></table></div></div><p>Let&rsquo;s start the development server. You can stop it with Ctrl+C.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm run dev
+</span></span></code></pre></td></tr></table></div></div><h2 id=lets-look-at-the-configuration>Let&rsquo;s look at the configuration</h2><p>Once the installation is complete, let&rsquo;s examine a few files.</p><p>Looking at <code>package.json</code>, you can see <code>@ai-sdk/google</code> in the <code>dependencies</code>. This is a library provided by Vercel, and it seems to support not only Gemini but also other LLM providers like DeepSeek, Grok, and OpenRouter. Looks convenient!
+(Reference: <a class=link href=https://sdk.vercel.ai/providers/ai-sdk-providers target=_blank rel=noopener>AI SDK Providers</a>)</p><p>The <code>scripts</code> section only has <code>dev</code>. Perhaps build or test scripts will be added in the future.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;my-mastra-app&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;version&#34;</span><span class=p>:</span> <span class=s2>&#34;1.0.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;main&#34;</span><span class=p>:</span> <span class=s2>&#34;index.js&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;scripts&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;test&#34;</span><span class=p>:</span> <span class=s2>&#34;echo \&#34;Error: no test specified\&#34; &amp;&amp; exit 1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;dev&#34;</span><span class=p>:</span> <span class=s2>&#34;mastra dev&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;keywords&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;author&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;license&#34;</span><span class=p>:</span> <span class=s2>&#34;ISC&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;description&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;module&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;dependencies&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@ai-sdk/google&#34;</span><span class=p>:</span> <span class=s2>&#34;^1.2.5&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@mastra/core&#34;</span><span class=p>:</span> <span class=s2>&#34;^0.7.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;mastra&#34;</span><span class=p>:</span> <span class=s2>&#34;^0.4.4&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;zod&#34;</span><span class=p>:</span> <span class=s2>&#34;^3.24.2&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;devDependencies&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@types/node&#34;</span><span class=p>:</span> <span class=s2>&#34;^22.14.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;tsx&#34;</span><span class=p>:</span> <span class=s2>&#34;^4.19.3&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;typescript&#34;</span><span class=p>:</span> <span class=s2>&#34;^5.8.2&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>This time, I also want to use xAI&rsquo;s Grok, so let&rsquo;s add the corresponding library.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm add @ai-sdk/xai
+</span></span></code></pre></td></tr></table></div></div><p>If you no longer need it, you can remove it with <code>pnpm remove @ai-sdk/xai</code>.</p><p>Next is the API key configuration. Create <code>.env.development</code> and <code>.env</code> files in the project root and write the respective API keys. (<code>.env</code> is for production, <code>.env.development</code> is for development).</p><p><code>.env.development</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-env data-lang=env><span class=line><span class=cl><span class=nv>GOOGLE_GENERATIVE_AI_API_KEY</span><span class=o>=</span>your-google-api-key
+</span></span><span class=line><span class=cl><span class=nv>XAI_API_KEY</span><span class=o>=</span>your-xai-api-key
+</span></span></code></pre></td></tr></table></div></div><p>If you want to change the LLM model, specify it in the file defining the agent (e.g., <code>src/mastra/agents/index.ts</code>) or the workflow file (e.g., <code>src/mastra/workflows/index.ts</code>).</p><p>For example, here&rsquo;s how to use Grok-2:</p><p>Example <code>src/mastra/agents/index.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>xai</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@ai-sdk/xai&#39;</span><span class=p>;</span> <span class=c1>// Import the xAI library
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>import</span> <span class=p>{</span> <span class=nx>Agent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/agent&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>weatherTool</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;../tools&#39;</span><span class=p>;</span> <span class=c1>// Also import the tool to be used
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>const</span> <span class=nx>weatherAgent</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Agent</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Weather Agent&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>instructions</span><span class=o>:</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>      You are a helpful weather assistant that provides accurate weather information.
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>      Your primary function is to help users get weather details for specific locations. When responding:
+</span></span></span><span class=line><span class=cl><span class=sb>      - Always ask for a location if none is provided
+</span></span></span><span class=line><span class=cl><span class=sb>      - If the location name isn’t in English, please translate it
+</span></span></span><span class=line><span class=cl><span class=sb>      - If giving a location with multiple parts (e.g. &#34;New York, NY&#34;), use the most relevant part (e.g. &#34;New York&#34;)
+</span></span></span><span class=line><span class=cl><span class=sb>      - Include relevant details like humidity, wind conditions, and precipitation
+</span></span></span><span class=line><span class=cl><span class=sb>      - Keep responses concise but informative
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>      Use the weatherTool to fetch current weather data.
+</span></span></span><span class=line><span class=cl><span class=sb>`</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>model</span>: <span class=kt>xai</span><span class=p>(</span><span class=s1>&#39;grok-2-latest&#39;</span><span class=p>),</span> <span class=c1>// Specify the model here!
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>tools</span><span class=o>:</span> <span class=p>{</span> <span class=nx>weatherTool</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>You can specify it similarly within a workflow.</p><p>Example <code>src/mastra/workflows/index.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>xai</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@ai-sdk/xai&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Agent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/agent&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Step</span><span class=p>,</span> <span class=nx>Workflow</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/workflows&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>z</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;zod&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>llm</span> <span class=o>=</span> <span class=nx>xai</span><span class=p>(</span><span class=s1>&#39;grok-2-latest&#39;</span><span class=p>);</span> <span class=c1>// Define the model to use here
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=lets-check-if-it-works>Let&rsquo;s check if it works</h2><p>Once the configuration is done, let&rsquo;s start the development server again.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm run dev
+</span></span></code></pre></td></tr></table></div></div><p>Access <a class=link href=http://localhost:4111/ target=_blank rel=noopener>http://localhost:4111/</a> in your browser, and the mastra interface should appear.</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_DllHdtTB78.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_DllHdtTB78_hu_523f3c38bccd80b5.webp 480w, /p/build-llm-workflow-with-mastra/Trae_DllHdtTB78_hu_b6bd473c52d66d37.webp 1024w" loading=lazy alt="weather agent selection screen" class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>You can select an agent and test it in a chat format.</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_8z5OEtWoym.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_8z5OEtWoym_hu_67c7256000ecd96a.webp 480w, /p/build-llm-workflow-with-mastra/Trae_8z5OEtWoym_hu_28642c119fbb0cc5.webp 1024w" loading=lazy alt="weather agent chat screen" class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>When using Grok-2, the answers might come back in English.</p><h2 id=implementing-the-think-tool>Implementing the &ldquo;think tool&rdquo;</h2><p>Next, let&rsquo;s implement an interesting tool: the &ldquo;think tool.&rdquo;</p><p>This is a technique introduced in an Anthropic article, suggesting that adding a &ldquo;thinking&rdquo; step before letting the LLM execute something can improve performance.
+(Reference: <a class=link href=https://www.anthropic.com/engineering/claude-think-tool target=_blank rel=noopener>The &ldquo;think&rdquo; tool: Enabling Claude to stop and think in complex tool use situations</a>)</p><p>This tool itself doesn&rsquo;t fetch external information or anything; it just mimics the process of &ldquo;thinking.&rdquo; However, it seems to be effective in cases requiring complex reasoning. Interesting, isn&rsquo;t it?</p><p>Let&rsquo;s create the think tool with mastra.</p><p>First, create a file to define the tool.</p><p><code>src/mastra/tools/thinkTool.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>createTool</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/tools&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>z</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;zod&#39;</span><span class=p>;</span> <span class=c1>// For input data validation
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>const</span> <span class=nx>thinkTool</span> <span class=o>=</span> <span class=nx>createTool</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=nx>id</span><span class=o>:</span> <span class=s1>&#39;think&#39;</span><span class=p>,</span> <span class=c1>// Tool ID
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>description</span><span class=o>:</span> <span class=s1>&#39;Use the tool to think about something. It will not obtain new information or change the database, but just append the thought to the log. Use it when complex reasoning or some cache memory is needed.&#39;</span><span class=p>,</span> <span class=c1>// Tool description
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>inputSchema</span>: <span class=kt>z.object</span><span class=p>({</span> <span class=c1>// Definition of the input the tool receives
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>thought</span>: <span class=kt>z.string</span><span class=p>().</span><span class=nx>describe</span><span class=p>(</span><span class=s1>&#39;A thought to think about.&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>  <span class=p>}),</span>
+</span></span><span class=line><span class=cl>  <span class=nx>outputSchema</span>: <span class=kt>z.object</span><span class=p>({}),</span> <span class=c1>// Definition of the data the tool outputs (empty this time)
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>execute</span>: <span class=kt>async</span> <span class=p>({</span> <span class=nx>context</span> <span class=p>})</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// Doesn&#39;t actually do anything
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;Thinking:&#39;</span><span class=p>,</span> <span class=nx>context</span><span class=p>.</span><span class=nx>thought</span><span class=p>);</span> <span class=c1>// Maybe log the thought content to the console
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>return</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>Next, create an agent that uses this think tool. The key is to instruct the agent in the prompt when to use the think tool.</p><p><code>src/mastra/agents/thinkAgent.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Agent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/agent&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>thinkTool</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;../tools/thinkTool&#39;</span><span class=p>;</span> <span class=c1>// Import the created thinkTool
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>import</span> <span class=p>{</span> <span class=nx>xai</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@ai-sdk/xai&#39;</span><span class=p>;</span> <span class=c1>// Also import the LLM model to use
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>const</span> <span class=nx>thinkAgent</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Agent</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Think Agent&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>instructions</span><span class=o>:</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>    ## Using the think tool
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>    Before taking any action or responding to the user after receiving tool results, use the think tool as a scratchpad to:
+</span></span></span><span class=line><span class=cl><span class=sb>    - List the specific rules that apply to the current request
+</span></span></span><span class=line><span class=cl><span class=sb>    - Check if all required information is collected
+</span></span></span><span class=line><span class=cl><span class=sb>    - Verify that the planned action complies with all policies
+</span></span></span><span class=line><span class=cl><span class=sb>    - Iterate over tool results for correctness
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>    Here are some examples of what to iterate over inside the think tool:
+</span></span></span><span class=line><span class=cl><span class=sb>    &lt;think_tool_example_1&gt;
+</span></span></span><span class=line><span class=cl><span class=sb>    User wants to [specific scenario]
+</span></span></span><span class=line><span class=cl><span class=sb>    - Need to verify: [key information]
+</span></span></span><span class=line><span class=cl><span class=sb>    - Check relevant rules: [list rules]
+</span></span></span><span class=line><span class=cl><span class=sb>    - Verify [important conditions]
+</span></span></span><span class=line><span class=cl><span class=sb>    - Plan: [outline steps]
+</span></span></span><span class=line><span class=cl><span class=sb>    &lt;/think_tool_example_1&gt;
+</span></span></span><span class=line><span class=cl><span class=sb>`</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>  <span class=nx>model</span>: <span class=kt>xai</span><span class=p>(</span><span class=s1>&#39;grok-2-latest&#39;</span><span class=p>),</span> <span class=c1>// Let&#39;s try Grok-2 here too
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>tools</span><span class=o>:</span> <span class=p>{</span> <span class=nx>thinkTool</span> <span class=p>}</span> <span class=c1>// Register this as a tool used by this agent
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>Finally, register the created tool and agent with mastra.</p><p><code>src/mastra/index.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Mastra</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/mastra&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>createLogger</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/logger&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>weatherWorkflow</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./workflows&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>weatherAgent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./agents&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>thinkAgent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./agents/thinkAgent&#39;</span><span class=p>;</span> <span class=c1>// Import the created thinkAgent
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>const</span> <span class=nx>mastra</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Mastra</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=nx>workflows</span><span class=o>:</span> <span class=p>{</span> <span class=nx>weatherWorkflow</span> <span class=p>},</span> <span class=c1>// Existing workflow
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>agents</span><span class=o>:</span> <span class=p>{</span> <span class=nx>weatherAgent</span><span class=p>,</span> <span class=nx>thinkAgent</span> <span class=p>},</span> <span class=c1>// Add the agent
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>logger</span>: <span class=kt>createLogger</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Mastra&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>level</span><span class=o>:</span> <span class=s1>&#39;info&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>}),</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>That completes the implementation of the think tool!</p><h2 id=checking-the-think-tools-operation>Checking the think tool&rsquo;s operation</h2><p>Let&rsquo;s start the development server again and check.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm run dev
+</span></span></code></pre></td></tr></table></div></div><p>Access <a class=link href=http://localhost:4111/ target=_blank rel=noopener>http://localhost:4111/</a> and this time, select the &ldquo;Think Agent.&rdquo;</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_rklEm6XM9m.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_rklEm6XM9m_hu_942fbf387f6e2674.webp 480w, /p/build-llm-workflow-with-mastra/Trae_rklEm6XM9m_hu_9f44214b9918d7a4.webp 1024w" loading=lazy alt="think agent selection screen" class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>When you give it an instruction, the think tool should run behind the scenes before providing a response.</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_kSY1rEClJW.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_kSY1rEClJW_hu_f16017b4d425c115.webp 480w, /p/build-llm-workflow-with-mastra/Trae_kSY1rEClJW_hu_215aa6865a0bf9ed.webp 1024w" loading=lazy alt="think agent chat screen" class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>With this, it might now be able to think more accurately, even for slightly complex tasks!</p><h2 id=implementing-a-workflow-to-create-a-prompt-that-clones-writing-style>Implementing a Workflow to Create a Prompt that Clones Writing Style</h2><p>Alright, now let&rsquo;s tackle a more advanced workflow that combines mastra&rsquo;s loop and evaluation features!</p><h3 id=goal-of-this-workflow-teaching-ai-your-writing-style>Goal of this Workflow: Teaching AI Your &ldquo;Writing Style&rdquo;</h3><p>The theme is &ldquo;Making the AI itself create an AI prompt that mimics the writing style of a given text.&rdquo; Doesn&rsquo;t it sound interesting, like making AI figure out how to use AI?</p><p>Lately, we often hear things like, &ldquo;I can&rsquo;t tell if this was written by AI or a human!&rdquo; If that&rsquo;s the case, maybe if we could teach AI the quirks of our own writing style and have it generate blog post drafts, it would reduce typing and make things easier? That thought was the inspiration for creating this workflow.</p><h3 id=preparation-adding-the-evaluation-library-and-registering-the-workflow>Preparation: Adding the Evaluation Library and Registering the Workflow</h3><p><strong>First, preparation: Add the evaluation library</strong></p><p>This workflow uses mastra&rsquo;s evaluation library to have another AI assess the quality of the generated prompts. Install it by running the following in your terminal:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-batch data-lang=batch><span class=line><span class=cl>pnpm add @mastra/evals
+</span></span></code></pre></td></tr></table></div></div><p><strong>Register the workflow with mastra</strong></p><p>Next, update the configuration file (<code>src/mastra/index.ts</code>) to make mastra aware of the workflow we&rsquo;re about to create (<code>clonePromptGeneratorWorkflow</code>).</p><p><code>src/mastra/index.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Mastra</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/mastra&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>createLogger</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/logger&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>weatherWorkflow</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./workflows&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// ↓ Import the new workflow
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>import</span> <span class=p>{</span> <span class=nx>clonePromptGeneratorWorkflow</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./workflows/clonePromptGeneratorWorkflow&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>weatherAgent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./agents&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>thinkAgent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;./agents/thinkAgent&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=kr>const</span> <span class=nx>mastra</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Mastra</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// ↓ Add the new workflow to the workflows object
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>workflows</span><span class=o>:</span> <span class=p>{</span> <span class=nx>weatherWorkflow</span><span class=p>,</span> <span class=nx>clonePromptGeneratorWorkflow</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nx>agents</span><span class=o>:</span> <span class=p>{</span> <span class=nx>weatherAgent</span><span class=p>,</span> <span class=nx>thinkAgent</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nx>logger</span>: <span class=kt>createLogger</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Mastra&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>level</span><span class=o>:</span> <span class=s1>&#39;info&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>}),</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div><p>Now we&rsquo;re ready!</p><h3 id=how-the-ai-improves-prompts-explaining-the-process-flow>How the AI Improves Prompts: Explaining the Process Flow</h3><p>Let&rsquo;s look at the actual flow of how the AI generates and improves the prompt.</p><ol><li><p>Prompt Creator Agent:
+First, it analyzes the &ldquo;example&rdquo; text you provide (<code>originalText</code>). It identifies the writer&rsquo;s characteristics (persona, style, common phrases, etc.) and creates the initial version of an &ldquo;impersonation instruction prompt&rdquo; telling another AI, &ldquo;Write like this person!&rdquo;</p></li><li><p>Theme Abstractor Agent:
+Next, it removes specific proper nouns (like mastra, Grok-2, etc.) from the example text and extracts a general &ldquo;abstracted theme,&rdquo; such as &ldquo;Steps for creating an AI processing flow using a software toolkit.&rdquo; This is to prevent the impersonation test from generating the exact same content as the example.</p></li><li><p>Text Generator Agent:
+Using the &ldquo;impersonation instruction prompt&rdquo; from step 1 and the &ldquo;abstracted theme&rdquo; extracted in step 2, it actually generates impersonated text. It&rsquo;s like saying, &ldquo;Write about the &lsquo;abstracted theme&rsquo; following the impersonation instruction prompt.&rdquo;</p></li><li><p>Evaluation AI (Authorship Similarity Judge/Metric):
+Now for the evaluation. It compares the example text with the impersonated text generated by the AI in step 3 and scores the &ldquo;writing style similarity&rdquo; from 0.0 (not similar at all) to 1.0 (identical!). It only looks at the &ldquo;writing style&rdquo;—word choice, sentence length, tone, punctuation usage, etc.—and doesn&rsquo;t assess the content&rsquo;s correctness.</p></li><li><p>Loop Decision & Feedback:</p><ul><li>If the evaluation score exceeds a predefined threshold (set as <code>SIMILARITY_THRESHOLD = 0.7</code> in the code), it&rsquo;s a &ldquo;pass!&rdquo; The workflow ends and outputs the successful &ldquo;impersonation instruction prompt.&rdquo;</li><li>If the score is below the threshold, it&rsquo;s &ldquo;needs improvement.&rdquo; The evaluation AI provides feedback explaining why the score is low (e.g., &ldquo;punctuation usage is not similar enough,&rdquo; &ldquo;tone is too formal&rdquo;). This feedback is sent back to the Prompt Creator Agent in step 1 with the instruction, &ldquo;Use this feedback to create a better prompt!&rdquo; and the process loops.</li></ul></li></ol><p>By repeating this loop, the AI iteratively improves the &ldquo;impersonation instruction prompt&rdquo; through trial and error, getting closer to generating text that matches the example&rsquo;s writing style.</p><p><strong>Tips:</strong></p><ul><li>Model Selection: The code uses <code>xai('grok-2-latest')</code>, but if you have access to more powerful models like <code>gemini('gemini-2.5-pro-exp-03-25')</code> (e.g., via Google AI Studio), try swapping it in the <code>model: llm</code> parts of each Agent and Metric. You might get much better results in a single loop!</li><li>Similarity Score Threshold: The <code>SIMILARITY_THRESHOLD</code> value (0.7) determines how strict the evaluation is. If the loop doesn&rsquo;t seem to end, try lowering it slightly. If you want higher accuracy, try raising it. Adjust it manually as needed.</li></ul><h3 id=lets-run-it-workflow-execution-steps>Let&rsquo;s Run It! Workflow Execution Steps</h3><p>With the development server running (<code>pnpm run dev</code>), access <a class=link href=http://localhost:4111/ target=_blank rel=noopener>http://localhost:4111/</a> in your browser.</p><p>Select &ldquo;Workflows&rdquo; from the left menu and choose the <code>clone-prompt-generator-workflow-with-eval</code> workflow we created.</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_xCr7Im1oMY.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_xCr7Im1oMY_hu_cb87b9a8b1a11d3f.webp 480w, /p/build-llm-workflow-with-mastra/Trae_xCr7Im1oMY_hu_7e30e7d904eb448f.webp 1024w" loading=lazy alt="Workflow selection screen" class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>You should see an input field labeled <code>OriginalText</code> in the &ldquo;Run&rdquo; tab on the right. Paste the text you want the AI to mimic (e.g., part of a blog post you previously wrote).</p><p><img src=/p/build-llm-workflow-with-mastra/Trae_bRgLzPZ7ea.webp width=1920 height=1032 srcset="/p/build-llm-workflow-with-mastra/Trae_bRgLzPZ7ea_hu_8f82ae0720adb291.webp 480w, /p/build-llm-workflow-with-mastra/Trae_bRgLzPZ7ea_hu_79a54b40e6c919b0.webp 1024w" loading=lazy alt="Workflow execution screen" class=gallery-image data-flex-grow=186 data-flex-basis=446px></p><p>After pasting the text, click the &ldquo;Submit&rdquo; button!</p><p>Now, just watch the logs flowing in your terminal (or the OUTPUT panel in VS Code, etc.). You should see the evaluation score and feedback displayed with each loop iteration.</p><h3 id=complete-workflow-code>Complete Workflow Code</h3><p>Here is the code for the complete working workflow:</p><p><code>src/mastra/workflows/clonePromptGeneratorWorkflow.ts</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span><span class=lnt>240
+</span><span class=lnt>241
+</span><span class=lnt>242
+</span><span class=lnt>243
+</span><span class=lnt>244
+</span><span class=lnt>245
+</span><span class=lnt>246
+</span><span class=lnt>247
+</span><span class=lnt>248
+</span><span class=lnt>249
+</span><span class=lnt>250
+</span><span class=lnt>251
+</span><span class=lnt>252
+</span><span class=lnt>253
+</span><span class=lnt>254
+</span><span class=lnt>255
+</span><span class=lnt>256
+</span><span class=lnt>257
+</span><span class=lnt>258
+</span><span class=lnt>259
+</span><span class=lnt>260
+</span><span class=lnt>261
+</span><span class=lnt>262
+</span><span class=lnt>263
+</span><span class=lnt>264
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ts data-lang=ts><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>xai</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@ai-sdk/xai&#39;</span><span class=p>;</span> <span class=c1>// or use gemini, openai, etc.
+</span></span></span><span class=line><span class=cl><span class=c1>// import { gemini } from &#39;@ai-sdk/google&#39;; // Example for using Gemini
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>import</span> <span class=p>{</span> <span class=nx>Agent</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/agent&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Step</span><span class=p>,</span> <span class=nx>Workflow</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/workflows&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>z</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;zod&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=kr>type</span> <span class=nx>LanguageModel</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/llm&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>MastraAgentJudge</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/evals/judge&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=p>{</span> <span class=nx>Metric</span><span class=p>,</span> <span class=kr>type</span> <span class=nx>MetricResult</span> <span class=p>}</span> <span class=kr>from</span> <span class=s1>&#39;@mastra/core/eval&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- Configuration ---
+</span></span></span><span class=line><span class=cl><span class=c1>// LLM model to use (change as needed)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>const</span> <span class=nx>llm</span> <span class=o>=</span> <span class=nx>xai</span><span class=p>(</span><span class=s1>&#39;grok-2-latest&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=c1>// const llm = gemini(&#39;gemini-2.5-pro-exp-03-25&#39;); // Example for using Gemini 2.5 Pro Experimental
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=c1>// Similarity score threshold to determine if it&#39;s the same author (adjustable)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>const</span> <span class=nx>SIMILARITY_THRESHOLD</span> <span class=o>=</span> <span class=mf>0.7</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Variable to store feedback for the Prompt Creator Agent
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>let</span> <span class=nx>feedbackForPromptCreator</span> <span class=o>=</span> <span class=s2>&#34;&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Loop counter
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>let</span> <span class=nx>iteration</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- Evaluation Related Definitions ---
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * Function to generate the prompt for the evaluation AI
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>generateSimilarityPrompt</span> <span class=o>=</span> <span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>originalText</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>generatedText</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>}</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>originalText</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>generatedText</span>: <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>})</span> <span class=o>=&gt;</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>You are an expert in comparative analysis of writing styles.
+</span></span></span><span class=line><span class=cl><span class=sb>Compare the provided &#34;Example Text&#34; and &#34;AI Generated Text&#34; and evaluate whether they appear to be written by the **same person**.
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>**Evaluation Criteria:**
+</span></span></span><span class=line><span class=cl><span class=sb>Focus on the following elements to determine the overall similarity in writing style:
+</span></span></span><span class=line><span class=cl><span class=sb>*   **Style:** First-person usage, tone (polite, casual, etc.), sentence endings (~desu, ~da, ~yone, etc. - consider equivalent English indicators like formality, slang)
+</span></span></span><span class=line><span class=cl><span class=sb>*   **Word Choice:** Preferred words, phrasing, frequency of technical terms
+</span></span></span><span class=line><span class=cl><span class=sb>*   **Text Structure:** Sentence length, paragraph usage, conjunction usage, logical flow
+</span></span></span><span class=line><span class=cl><span class=sb>*   **Rhythm/Tempo:** Punctuation usage, frequency of nominalization (or similar stylistic choices in English)
+</span></span></span><span class=line><span class=cl><span class=sb>*   **Emotional Expression:** Positive/negative sentiment, way of expressing emotions, presence of humor
+</span></span></span><span class=line><span class=cl><span class=sb>*   **Quirks:** Characteristic phrases, tendency for typos (if any)
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>**Important:** Evaluate only the similarity in **writing style**, not the topic or correctness of the content.
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>**Output Format:**
+</span></span></span><span class=line><span class=cl><span class=sb>Return the evaluation results in the following JSON format:
+</span></span></span><span class=line><span class=cl><span class=sb>*   \`similarityScore\`: A **numerical** score for writing style similarity between 0.0 (not similar at all) and 1.0 (looks exactly like the same person).
+</span></span></span><span class=line><span class=cl><span class=sb>*   \`reason\`: Briefly explain why you gave that score. If the score is low, point out specifically which aspects felt different.
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`json
+</span></span></span><span class=line><span class=cl><span class=sb>{
+</span></span></span><span class=line><span class=cl><span class=sb>  &#34;similarityScore&#34;: number (0.0 ~ 1.0),
+</span></span></span><span class=line><span class=cl><span class=sb>  &#34;reason&#34;: string
+</span></span></span><span class=line><span class=cl><span class=sb>}
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>---
+</span></span></span><span class=line><span class=cl><span class=sb>**Example Text:**
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb></span><span class=si>${</span><span class=nx>originalText</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>---
+</span></span></span><span class=line><span class=cl><span class=sb>**AI Generated Text:**
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb></span><span class=si>${</span><span class=nx>generatedText</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>\`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>---
+</span></span></span><span class=line><span class=cl><span class=sb>Follow the format above and output the evaluation result in JSON.
+</span></span></span><span class=line><span class=cl><span class=sb>`</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * Type definition for the evaluation result (zod schema)
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kr>const</span> <span class=nx>SimilarityEvaluationSchema</span> <span class=o>=</span> <span class=nx>z</span><span class=p>.</span><span class=kt>object</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>similarityScore</span>: <span class=kt>z.number</span><span class=p>().</span><span class=nx>min</span><span class=p>(</span><span class=mi>0</span><span class=p>).</span><span class=nx>max</span><span class=p>(</span><span class=mi>1</span><span class=p>).</span><span class=nx>describe</span><span class=p>(</span><span class=s2>&#34;Writing style similarity score (0.0 to 1.0)&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=nx>reason</span>: <span class=kt>z.string</span><span class=p>().</span><span class=nx>describe</span><span class=p>(</span><span class=s2>&#34;Reason for the evaluation&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=kr>type</span> <span class=nx>SimilarityEvaluation</span> <span class=o>=</span> <span class=nx>z</span><span class=p>.</span><span class=k>infer</span><span class=p>&lt;</span><span class=nt>typeof</span> <span class=na>SimilarityEvaluationSchema</span><span class=p>&gt;;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * Evaluator (Judge) Class
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kr>class</span> <span class=nx>AuthorshipSimilarityJudge</span> <span class=kr>extends</span> <span class=nx>MastraAgentJudge</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>constructor</span><span class=p>(</span><span class=nx>model</span>: <span class=kt>LanguageModel</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>super</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;Authorship Similarity Judge&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;You are an expert in comparative analysis of writing styles. Follow the given instructions to evaluate the similarity between two texts.&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>model</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kr>async</span> <span class=nx>evaluate</span><span class=p>(</span><span class=nx>originalText</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>generatedText</span>: <span class=kt>string</span><span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>SimilarityEvaluation</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>prompt</span> <span class=o>=</span> <span class=nx>generateSimilarityPrompt</span><span class=p>({</span> <span class=nx>originalText</span><span class=p>,</span> <span class=nx>generatedText</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// Utilize JSON mode or schema enforcement if supported by the model
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kr>const</span> <span class=nx>result</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>agent</span><span class=p>.</span><span class=nx>generate</span><span class=p>(</span><span class=nx>prompt</span><span class=p>,</span> <span class=p>{</span> <span class=nx>output</span>: <span class=kt>SimilarityEvaluationSchema</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=nx>result</span><span class=p>.</span><span class=kt>object</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>console</span><span class=p>.</span><span class=nx>error</span><span class=p>(</span><span class=s2>&#34;Failed to parse evaluation result. Returning raw text.&#34;</span><span class=p>,</span> <span class=nx>error</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// Fallback: If JSON parsing fails, handle it (e.g., return score 0)
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=kr>const</span> <span class=nx>fallbackResult</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>agent</span><span class=p>.</span><span class=nx>generate</span><span class=p>(</span><span class=nx>prompt</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span> <span class=nx>similarityScore</span>: <span class=kt>0.0</span><span class=p>,</span> <span class=nx>reason</span><span class=o>:</span> <span class=sb>`Invalid output format from evaluation AI: </span><span class=si>${</span><span class=nx>fallbackResult</span><span class=p>.</span><span class=nx>text</span><span class=si>}</span><span class=sb>`</span> <span class=p>};</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * Evaluation Metric Class
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=kr>interface</span> <span class=nx>AuthorshipSimilarityMetricResult</span> <span class=kr>extends</span> <span class=nx>MetricResult</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>info</span>: <span class=kt>SimilarityEvaluation</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>class</span> <span class=nx>AuthorshipSimilarityMetric</span> <span class=kr>extends</span> <span class=nx>Metric</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kr>private</span> <span class=nx>judge</span>: <span class=kt>AuthorshipSimilarityJudge</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>constructor</span><span class=p>(</span><span class=nx>model</span>: <span class=kt>LanguageModel</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>super</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=nx>judge</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>AuthorshipSimilarityJudge</span><span class=p>(</span><span class=nx>model</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kr>async</span> <span class=nx>measure</span><span class=p>(</span><span class=nx>originalText</span>: <span class=kt>string</span><span class=p>,</span> <span class=nx>generatedText</span>: <span class=kt>string</span><span class=p>)</span><span class=o>:</span> <span class=nx>Promise</span><span class=p>&lt;</span><span class=nt>AuthorshipSimilarityMetricResult</span><span class=p>&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>evaluationResult</span> <span class=o>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=nx>judge</span><span class=p>.</span><span class=nx>evaluate</span><span class=p>(</span><span class=nx>originalText</span><span class=p>,</span> <span class=nx>generatedText</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>score</span>: <span class=kt>evaluationResult.similarityScore</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>info</span>: <span class=kt>evaluationResult</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>};</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- Workflow Definition ---
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>const</span> <span class=nx>clonePromptGeneratorWorkflow</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Workflow</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>name</span><span class=o>:</span> <span class=s2>&#34;clone-prompt-generator-workflow-with-eval&#34;</span><span class=p>,</span> <span class=c1>// Workflow name
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>triggerSchema</span>: <span class=kt>z.object</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>        <span class=nx>originalText</span>: <span class=kt>z.string</span><span class=p>().</span><span class=nx>describe</span><span class=p>(</span><span class=s2>&#34;The original text written by the user to be cloned.&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=p>}),</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- Step 1: Generate Impersonation Instruction Prompt ---
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>const</span> <span class=nx>generateClonePromptStep</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Step</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>id</span><span class=o>:</span> <span class=s2>&#34;generate-clone-prompt&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>execute</span>: <span class=kt>async</span> <span class=p>({</span> <span class=nx>context</span> <span class=p>})</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>promptCreatorAgent</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Agent</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>            <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Prompt Creator Agent&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>instructions</span><span class=o>:</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>            # Instruction: Create the best &#34;Impersonation Text Generation Prompt&#34;
+</span></span></span><span class=line><span class=cl><span class=sb>            You are a Prompt Engineer AI. Your mission is to analyze the provided **[Example Text]**, accurately capture the writer&#39;s **characteristics (personality, writing style, quirks)**, and create a **&#34;General-purpose Instruction Prompt&#34;** that enables another AI to generate **human-like, natural text** impersonating that writer.
+</span></span></span><span class=line><span class=cl><span class=sb>            (Omitted... conditions and thought process for the prompt remain the same)
+</span></span></span><span class=line><span class=cl><span class=sb>            **Now, considering all the above, create the best &#34;Impersonation Text Generation Prompt&#34;.**
+</span></span></span><span class=line><span class=cl><span class=sb>            </span><span class=si>${</span><span class=nx>feedbackForPromptCreator</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>            `</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>model</span>: <span class=kt>llm</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>});</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>originalText</span> <span class=o>=</span> <span class=nx>context</span><span class=p>.</span><span class=nx>triggerData</span><span class=p>.</span><span class=nx>originalText</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;[generate-clone-prompt] Starting prompt generation.&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>result</span> <span class=o>=</span> <span class=k>await</span> <span class=nx>promptCreatorAgent</span><span class=p>.</span><span class=nx>generate</span><span class=p>(</span><span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>        [Example Text]:
+</span></span></span><span class=line><span class=cl><span class=sb>        </span><span class=si>${</span><span class=nx>originalText</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>        `</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;[generate-clone-prompt] Prompt generation complete.&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=sb>`</span><span class=si>${</span><span class=nx>result</span><span class=p>.</span><span class=nx>text</span><span class=si>}</span><span class=sb>`</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- Final Step: Output the Successful Prompt ---
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kr>const</span> <span class=nx>outputFinalPromptStep</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Step</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=nx>id</span><span class=o>:</span> <span class=s2>&#34;output-final-prompt&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>execute</span>: <span class=kt>async</span> <span class=p>({</span> <span class=nx>context</span> <span class=p>})</span> <span class=o>=&gt;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>finalPrompt</span> <span class=o>=</span> <span class=nx>context</span><span class=p>.</span><span class=nx>getStepResult</span><span class=p>(</span><span class=nx>generateClonePromptStep</span><span class=p>)</span> <span class=kr>as</span> <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;--------------------------------------------------&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;Workflow completed successfully!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;Successful Impersonation Instruction Prompt:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;--------------------------------------------------&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>finalPrompt</span><span class=p>);</span> <span class=c1>// Output the final prompt to the console
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s2>&#34;--------------------------------------------------&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>finalPrompt</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// --- Assembling the Workflow ---
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>clonePromptGeneratorWorkflow</span>
+</span></span><span class=line><span class=cl>    <span class=p>.</span><span class=nx>step</span><span class=p>(</span><span class=nx>generateClonePromptStep</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>.</span><span class=nx>until</span><span class=p>(</span><span class=kr>async</span> <span class=p>({</span> <span class=nx>context</span> <span class=p>})</span> <span class=o>=&gt;</span> <span class=p>{</span> <span class=c1>// Receives iteration
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>iteration</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`</span><span class=err>\</span><span class=sb>n--- Loop </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb> Start ---`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 1. Get the generated &#34;Impersonation Instruction Prompt&#34;
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kr>const</span> <span class=nx>generatedClonePrompt</span> <span class=o>=</span> <span class=nx>context</span><span class=p>.</span><span class=nx>getStepResult</span><span class=p>(</span><span class=nx>generateClonePromptStep</span><span class=p>)</span> <span class=kr>as</span> <span class=kt>string</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>originalText</span> <span class=o>=</span> <span class=nx>context</span><span class=p>.</span><span class=nx>triggerData</span><span class=p>.</span><span class=nx>originalText</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 2. Abstract the theme of originalText
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kr>const</span> <span class=nx>themeAbstractorAgent</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Agent</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>            <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Theme Abstractor Agent&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>instructions</span><span class=o>:</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>            Analyze the main theme or topic of the given text and express it in more general and abstract terms, **avoiding specific proper nouns, product names, technology names, service names, etc.**
+</span></span></span><span class=line><span class=cl><span class=sb>            The output should be only the description of the abstracted theme, without any other explanations or introductions.
+</span></span></span><span class=line><span class=cl><span class=sb>            Example: (Omitted...)
+</span></span></span><span class=line><span class=cl><span class=sb>          `</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>model</span>: <span class=kt>llm</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>});</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[Loop </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] Abstracting theme from originalText...`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>abstractionResult</span> <span class=o>=</span> <span class=k>await</span> <span class=nx>themeAbstractorAgent</span><span class=p>.</span><span class=nx>generate</span><span class=p>(</span><span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>        Abstract the theme of the following text:</span><span class=err>\</span><span class=sb>n---</span><span class=err>\</span><span class=sb>n</span><span class=si>${</span><span class=nx>originalText</span><span class=si>}</span><span class=err>\</span><span class=sb>n---
+</span></span></span><span class=line><span class=cl><span class=sb>        `</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>abstractedTheme</span> <span class=o>=</span> <span class=nx>abstractionResult</span><span class=p>.</span><span class=nx>text</span><span class=p>.</span><span class=nx>trim</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[Loop </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] Abstracted theme: </span><span class=si>${</span><span class=nx>abstractedTheme</span><span class=si>}</span><span class=sb>`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 3. Generate impersonated text on the abstracted theme
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kr>const</span> <span class=nx>textGeneratorAgent</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Agent</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>            <span class=nx>name</span><span class=o>:</span> <span class=s1>&#39;Text Generator Agent&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>instructions</span>: <span class=kt>generatedClonePrompt</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>model</span>: <span class=kt>llm</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>});</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[Loop </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] Generating text on the abstracted theme...`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>generatedTextResult</span> <span class=o>=</span> <span class=k>await</span> <span class=nx>textGeneratorAgent</span><span class=p>.</span><span class=nx>generate</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=sb>`Create an explanation about &#34;</span><span class=si>${</span><span class=nx>abstractedTheme</span><span class=si>}</span><span class=sb>&#34; that is easy for beginners to understand.`</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>generatedText</span> <span class=o>=</span> <span class=nx>generatedTextResult</span><span class=p>.</span><span class=nx>text</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 4. Evaluate similarity
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[Loop </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] Evaluating similarity between generated text and example text...`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>authorshipMetric</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>AuthorshipSimilarityMetric</span><span class=p>(</span><span class=nx>llm</span><span class=p>);</span> <span class=c1>// Use the evaluation metric
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kr>const</span> <span class=nx>metricResult</span> <span class=o>=</span> <span class=k>await</span> <span class=nx>authorshipMetric</span><span class=p>.</span><span class=nx>measure</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=nx>originalText</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>generatedText</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>currentScore</span> <span class=o>=</span> <span class=nx>metricResult</span><span class=p>.</span><span class=nx>score</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kr>const</span> <span class=nx>reason</span> <span class=o>=</span> <span class=nx>metricResult</span><span class=p>.</span><span class=nx>info</span><span class=p>.</span><span class=nx>reason</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[Loop </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] Evaluation Result - Score: </span><span class=si>${</span><span class=nx>currentScore</span><span class=p>.</span><span class=nx>toFixed</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span><span class=si>}</span><span class=sb>, Reason: </span><span class=si>${</span><span class=nx>reason</span><span class=si>}</span><span class=sb>`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 5. Decide whether to continue or stop the loop based on the evaluation score
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kr>const</span> <span class=nx>shouldStop</span> <span class=o>=</span> <span class=nx>currentScore</span> <span class=o>&gt;=</span> <span class=nx>SIMILARITY_THRESHOLD</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=nx>shouldStop</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>feedbackForPromptCreator</span> <span class=o>=</span> <span class=sb>`
+</span></span></span><span class=line><span class=cl><span class=sb>          ---
+</span></span></span><span class=line><span class=cl><span class=sb>          **Feedback from previous attempt (Loop </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>):**
+</span></span></span><span class=line><span class=cl><span class=sb>          The result of writing about &#34;</span><span class=si>${</span><span class=nx>abstractedTheme</span><span class=si>}</span><span class=sb>&#34; using the generated &#34;Impersonation Instruction Prompt&#34; did not meet the target similarity score with the example text (Score: </span><span class=si>${</span><span class=nx>currentScore</span><span class=p>.</span><span class=nx>toFixed</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span><span class=si>}</span><span class=sb>).
+</span></span></span><span class=line><span class=cl><span class=sb>          The evaluation AI pointed out the following issues. Please improve the prompt based on this feedback.
+</span></span></span><span class=line><span class=cl><span class=sb>          **Failed Prompt:**
+</span></span></span><span class=line><span class=cl><span class=sb>          \`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>          </span><span class=si>${</span><span class=nx>generatedClonePrompt</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>          \`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>          **Evaluation AI&#39;s Comments:**
+</span></span></span><span class=line><span class=cl><span class=sb>          \`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>          </span><span class=si>${</span><span class=nx>reason</span><span class=si>}</span><span class=sb>
+</span></span></span><span class=line><span class=cl><span class=sb>          \`\`\`
+</span></span></span><span class=line><span class=cl><span class=sb>          ---
+</span></span></span><span class=line><span class=cl><span class=sb>            `</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[Loop </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] Score is below threshold. Creating feedback and retrying.`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`[Loop </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb>] Score is above threshold (</span><span class=si>${</span><span class=nx>SIMILARITY_THRESHOLD</span><span class=si>}</span><span class=sb>). Stopping loop.`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=nx>feedbackForPromptCreator</span> <span class=o>=</span> <span class=s2>&#34;&#34;</span><span class=p>;</span> <span class=c1>// Clear feedback on success
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`--- Loop </span><span class=si>${</span><span class=nx>iteration</span><span class=si>}</span><span class=sb> End ---`</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>shouldStop</span><span class=p>;</span> <span class=c1>// true stops the loop, false continues
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span> <span class=nx>generateClonePromptStep</span><span class=p>)</span> <span class=c1>// Specify the step(s) to loop over
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>.</span><span class=nx>then</span><span class=p>(</span><span class=nx>outputFinalPromptStep</span><span class=p>)</span> <span class=c1>// Specify the step to execute after the loop ends
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>.</span><span class=nx>commit</span><span class=p>();</span> <span class=c1>// Finalize the workflow definition
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=kr>export</span> <span class=p>{</span> <span class=nx>clonePromptGeneratorWorkflow</span> <span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=done-the-impersonation-instruction-prompt-and-how-to-use-it>Done! The &ldquo;Impersonation Instruction Prompt&rdquo; and How to Use It</h3><p><strong>Final Output</strong></p><p>When the workflow successfully achieves a score above the threshold and finishes, the final, perfected &ldquo;Impersonation Instruction Prompt&rdquo; will be printed to your terminal console.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>--------------------------------------------------
+</span></span><span class=line><span class=cl>Workflow completed successfully!
+</span></span><span class=line><span class=cl>Final Similarity Score: 0.75 (Example)
+</span></span><span class=line><span class=cl>Successful Impersonation Instruction Prompt:
+</span></span><span class=line><span class=cl>--------------------------------------------------
+</span></span><span class=line><span class=cl># Instruction Prompt
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>You are an AI that generates human-like, natural text based on [Article Content], impersonating a person with the following characteristics.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>## Characteristics of the Person to Impersonate:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>### Personality:
+</span></span><span class=line><span class=cl>*   Basic stance: Polite and friendly. Strives to convey information efficiently.
+</span></span><span class=line><span class=cl>*   Speaking style: Gentle demeanor. Uses expressions like &#34;It&#39;s kind of like...&#34;, but explains procedures briskly.
+</span></span><span class=line><span class=cl>*   Thinking: Logical yet flexible. Practical.
+</span></span><span class=line><span class=cl>... (The rest of the AI-generated prompt follows) ...
+</span></span><span class=line><span class=cl>--------------------------------------------------
+</span></span></code></pre></td></tr></table></div></div><p>You can copy this outputted prompt and use it for future text generation (even in other tools like ChatGPT or Claude). This should allow you to have the AI create drafts that mimic your writing style!</p><h3 id=conclusion>Conclusion</h3><p>This time, we used mastra&rsquo;s loop and evaluation features to create a workflow that teaches an AI your writing style and automatically generates and refines the prompt needed for that impersonation.</p><p>It was a slightly meta approach—making AI figure out how to use AI—but if it works well, it could lead to more efficient writing. It might be particularly worthwhile for those who want to write blog posts or reports in their own style but find the typing laborious.</p><p>mastra is quite a deep and interesting library! I encourage you all to try building various workflows with it.</p></section><footer class=article-footer><section class=article-tags><a href=/en/tags/mastra/>Mastra</a>
+<a href=/en/tags/typescript/>TypeScript</a>
+<a href=/en/tags/grok/>Grok</a>
+<a href=/en/tags/gemini/>Gemini</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/en/p/free-ai-models-create-threejs-game/><div class=article-image><img src=/p/free-ai-models-create-threejs-game/free-ai-models-create-threejs-game.e58640b9f9c13966bf9452e6e067ce58_hu_2de51dcfcd3d618.webp width=250 height=150 loading=lazy alt="Featured image of post Trying to Develop a Three.js Game Using the Latest Free AI Models Gemini 2.5 Pro and Trae Builder!" data-key=free-ai-models-create-threejs-game data-hash="md5-5YZAufnBOWa/lFLm4GfOWA=="></div><div class=article-details><h2 class=article-title>Trying to Develop a Three.js Game Using the Latest Free AI Models Gemini 2.5 Pro and Trae Builder!</h2></div></a></article><article class=has-image><a href=/en/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/><div class=article-image><img src=/p/registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code/xai_payment.73082bdeae438bad3640804a6a26137b_hu_d6b0f5dfbe541e27.webp width=250 height=150 loading=lazy alt="Featured image of post Registering for xAI (Grok API) and Using It with VSCode Extensions (Cody, Cline, Roo Code)" data-key=registering-xai-grok-api-and-using-it-with-vscode-extensions-cody-cline-roo-code data-hash="md5-cwgr3q5Di602QIBKaiYTew=="></div><div class=article-details><h2 class=article-title>Registering for xAI (Grok API) and Using It with VSCode Extensions (Cody, Cline, Roo Code)</h2></div></a></article><article class=has-image><a href=/en/p/rovo-dev-cli-guide-wsl2-blender/><div class=article-image><img src=/p/rovo-dev-cli-guide-wsl2-blender/rovo-dev-cli-guide-wsl2-blender.53c9331e345d1bef53c80de3491be75f_hu_8a9726256bf4bc98.webp width=250 height=150 loading=lazy alt="Featured image of post A Practical Guide to Rovo Dev CLI: How to Use It Comfortably with VSCode and WSL2" data-key=rovo-dev-cli-guide-wsl2-blender data-hash="md5-U8kzHjRdG+9TyA3jSRvnXw=="></div><div class=article-details><h2 class=article-title>A Practical Guide to Rovo Dev CLI: How to Use It Comfortably with VSCode and WSL2</h2></div></a></article><article class=has-image><a href=/en/p/roblox-ts-template-for-modern-development/><div class=article-image><img src=/p/roblox-ts-template-for-modern-development/roblox-ts-template-for-modern-development.7af396fd154e0b9d345e3a313784cbbd_hu_f03d539097d9cc41.webp width=250 height=150 loading=lazy alt="Featured image of post A Modern Development Environment Template for Roblox (TypeScript) and VSCode" data-key=roblox-ts-template-for-modern-development data-hash="md5-evOW/RVOC500XjoxN4TLvQ=="></div><div class=article-details><h2 class=article-title>A Modern Development Environment Template for Roblox (TypeScript) and VSCode</h2></div></a></article><article class=has-image><a href=/en/p/roblox-luau-template-for-modern-development/><div class=article-image><img src=/p/roblox-luau-template-for-modern-development/roblox-luau-template-for-modern-development.7af396fd154e0b9d345e3a313784cbbd_hu_f03d539097d9cc41.webp width=250 height=150 loading=lazy alt="Featured image of post A Modern Development Environment Template for Roblox (Luau) and VSCode" data-key=roblox-luau-template-for-modern-development data-hash="md5-evOW/RVOC500XjoxN4TLvQ=="></div><div class=article-details><h2 class=article-title>A Modern Development Environment Template for Roblox (Luau) and VSCode</h2></div></a></article></div></div></aside><link rel=stylesheet href=/scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"takoyakisoft",siteName:"TakoyakiSoft",apikey:"eL3QpmMQaI2omMQ6bzIOJQaX35h7aYJz4zB1kn3puW2xAkjuN7N5rx2kq0WNeOrC",api:"https://disqus.skk.moe/disqus/",admin:"takoyakisoft",adminLabel:"takoyaki"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
+2024 -
+2025 TakoyakiSoft</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

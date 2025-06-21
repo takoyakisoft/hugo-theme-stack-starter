@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MCP on TakoyakiSoft</title><link>https://takoyakisoft.com/en/tags/mcp/</link><description>Recent content in MCP on TakoyakiSoft</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 19 Jun 2025 15:05:00 +0900</lastBuildDate><atom:link href="https://takoyakisoft.com/en/tags/mcp/index.xml" rel="self" type="application/rss+xml"/><item><title>A Practical Guide to Rovo Dev CLI: How to Use It Comfortably with VSCode and WSL2</title><link>https://takoyakisoft.com/en/p/rovo-dev-cli-guide-wsl2-blender/</link><pubDate>Thu, 19 Jun 2025 15:05:00 +0900</pubDate><guid>https://takoyakisoft.com/en/p/rovo-dev-cli-guide-wsl2-blender/</guid><description>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/rovo-dev-cli-guide-wsl2-blender.webp" alt="Featured image of post A Practical Guide to Rovo Dev CLI: How to Use It Comfortably with VSCode and WSL2" />&lt;p>Hello there!&lt;/p>
+&lt;p>By the way, I&amp;rsquo;m even using Rovo Dev CLI&amp;rsquo;s AI assistant feature to write this article. Pretty handy, right?&lt;/p>
+&lt;p>Today, I&amp;rsquo;m going to walk you through Atlassian&amp;rsquo;s AI development agent, &amp;ldquo;Rovo Dev CLI.&amp;rdquo;&lt;/p>
+&lt;p>It&amp;rsquo;s a tool similar to the popular &amp;ldquo;Claude Code.&amp;rdquo; You can use it in your terminal to chat with an AI, get help with coding, generate tests, ask for refactoring, and much more. And the best part? It&amp;rsquo;s currently free to use during its beta period.&lt;/p>
+&lt;p>However, if you try to use it directly in Windows PowerShell, you&amp;rsquo;ll run into issues with garbled Japanese characters&amp;hellip;&lt;/p>
+&lt;p>But don&amp;rsquo;t worry!
+In this article, I&amp;rsquo;ll cover everything from the basic usage to a slick solution for that garbled text problem using &amp;ldquo;WSL2&amp;rdquo; and &amp;ldquo;VSCode.&amp;rdquo; We&amp;rsquo;ll even dive into an advanced &amp;ldquo;MCP integration&amp;rdquo; technique that lets you command an AI to perform 3D modeling. I&amp;rsquo;ll provide concrete steps for everything.&lt;/p>
+&lt;h3 id="what-is-rovo-dev-cli">What is Rovo Dev CLI?
+&lt;/h3>&lt;p>Rovo Dev CLI is a command-line AI assistant developed by Atlassian, the company famous for Jira and Confluence.&lt;/p>
+&lt;p>When I asked Rovo Dev itself, &amp;ldquo;What model are you using?&amp;rdquo;, it told me it uses Anthropic&amp;rsquo;s Claude family.&lt;/p>
+&lt;h3 id="for-windows-users-start-here-wsl2-setup">For Windows Users: Start Here! WSL2 Setup
+&lt;/h3>&lt;p>If you&amp;rsquo;re using Rovo Dev CLI on Windows, I strongly recommend using WSL2 (Windows Subsystem for Linux 2).
+As I mentioned earlier, this is because using it directly in PowerShell can lead to garbled Japanese text.&lt;/p>
+&lt;h4 id="wsl2-installation-and-configuration">WSL2 Installation and Configuration
+&lt;/h4>&lt;ol>
+&lt;li>Install WSL2&lt;/li>
+&lt;/ol>
+&lt;p>Open &amp;ldquo;PowerShell&amp;rdquo; and run this command.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">wsl&lt;/span> &lt;span class="p">-&lt;/span>&lt;span class="n">-install&lt;/span> &lt;span class="n">-d&lt;/span> &lt;span class="n">Ubuntu&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="mf">24.04&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In my environment, I had to restart my PC for WSL to start up correctly. If you run into trouble, give that a try.&lt;/p>
+&lt;ol start="2">
+&lt;li>WSL2 Initial Setup&lt;/li>
+&lt;/ol>
+&lt;p>Once the installation is complete, Ubuntu will launch. Set up your username and password.&lt;/p>
+&lt;ol start="3">
+&lt;li>Set Up Convenient Mirrored Networking Mode&lt;/li>
+&lt;/ol>
+&lt;p>By configuring WSL2&amp;rsquo;s new &amp;ldquo;mirrored&amp;rdquo; mode, the network is shared between Windows and WSL2, allowing you to access &lt;code>localhost&lt;/code> from either side.
+This will be incredibly useful for the MCP integration I&amp;rsquo;ll explain later.&lt;/p>
+&lt;p>Create a file named &lt;code>.wslconfig&lt;/code> in your Windows user folder (&lt;code>C:\Users\your-username&lt;/code>) and add the following content.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ini" data-lang="ini">&lt;span class="line">&lt;span class="cl">&lt;span class="k">[wsl2]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">networkingMode&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">mirrored&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>You can also do the same from the &amp;ldquo;WSL Settings&amp;rdquo; menu.&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/wslsettings_mirrored.webp"
+width="1346"
+height="853"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/wslsettings_mirrored_hu_d9bde27503199c09.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/wslsettings_mirrored_hu_e3a460c1274db487.webp 1024w"
+loading="lazy"
+alt="WSL Settings Mirrored"
+class="gallery-image"
+data-flex-grow="157"
+data-flex-basis="378px"
+>&lt;/p>
+&lt;ol start="4">
+&lt;li>Restart WSL2&lt;/li>
+&lt;/ol>
+&lt;p>To apply the settings, run this command in PowerShell.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-powershell" data-lang="powershell">&lt;span class="line">&lt;span class="cl">&lt;span class="n">wsl&lt;/span> &lt;span class="p">-&lt;/span>&lt;span class="n">-shutdown&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>After that, start WSL2 (Ubuntu) again.&lt;/p>
+&lt;p>Now your WSL2 environment is all set!
+In the next step, we&amp;rsquo;ll connect to this WSL2 environment from VSCode to make things even more comfortable.&lt;/p>
+&lt;h3 id="lets-connect-to-wsl2-from-vscode">Let&amp;rsquo;s Connect to WSL2 from VSCode
+&lt;/h3>&lt;p>From here on out, we&amp;rsquo;ll be doing everything using the VSCode WSL extension.&lt;/p>
+&lt;h4 id="vscode-wsl-extension-installation-and-connection-steps">VSCode WSL Extension Installation and Connection Steps
+&lt;/h4>&lt;ol>
+&lt;li>Install VSCode&lt;/li>
+&lt;/ol>
+&lt;p>If you haven&amp;rsquo;t already, download and install it from the &lt;a class="link" href="https://code.visualstudio.com/" target="_blank" rel="noopener"
+>official website&lt;/a>.&lt;/p>
+&lt;ol start="2">
+&lt;li>Install the WSL Extension&lt;/li>
+&lt;/ol>
+&lt;p>Launch VSCode, go to the Extensions tab on the left (Ctrl+Shift+X), search for &amp;ldquo;WSL,&amp;rdquo; and install it.&lt;/p>
+&lt;ol start="3">
+&lt;li>Connect to WSL2&lt;/li>
+&lt;/ol>
+&lt;p>Click the green icon in the bottom-left corner of the VSCode window and select &amp;ldquo;Connect to WSL using Distro&amp;hellip;&amp;rdquo;.
+&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_WBcZxHa7dq.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_WBcZxHa7dq_hu_32d522f9ee87f2f0.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_WBcZxHa7dq_hu_bc26e0a0fef78f01.webp 1024w"
+loading="lazy"
+alt="Connect to WSL using Distro…"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;ol start="4">
+&lt;li>Select Ubuntu-24.04&lt;/li>
+&lt;/ol>
+&lt;p>Choose the Ubuntu-24.04 distribution we just installed.&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ZY48s5zfnI.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ZY48s5zfnI_hu_649fc219f7f3a0c2.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ZY48s5zfnI_hu_76245b7a39596d1e.webp 1024w"
+loading="lazy"
+alt="Ubuntu-24.04"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;ol start="5">
+&lt;li>Open the Terminal&lt;/li>
+&lt;/ol>
+&lt;p>Go to the VSCode menu and select &amp;ldquo;Terminal&amp;rdquo; -&amp;gt; &amp;ldquo;New Terminal,&amp;rdquo; or use the shortcut &lt;code>Ctrl+`&lt;/code> to open the terminal.
+You can also open it as shown in the image.
+&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ITaou93KJA.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ITaou93KJA_hu_9a20e5f852c191f9.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_ITaou93KJA_hu_e44f23638998901a.webp 1024w"
+loading="lazy"
+alt="Open bash terminal"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;p>Now you&amp;rsquo;re ready to access WSL2&amp;rsquo;s Ubuntu from within VSCode!
+Let&amp;rsquo;s perform all subsequent operations in this VSCode terminal.
+Editing and creating files is also a breeze since you can use the VSCode editor.&lt;/p>
+&lt;h3 id="installation-and-initial-setup">Installation and Initial Setup
+&lt;/h3>&lt;ol>
+&lt;li>Install ACLI (Atlassian CLI)&lt;/li>
+&lt;/ol>
+&lt;p>Rovo Dev is used via ACLI, Atlassian&amp;rsquo;s common tool. First, let&amp;rsquo;s install it on our WSL2 Ubuntu.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Install required packages&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt-get install -y wget gnupg2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Set up the APT repository&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Create directory for the key&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mkdir -p -m &lt;span class="m">755&lt;/span> /etc/apt/keyrings
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Download the public key and convert it to GPG format&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget -nv -O- https://acli.atlassian.com/gpg/public-key.asc &lt;span class="p">|&lt;/span> sudo gpg --dearmor -o /etc/apt/keyrings/acli-archive-keyring.gpg
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Set permissions for the key file&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo chmod go+r /etc/apt/keyrings/acli-archive-keyring.gpg
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Add the repository information to APT&amp;#39;s configuration&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;deb [arch=&lt;/span>&lt;span class="k">$(&lt;/span>dpkg --print-architecture&lt;span class="k">)&lt;/span>&lt;span class="s2"> signed-by=/etc/apt/keyrings/acli-archive-keyring.gpg] https://acli.atlassian.com/linux/deb stable main&amp;#34;&lt;/span> &lt;span class="p">|&lt;/span> sudo tee /etc/apt/sources.list.d/acli.list &amp;gt; /dev/null
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Install ACLI&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install -y acli
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>If you&amp;rsquo;re using a different OS, you can find instructions on the official &lt;a class="link" href="https://developer.atlassian.com/cloud/acli/guides/install-acli/" target="_blank" rel="noopener"
+>Install and update&lt;/a> page.&lt;/p>
+&lt;ol start="2">
+&lt;li>Get an Atlassian API Token and Authenticate&lt;/li>
+&lt;/ol>
+&lt;p>Next, let&amp;rsquo;s get an API token to log in with your Atlassian account.&lt;/p>
+&lt;ol>
+&lt;li>Go to your &lt;a class="link" href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" rel="noopener"
+>Atlassian ID profile&lt;/a>.&lt;/li>
+&lt;li>Click &amp;ldquo;Create API token&amp;rdquo; and create a token with a descriptive name (e.g., &lt;code>rovo-dev-cli&lt;/code>).&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_0jJE2KADTx.webp"
+width="1020"
+height="831"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_0jJE2KADTx_hu_5ae329d25921ff9a.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_0jJE2KADTx_hu_b6800cc2d16130e5.webp 1024w"
+loading="lazy"
+alt="Manage API tokens screen"
+class="gallery-image"
+data-flex-grow="122"
+data-flex-basis="294px"
+>&lt;/p>
+&lt;ol start="3">
+&lt;li>The generated token is only displayed once, so be sure to copy and save it somewhere safe!&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_Nb3KGfQ2yp.webp"
+width="1020"
+height="831"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_Nb3KGfQ2yp_hu_4f397613aae13f7a.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/chrome_Nb3KGfQ2yp_hu_e4edfcd1e5c3dea.webp 1024w"
+loading="lazy"
+alt="Create API token"
+class="gallery-image"
+data-flex-grow="122"
+data-flex-basis="294px"
+>&lt;/p>
+&lt;p>Once you have the token, run this command in the terminal to authenticate.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">acli rovodev auth login
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Enter your email address and paste the API token you just copied to complete the authentication.&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_d3pJFXWTQN.webp"
+width="1260"
+height="860"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_d3pJFXWTQN_hu_d460bb5fecbfdf8a.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/Code_d3pJFXWTQN_hu_fe12b8998d5cfe4e.webp 1024w"
+loading="lazy"
+alt="acli rovodev auth login"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="351px"
+>&lt;/p>
+&lt;ol start="3">
+&lt;li>Launch!&lt;/li>
+&lt;/ol>
+&lt;p>Alright, it&amp;rsquo;s finally time to start the AI agent.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">acli rovodev run
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Running this will switch your terminal to an interactive chat mode with the AI. How exciting!&lt;/p>
+&lt;h3 id="good-to-know-basic-usage">Good to Know! Basic Usage
+&lt;/h3>&lt;p>Rovo Dev CLI is packed with features that will make your development work much easier.&lt;/p>
+&lt;h4 id="custom-prompts-custom-instructions">Custom Prompts (Custom Instructions)
+&lt;/h4>&lt;p>Repeating the same requests every time can be a bit tedious. That&amp;rsquo;s where custom prompts come in handy. You can give the AI background knowledge in advance, similar to the &lt;code>CLAUDE.md&lt;/code> file in the Claude desktop app.&lt;/p>
+&lt;p>There are three ways to set this up:&lt;/p>
+&lt;ol>
+&lt;li>Global Config File
+Write your instructions in &lt;code>~/.rovodev/config.yml&lt;/code>. These are system-wide instructions.&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-yaml" data-lang="yaml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">additionalSystemPrompt&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">|&lt;/span>&lt;span class="sd">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> You are an expert in Python and TypeScript.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> When writing code, always include tests.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="sd"> Provide explanations concisely and in English.&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="2">
+&lt;li>Global Agent File
+Write instructions for the AI to read in a file called &lt;code>~/.rovodev/.agent.md&lt;/code>. Since it&amp;rsquo;s Markdown, you can be more detailed.&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-markdown" data-lang="markdown">&lt;span class="line">&lt;span class="cl">&lt;span class="gh"># Developer Guidelines
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gh">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">## Coding Style
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">&lt;/span>&lt;span class="k">-&lt;/span> Use 2 spaces for indentation.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> Function names should be in camelCase.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> Class names should be in PascalCase.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">## Testing Policy
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">&lt;/span>&lt;span class="k">-&lt;/span> Unit tests are mandatory.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> Use mocks to speed up tests.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="3">
+&lt;li>Project-Specific Instructions
+Create an &lt;code>.agent.md&lt;/code> file in the root of your current repository. This is useful for writing rules to be shared with your team. For personal settings, I recommend using &lt;code>.agent.local.md&lt;/code>, which you can exclude from Git version control.&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-markdown" data-lang="markdown">&lt;span class="line">&lt;span class="cl">&lt;span class="gh"># Project-Specific Guidelines
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gh">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">This project is a web application using Next.js and TypeScript.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">## Architecture
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">&lt;/span>&lt;span class="k">-&lt;/span> pages/ - Page components for routing
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> components/ - Reusable UI components
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> lib/ - Utility functions and helpers
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> styles/ - CSS modules and global styles
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">## Development Rules
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="gu">&lt;/span>&lt;span class="k">-&lt;/span> Create components as functional components.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> Use React Hooks for state management.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">-&lt;/span> Use SWR for API requests.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>You can combine all these settings, and the AI will consider all instructions when responding. Writing effective custom instructions will help you get higher-quality answers from the AI.&lt;/p>
+&lt;h4 id="example-commands">Example Commands
+&lt;/h4>&lt;p>In interactive mode, you can make requests like these:&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>summarize this file ./path/to/file.js&lt;/code>: Summarize this file!&lt;/li>
+&lt;li>&lt;code>add unit tests for UserService&lt;/code>: Write unit tests for UserService!&lt;/li>
+&lt;li>&lt;code>Refactor this complex function to be more readable&lt;/code>: Rewrite this complex function to be more readable!&lt;/li>
+&lt;/ul>
+&lt;p>The AI understands your directory structure, so it can grasp the context just by being given a file path, which is pretty smart.&lt;/p>
+&lt;h4 id="list-of-useful-interactive-mode-commands">List of Useful Interactive Mode Commands
+&lt;/h4>&lt;p>Interactive mode has many other useful commands to make your interactions with the AI even smoother. If you want to know more about a specific command, just type &lt;code>/command-name help&lt;/code> in interactive mode.&lt;/p>
+&lt;h4 id="session-management-sessions">Session Management: &lt;code>/sessions&lt;/code>
+&lt;/h4>&lt;p>This command manages your sessions. It&amp;rsquo;s incredibly useful because it allows you to separate conversation histories and contexts.&lt;/p>
+&lt;ul>
+&lt;li>Key Features:
+&lt;ul>
+&lt;li>Session Management: Create and switch between multiple conversation sessions.&lt;/li>
+&lt;li>Context Persistence: Each session remembers its own conversation history.&lt;/li>
+&lt;li>Workspace Isolation: You can separate sessions by project.&lt;/li>
+&lt;li>Session Forking: You can even branch off from the current conversation to create a new session.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>When you restart Rovo Dev CLI with the &lt;code>--restore&lt;/code> option, it will automatically restore your previous session.&lt;/p>
+&lt;h4 id="clear-session-clear">Clear Session: &lt;code>/clear&lt;/code>
+&lt;/h4>&lt;p>This command erases the entire conversation history of the current session, resetting it to a blank slate. Be careful, as this action cannot be undone. If you want to keep the history, use the &lt;code>/sessions&lt;/code> command to create a new session or the &lt;code>/prune&lt;/code> command, which I&amp;rsquo;ll introduce next.&lt;/p>
+&lt;h4 id="optimize-session-prune">Optimize Session: &lt;code>/prune&lt;/code>
+&lt;/h4>&lt;p>Use this when your conversation starts getting long. It&amp;rsquo;s a smart command that saves tokens by trimming the history while keeping the important parts. It removes things like the results of tools (programs) executed by the AI to slim down the history.&lt;/p>
+&lt;h4 id="pre-defined-instruction-templates-instructions">Pre-defined Instruction Templates: &lt;code>/instructions&lt;/code>
+&lt;/h4>&lt;p>This allows you to run pre-defined instruction templates for common tasks like code reviews or documentation writing.&lt;/p>
+&lt;ul>
+&lt;li>Built-in Instruction Templates:
+&lt;ul>
+&lt;li>Code review and analysis&lt;/li>
+&lt;li>Documentation generation and improvement&lt;/li>
+&lt;li>Unit test creation and coverage improvement&lt;/li>
+&lt;li>Confluence page summarization&lt;/li>
+&lt;li>Jira issue analysis&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>You can also create your own custom templates!&lt;/p>
+&lt;ol>
+&lt;li>Create an &lt;code>instructions.yml&lt;/code> file in &lt;code>.rovodev/&lt;/code>.&lt;/li>
+&lt;li>Create a Markdown file with the instruction content inside the &lt;code>.rovodev&lt;/code> folder.&lt;/li>
+&lt;/ol>
+&lt;p>To use them, just type &lt;code>/instructions&lt;/code> to see a list of templates.&lt;/p>
+&lt;h4 id="memory-management-memory">Memory Management: &lt;code>/memory&lt;/code>
+&lt;/h4>&lt;p>This feature lets you have Rovo Dev CLI remember important information about your projects and settings.&lt;/p>
+&lt;ul>
+&lt;li>Types of Memory:
+&lt;ul>
+&lt;li>Project Memory: Saved in the current directory (&lt;code>.agent.md&lt;/code> and &lt;code>.agent.local.md&lt;/code>).&lt;/li>
+&lt;li>User Memory: Saved globally in your home directory (&lt;code>~/.rovodev/agent.md&lt;/code>).&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>Memory files are in Markdown format, and they&amp;rsquo;re useful for writing down project rules, coding conventions, and so on.
+You can quickly add a note by typing something like &lt;code># Here's something to remember&lt;/code>.&lt;/p>
+&lt;h4 id="feedback-feedback">Feedback: &lt;code>/feedback&lt;/code>
+&lt;/h4>&lt;p>A command for sending feedback or bug reports about Rovo Dev CLI.&lt;/p>
+&lt;h4 id="usage-usage">Usage: &lt;code>/usage&lt;/code>
+&lt;/h4>&lt;p>Check your LLM token usage for the day. Make sure you&amp;rsquo;re not overdoing it!&lt;/p>
+&lt;h4 id="exit-exit">Exit: &lt;code>/exit&lt;/code>
+&lt;/h4>&lt;p>Exits the application. &lt;code>/quit&lt;/code> or &lt;code>/q&lt;/code> also work.&lt;/p>
+&lt;h3 id="advanced-integration-between-wsl2-and-windows">[Advanced] Integration Between WSL2 and Windows
+&lt;/h3>&lt;p>Thanks to the VSCode WSL extension, file sharing and application integration between WSL2 and Windows become incredibly smooth.&lt;/p>
+&lt;h4 id="utilizing-mirrored-networking-mode">Utilizing Mirrored Networking Mode
+&lt;/h4>&lt;p>The WSL2 mirrored networking mode we set up earlier really shines here.&lt;/p>
+&lt;ol>
+&lt;li>Port Sharing: You can directly access a server running in WSL2 (e.g., &lt;code>localhost:3000&lt;/code>) from a browser on Windows.&lt;/li>
+&lt;li>Shared Network Services: You can use services on the same network from both Windows and WSL2.&lt;/li>
+&lt;li>Integration with MCP Server: This feature is especially crucial for the MCP integration we&amp;rsquo;ll discuss next. It allows Rovo Dev CLI in WSL2 to seamlessly connect to the Blender MCP server running on Windows.&lt;/li>
+&lt;/ol>
+&lt;p>This integration lets you get the best of both worlds: the user-friendly interface of Windows and the powerful command line of Linux.&lt;/p>
+&lt;h3 id="advanced-lets-make-ai-control-blender-with-mcp">[Advanced] Let&amp;rsquo;s Make AI Control Blender with MCP!
+&lt;/h3>&lt;p>Time for the grand finale! Let&amp;rsquo;s use Rovo Dev&amp;rsquo;s powerful MCP (Model Context Protocol) feature to control Blender on Windows from WSL2. We&amp;rsquo;ll be using a handy open-source tool called &lt;a class="link" href="https://github.com/ahujasid/blender-mcp" target="_blank" rel="noopener"
+>BlenderMCP&lt;/a>.&lt;/p>
+&lt;h4 id="what-is-blendermcp">What is BlenderMCP?
+&lt;/h4>&lt;p>BlenderMCP is a tool that connects AI with Blender. With it, the AI can directly control Blender to perform 3D modeling, create scenes, manipulate objects, and more!&lt;/p>
+&lt;p>Key Features:&lt;/p>
+&lt;ul>
+&lt;li>Bidirectional Communication: Connects AI and Blender.&lt;/li>
+&lt;li>Object Manipulation: Create, move, and delete objects.&lt;/li>
+&lt;li>Material Control: Apply colors and set textures.&lt;/li>
+&lt;li>Scene Inspection: The AI can check the current state of the Blender scene.&lt;/li>
+&lt;li>Code Execution: The AI can send and execute Python code in Blender.&lt;/li>
+&lt;/ul>
+&lt;h4 id="setup-steps">Setup Steps
+&lt;/h4>&lt;p>BlenderMCP consists of two parts:&lt;/p>
+&lt;ol>
+&lt;li>Windows Side: Blender Add-on (&lt;code>addon.py&lt;/code>): Installed in Blender on Windows.&lt;/li>
+&lt;li>WSL2 Side: MCP Server: Installed on WSL2&amp;rsquo;s Ubuntu and used by Rovo Dev CLI.&lt;/li>
+&lt;/ol>
+&lt;p>Let&amp;rsquo;s get it set up!&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>Windows Side: Install the Blender Add-on&lt;/p>
+&lt;ul>
+&lt;li>Download &lt;code>addon.py&lt;/code> from the &lt;a class="link" href="https://github.com/ahujasid/blender-mcp" target="_blank" rel="noopener"
+>BlenderMCP GitHub repository&lt;/a>.&lt;/li>
+&lt;li>Open Blender, go to &amp;ldquo;Edit&amp;rdquo; &amp;gt; &amp;ldquo;Preferences&amp;rdquo; &amp;gt; &amp;ldquo;Add-ons.&amp;rdquo;&lt;/li>
+&lt;li>Click &amp;ldquo;Install&amp;hellip;&amp;rdquo; and select the &lt;code>addon.py&lt;/code> file you downloaded.&lt;/li>
+&lt;li>Enable the add-on by checking the box next to &amp;ldquo;Blender MCP.&amp;rdquo;&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_XHT4DlH7dm.webp"
+width="722"
+height="612"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_XHT4DlH7dm_hu_1e1089fa1e9d5605.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_XHT4DlH7dm_hu_6b98af69362a6108.webp 1024w"
+loading="lazy"
+alt="Blender add-on installation screen"
+class="gallery-image"
+data-flex-grow="117"
+data-flex-basis="283px"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>WSL2 Side: Install the uv Package Manager&lt;/p>
+&lt;ul>
+&lt;li>In your WSL2 Ubuntu terminal, run this command:&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Install the uv package manager&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">curl -LsSf https://astral.sh/uv/install.sh &lt;span class="p">|&lt;/span> sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>WSL2 Side: Configure Rovo Dev CLI&lt;/p>
+&lt;ul>
+&lt;li>Let&amp;rsquo;s use VSCode to edit the configuration file:&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">EDITOR&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;code&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">acli rovodev mcp
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>This will open the configuration file in VSCode. Add the following content. This setting tells Rovo Dev CLI to automatically start BlenderMCP when it launches.&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;mcpServers&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;blender&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;command&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;uvx&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;args&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;blender-mcp&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>Windows Side: Configure Connection in Blender&lt;/p>
+&lt;ul>
+&lt;li>In Blender, open the 3D View&amp;rsquo;s sidebar (press the N key if it&amp;rsquo;s not visible).&lt;/li>
+&lt;li>Find the &amp;ldquo;BlenderMCP&amp;rdquo; tab and click &amp;ldquo;Connect to MCP server.&amp;rdquo;&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_kgZFzsrLFE.webp"
+width="1128"
+height="772"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_kgZFzsrLFE_hu_dbe03a72ecde385f.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_kgZFzsrLFE_hu_cfe479678a85ae3b.webp 1024w"
+loading="lazy"
+alt="Connect to BlenderMCP server"
+class="gallery-image"
+data-flex-grow="146"
+data-flex-basis="350px"
+>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>WSL2 Side: Control Blender with Rovo Dev CLI!&lt;/p>
+&lt;ul>
+&lt;li>In your VSCode integrated terminal on WSL2, run &lt;code>acli rovodev run&lt;/code>.&lt;/li>
+&lt;li>Try asking the AI something like this:&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Using Blender, please create a cat.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>And what happens? A cube should appear in your Blender window (running on Windows) and then move upwards, all based on the command from WSL2. This is the power of the mirrored networking we set up earlier. WSL2 recognizes Blender running on Windows as a server on &lt;code>localhost&lt;/code>, enabling seamless integration. Amazing!&lt;/p>
+&lt;p>&lt;img src="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_mcp_cat.webp"
+width="1200"
+height="900"
+srcset="https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_mcp_cat_hu_adefcca0e568179.webp 480w, https://takoyakisoft.com/p/rovo-dev-cli-guide-wsl2-blender/blender_mcp_cat_hu_6a420429aded544a.webp 1024w"
+loading="lazy"
+alt="3D model of a cat"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h4 id="mcp-troubleshooting">MCP Troubleshooting
+&lt;/h4>&lt;p>If things aren&amp;rsquo;t working, check these points:&lt;/p>
+&lt;ol>
+&lt;li>Connection Issues: Is the Blender add-on enabled? Did you click &amp;ldquo;Connect to MCP server&amp;rdquo; in Blender&amp;rsquo;s MCP tab?&lt;/li>
+&lt;li>WSL2 Mirrored Networking: Double-check that mirrored mode is properly enabled.&lt;/li>
+&lt;li>Try a Restart: If connection errors persist, restarting both Rovo Dev CLI and Blender might be the quickest fix.&lt;/li>
+&lt;li>Command Execution: Do not run the &lt;code>uvx blender-mcp&lt;/code> command directly. Rovo Dev CLI runs it automatically based on the configuration file.&lt;/li>
+&lt;/ol>
+&lt;p>The most crucial thing is that the network connection between WSL2 and Windows is correctly set up with mirrored mode.&lt;/p>
+&lt;h3 id="summary">Summary
+&lt;/h3>&lt;p>In this article, we covered a wide range of topics, from the basics of Atlassian&amp;rsquo;s new AI development tool, &amp;ldquo;Rovo Dev CLI,&amp;rdquo; to tips for Windows users to use it comfortably with WSL2, and even an advanced Blender integration using MCP.&lt;/p>
+&lt;p>The initial setup might seem a bit involved, but once your environment is configured, the development experience of receiving powerful AI support without ever leaving your terminal is truly revolutionary.&lt;/p>
+&lt;p>Rovo Dev CLI is still in beta, so I&amp;rsquo;m excited to see how it will continue to evolve.
+I hope this article helps you discover a new style of development.&lt;/p>
+&lt;p>Give this futuristic tool a try. Happy coding! 🎉&lt;/p></description></item></channel></rss>

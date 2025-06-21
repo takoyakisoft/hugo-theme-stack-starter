@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on TakoyakiSoft</title><link>https://takoyakisoft.com/page/</link><description>Recent content in Pages on TakoyakiSoft</description><generator>Hugo -- gohugo.io</generator><language>ja</language><lastBuildDate>Sat, 01 Feb 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://takoyakisoft.com/page/index.xml" rel="self" type="application/rss+xml"/><item><title>プライバシーポリシー</title><link>https://takoyakisoft.com/privacy-policy-app/</link><pubDate>Sat, 01 Feb 2025 00:00:00 +0000</pubDate><guid>https://takoyakisoft.com/privacy-policy-app/</guid><description>&lt;h2 id="個人情報の取り扱い">個人情報の取り扱い
+&lt;/h2>&lt;p>本アプリでは、ユーザーの皆様にセーブデータの保存機能を提供しています。セーブデータはユーザーのデバイスに保存されます。法令に基づく場合を除き、第三者への提供は行いません。&lt;/p>
+&lt;h2 id="広告配信について">広告配信について
+&lt;/h2>&lt;p>本アプリではGoogle AdMobを利用して広告を表示しております。AdMobは利用状況に応じた広告を配信するため、デバイスの広告識別子（Advertising ID）や利用データを収集する場合があります。収集されるデータは個人を特定できない形式で扱われます。&lt;/p>
+&lt;p>広告のパーソナライズ設定の変更やデータ収集のオプトアウトは、デバイスの設定メニューより行うことができます。詳細は&lt;a class="link" href="https://support.google.com/admob/answer/6128543" target="_blank" rel="noopener"
+>Google AdMobのポリシー&lt;/a>をご確認ください。&lt;/p>
+&lt;h2 id="データ収集と利用について">データ収集と利用について
+&lt;/h2>&lt;p>本アプリではサービス品質向上のため、以下のデータを収集する場合があります：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>利用データ:&lt;/strong> 機能の使用頻度等&lt;/li>
+&lt;/ul>
+&lt;p>収集データは匿名化された状態で分析に利用され、個人の特定には使用されません。&lt;/p>
+&lt;h2 id="第三者提供について">第三者提供について
+&lt;/h2>&lt;p>収集した情報は以下の場合を除き第三者に提供することはありません：&lt;/p>
+&lt;ul>
+&lt;li>ユーザーご自身の同意がある場合&lt;/li>
+&lt;li>法令に基づく要請がある場合&lt;/li>
+&lt;/ul>
+&lt;h2 id="データの保存期間">データの保存期間
+&lt;/h2>&lt;p>収集したデータは、サービス提供に必要な期間保存します。&lt;/p>
+&lt;h2 id="セキュリティ">セキュリティ
+&lt;/h2>&lt;p>収集したデータは、不正アクセス、紛失、改ざん、漏洩から保護するために、適切なセキュリティ対策を講じています。&lt;/p>
+&lt;h2 id="プライバシーポリシーの変更">プライバシーポリシーの変更
+&lt;/h2>&lt;p>本ポリシーは必要に応じて改定される場合があります。重要な変更がある場合はアプリ内で通知いたします。&lt;/p>
+&lt;h2 id="お問い合わせ">お問い合わせ
+&lt;/h2>&lt;p>プライバシーに関するご質問は下記までご連絡ください：
+&lt;a class="link" href="../contact/" >お問い合わせ&lt;/a>&lt;/p></description></item><item><title>アーカイブ</title><link>https://takoyakisoft.com/archives/</link><pubDate>Wed, 16 Oct 2024 00:00:00 +0000</pubDate><guid>https://takoyakisoft.com/archives/</guid><description/></item><item><title>お問い合わせ</title><link>https://takoyakisoft.com/contact/</link><pubDate>Wed, 16 Oct 2024 00:00:00 +0000</pubDate><guid>https://takoyakisoft.com/contact/</guid><description>&lt;h2 id="お問い合わせフォーム">お問い合わせフォーム
+&lt;/h2>&lt;p>&lt;a class="link" href="https://forms.gle/9xfBqQwDCLACzdCm8" target="_blank" rel="noopener"
+>Google Forms&lt;/a>&lt;/p></description></item><item><title>サイトについて</title><link>https://takoyakisoft.com/about/</link><pubDate>Wed, 16 Oct 2024 00:00:00 +0000</pubDate><guid>https://takoyakisoft.com/about/</guid><description>&lt;p>このサイトは、様々なソフトウェアの使い方を解説しています。Godot Engineを使ったゲーム開発、CLIP STUDIO PAINTでのイラスト制作、PowerToysを活用したWindowsのカスタマイズなど、初心者の方にも分かりやすい解説を心がけています。特に、&lt;a class="link" href="https://www.youtube.com/@takoyaki-soft" target="_blank" rel="noopener"
+>TakoyakiSoft&lt;/a> で公開している動画コンテンツと合わせて、より深く理解することができます。&lt;/p>
+&lt;h2 id="youtubeチャンネルについて">YouTubeチャンネルについて
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.youtube.com/@takoyaki-soft" target="_blank" rel="noopener"
+>TakoyakiSoft&lt;/a>では、Godotを使ったゲーム開発、CLIP STUDIO PAINTでのイラスト制作、PowerToysを活用したWindowsのカスタマイズなど、様々なソフトウェアの使い方を解説する動画を公開しています。週に1回のペースで動画を更新していますので、ぜひチャンネル登録をお願いします！&lt;/p>
+&lt;h2 id="運営者について">運営者について
+&lt;/h2>&lt;p>プログラミングに携わってきた経験を活かし、初心者の方にも分かりやすく、そして実践的なスキルが身につくように解説していきます。&lt;/p>
+&lt;p>誰かの役に立ちたいという思いから、情報発信を続けています。求められていないアドバイスをしてしまうこともありましたが、ブログとYouTubeを通して、本当に情報を探している人に届けることができるようになりました。&lt;/p></description></item><item><title>プライバシーポリシー</title><link>https://takoyakisoft.com/privacy-policy/</link><pubDate>Wed, 16 Oct 2024 00:00:00 +0000</pubDate><guid>https://takoyakisoft.com/privacy-policy/</guid><description>&lt;h2 id="個人情報の利用目的">個人情報の利用目的
+&lt;/h2>&lt;p>当サイトでは、お問い合わせ時等にお名前やメールアドレス等の個人情報をご提供いただく場合がございます。取得した個人情報は、お問い合わせへの回答や必要な情報を電子メール等でご連絡するために利用し、これらの目的以外では利用いたしません。&lt;/p>
+&lt;h2 id="広告について">広告について
+&lt;/h2>&lt;p>当サイトでは、第三者配信の広告サービス（Googleアドセンス）を利用しております。広告配信事業者は、ユーザーの興味に応じた広告を表示するために、クッキー（Cookie）を使用することがあります。クッキーによりお客様のコンピュータを識別できますが、お客様個人を特定するものではありません。&lt;/p>
+&lt;p>Cookieを無効にする方法やGoogleアドセンスに関する詳細は「&lt;a class="link" href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener"
+>広告 – ポリシーと規約 – Google&lt;/a>」をご確認ください。&lt;/p>
+&lt;h2 id="アクセス解析ツールについて">アクセス解析ツールについて
+&lt;/h2>&lt;p>当サイトでは、以下のアクセス解析ツールを利用しています。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Cloudflare Web Analytics:&lt;/strong> プライバシーを重視しており、CookieやlocalStorageなどのクライアントサイドの状態を一切使用しません。トラフィックデータは匿名で収集されており、個人を特定するものではありません。&lt;/li>
+&lt;li>&lt;strong>Google Analytics:&lt;/strong> Googleが提供するアクセス解析サービスです。トラフィックデータの収集のためにCookieを使用しています。Google Analyticsのプライバシーポリシーについては、&lt;a class="link" href="https://policies.google.com/privacy" target="_blank" rel="noopener"
+>Googleのプライバシーポリシー&lt;/a>をご確認ください。&lt;/li>
+&lt;/ul>
+&lt;h2 id="amazonアソシエイトについて">Amazonアソシエイトについて
+&lt;/h2>&lt;p>当サイトは、Amazon.co.jpを宣伝しリンクすることによって紹介料を獲得できる、Amazonアソシエイト・プログラムに参加しています。当サイト内のAmazon.co.jpのリンクから商品をご購入いただくと、当サイトに紹介料が支払われます。&lt;/p>
+&lt;p>Amazonアソシエイト・プログラムを通じて収集される情報は、お客様の購入履歴や個人情報を特定するものではありません。また、当サイトはAmazonアソシエイト・プログラムを通じてお客様の個人情報にアクセスすることはありません。Amazon.co.jpのプライバシーポリシーについては、「&lt;a class="link" href="https://www.amazon.co.jp/gp/help/customer/display.html?nodeId=201909010" target="_blank" rel="noopener"
+>Amazon.co.jp プライバシー規約&lt;/a>」をご確認ください。&lt;/p>
+&lt;p>なお、当サイトで紹介する商品やサービスについてのご質問や問題に関しては、Amazon.co.jpまたは該当の販売元にお問い合わせくださいますようお願いいたします。&lt;/p>
+&lt;h2 id="disqusについて">Disqusについて
+&lt;/h2>&lt;p>当サイトでは、コメント機能として外部サービスのDisqusを利用しています。Disqusは、コメント投稿の際にユーザーの情報を収集する場合があります。詳しくは&lt;a class="link" href="https://help.disqus.com/en/articles/1717103-disqus-privacy-policy" target="_blank" rel="noopener"
+>Disqusのプライバシーポリシー&lt;/a>をご確認ください。&lt;/p>
+&lt;h2 id="クッキーcookieについて">クッキー（Cookie）について
+&lt;/h2>&lt;p>当サイトでは、ユーザー体験の向上やアクセス状況の分析などを目的として、クッキー（Cookie）を使用しています。クッキーは、ウェブサイトがお客様のコンピュータに保存する小さなテキストファイルです。クッキーによってお客様のコンピュータを識別することはできますが、お客様個人を特定することはできません。&lt;/p>
+&lt;p>お客様は、ブラウザの設定を変更することでクッキーの利用を拒否することができます。ただし、クッキーを無効にした場合、当サイトの一部の機能が正常に動作しない可能性がありますので、ご了承ください。&lt;/p></description></item><item><title>免責事項</title><link>https://takoyakisoft.com/disclaimer/</link><pubDate>Wed, 16 Oct 2024 00:00:00 +0000</pubDate><guid>https://takoyakisoft.com/disclaimer/</guid><description>&lt;h2 id="情報の正確性について">情報の正確性について
+&lt;/h2>&lt;p>当サイトでは、正確かつ最新の情報を提供するよう努めておりますが、その内容の正確性、完全性、有用性を保証するものではありません。掲載された情報に基づいて行われた行動により生じた損害等について、当サイトは一切の責任を負いません。&lt;/p>
+&lt;h2 id="外部リンクについて">外部リンクについて
+&lt;/h2>&lt;p>当サイトからリンクやバナー等により他のサイトへ移動された場合、移動先サイトで提供される情報、サービス等について当サイトは一切の責任を負いません。移動先でのトラブルや損害についても同様とします。&lt;/p>
+&lt;h2 id="免責の範囲">免責の範囲
+&lt;/h2>&lt;p>当サイトの利用に関連して利用者または第三者に生じた損害について、当サイト運営者は一切の責任を負いません。また、予告なしにコンテンツの変更・削除、サイトの運営中断・中止を行うことがあります。&lt;/p></description></item><item><title>利用規約</title><link>https://takoyakisoft.com/terms-of-service/</link><pubDate>Wed, 16 Oct 2024 00:00:00 +0000</pubDate><guid>https://takoyakisoft.com/terms-of-service/</guid><description>&lt;h2 id="はじめに">はじめに
+&lt;/h2>&lt;p>当サイト（以下、「当サイト」といいます）は、アプリやWebサービスの使い方を説明し、ゲーム作成に役立つツールの習得を支援する情報を提供しています。本利用規約（以下、「本規約」といいます）は、当サイトの利用条件を定めるものです。ご利用の際は、本規約に同意したものとみなされます。&lt;/p>
+&lt;h2 id="著作権について">著作権について
+&lt;/h2>&lt;p>当サイトに掲載されている文章、画像、動画、音声、プログラム等（以下、「コンテンツ」といいます）の著作権は、特に明記のない限り当サイト運営者に帰属します。法律で認められている場合を除き、無断での転載・複製・販売・出版等の二次利用を禁止いたします。&lt;/p>
+&lt;p>当サイトは、著作権や肖像権の侵害を目的とするものではありません。掲載されている内容や画像等に問題がある場合は、恐れ入りますが&lt;a class="link" href="../contact/" >お問い合わせ&lt;/a>よりご連絡ください。速やかに対応いたします。&lt;/p>
+&lt;h2 id="リンクについて">リンクについて
+&lt;/h2>&lt;p>当サイトは、原則としてリンクフリーです。リンクを設定する際の許可や連絡は不要です。ただし、以下の点にご留意ください。&lt;/p>
+&lt;ul>
+&lt;li>当サイトへのリンクであることを明確にしてください。&lt;/li>
+&lt;li>フレーム内で当サイトのコンテンツが表示されるなど、当サイトの内容であることが不明確となるリンクの仕方はご遠慮ください。&lt;/li>
+&lt;/ul>
+&lt;h2 id="禁止事項">禁止事項
+&lt;/h2>&lt;p>当サイトのご利用にあたり、以下の行為を禁止いたします。&lt;/p>
+&lt;ul>
+&lt;li>当サイトの運営を妨害する行為&lt;/li>
+&lt;li>他の利用者、第三者、または当サイトに損害や不利益を与える行為&lt;/li>
+&lt;li>公序良俗に反する行為、またはその恐れのある行為&lt;/li>
+&lt;li>法令または本規約に違反する行為&lt;/li>
+&lt;/ul>
+&lt;h2 id="免責事項">免責事項
+&lt;/h2>&lt;p>当サイトのコンテンツや情報については、正確性や安全性に十分配慮しておりますが、その完全性を保証するものではありません。当サイトの利用により発生したいかなる損害についても、一切の責任を負いかねますので、あらかじめご了承ください。&lt;/p></description></item><item><title>SNSのリンク</title><link>https://takoyakisoft.com/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://takoyakisoft.com/links/</guid><description/></item><item><title>検索</title><link>https://takoyakisoft.com/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://takoyakisoft.com/search/</guid><description/></item></channel></rss>
