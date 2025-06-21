@@ -27,15 +27,13 @@ Roblox（Luau）でVSCodeを使ったモダンな開発環境のテンプレー�
 - パッケージマネージャー: [Wally](https://github.com/UpliftGames/wally)
 - RojoとWallyのマネージャー:　[Rokit](https://github.com/rojo-rbx/rokit)
 
-{{< notice warning >}}
-CI/CDは入ってないです: [CI/CD](https://github.com/Roblox/place-ci-cd-demo)
-{{< /notice >}}
+> [!WARNING]
+> CI/CDは入ってないです: [CI/CD](https://github.com/Roblox/place-ci-cd-demo)
 
 # インストール
 
-{{< notice tip >}}
-[roblox-rojo-wally-template](https://github.com/takoyakisoft/roblox-rojo-wally-template)リポジトリの"Use this template"ボタンから使えます。
-{{< /notice >}}
+> [!TIP]
+> "Use this template"ボタンから使えます。
 
 ## Rokitのインストール
 
@@ -86,9 +84,8 @@ wally-package-types -s sourcemap.json DevPackages/
 
 「Rojo: Open Menu」
 
-{{< notice note >}}
-初めてならRoblox Studioを起動してから、Install Roblox Studio Plugin
-{{< /notice >}}
+> [!NOTE]
+> 初めてならRoblox Studioを起動して、Install Roblox Studio Plugin
 
 「▶ default.project.json」
 
@@ -122,4 +119,4 @@ wally.tomlをVSCodeで編集します。
 
 # 参考
 
-{{< youtube IJDg6tRJmHo >}}
+[How Big Studios Develop on Roblox](https://www.youtube.com/watch?v=IJDg6tRJmHo)

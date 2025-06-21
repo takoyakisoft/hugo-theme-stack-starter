@@ -3,6 +3,81 @@
 */
 
 :root {
-    --zh-font-family: "Noto Sans JP", "Noto Serif JP"; 
-    --font-weight: 900; // 太字を指定
+    --zh-font-family: "Noto Sans JP", "Noto Serif JP";
+    --font-weight: 900;
+}
+
+:root,
+html[data-scheme="light"] {
+  --gh-alert-note-bg-color: #f6f8fa;
+  --gh-alert-note-border-color: #0969da;
+  --gh-alert-note-text-color: #1f2328;
+  --gh-alert-tip-bg-color: #f6f8fa;
+  --gh-alert-tip-border-color: #1f883d;
+  --gh-alert-tip-text-color: #1f2328;
+  --gh-alert-important-bg-color: #f6f8fa;
+  --gh-alert-important-border-color: #8250df;
+  --gh-alert-important-text-color: #1f2328;
+  --gh-alert-warning-bg-color: #f6f8fa;
+  --gh-alert-warning-border-color: #9a6700;
+  --gh-alert-warning-text-color: #1f2328;
+  --gh-alert-caution-bg-color: #f6f8fa;
+  --gh-alert-caution-border-color: #d1242f;
+  --gh-alert-caution-text-color: #1f2328;
+}
+
+html[data-scheme="dark"] {
+  --gh-alert-note-bg-color: #0d1117;
+  --gh-alert-note-border-color: #2f81f7;
+  --gh-alert-note-text-color: #c9d1d9;
+  --gh-alert-tip-bg-color: #0d1117;
+  --gh-alert-tip-border-color: #238636;
+  --gh-alert-tip-text-color: #c9d1d9;
+  --gh-alert-important-bg-color: #0d1117;
+  --gh-alert-important-border-color: #a371f7;
+  --gh-alert-important-text-color: #c9d1d9;
+  --gh-alert-warning-bg-color: #0d1117;
+  --gh-alert-warning-border-color: #bb8009;
+  --gh-alert-warning-text-color: #c9d1d9;
+  --gh-alert-caution-bg-color: #0d1117;
+  --gh-alert-caution-border-color: #f85149;
+  --gh-alert-caution-text-color: #c9d1d9;
+}
+
+.alert {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-left: .25em solid #888;
+  border-radius: .25rem;
+  color: inherit;
+
+  > :first-child {
+    margin-top: 0;
+  }
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  p.alert-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5em;
+  }
+
+  $alert-types: "note", "tip", "important", "warning", "caution";
+
+  @each $type in $alert-types {
+    &.alert-#{$type} {
+      background-color: var(--gh-alert-#{$type}-bg-color);
+      border-left-color: var(--gh-alert-#{$type}-border-color);
+      color: var(--gh-alert-#{$type}-text-color);
+
+      .alert-heading {
+        color: var(--gh-alert-#{$type}-border-color);
+      }
+    }
+  }
 }

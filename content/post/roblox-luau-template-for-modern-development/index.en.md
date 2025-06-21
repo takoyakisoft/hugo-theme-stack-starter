@@ -17,27 +17,27 @@ tags:
 
 [roblox-rojo-wally-template](https://github.com/takoyakisoft/roblox-rojo-wally-template)
 
+[English](README.md) [日本語](README.ja.md)
+
 # What is this?
 
-This is a template for a modern development environment using VSCode for Roblox (Luau).
+This is a template for a modern development environment for Roblox (Luau) using VSCode.
 
-- Syncing from VSCode 👉 Roblox Studio: [Rojo](https://github.com/rojo-rbx/rojo)
+- VSCode 👉 Roblox Studio Sync: [Rojo](https://github.com/rojo-rbx/rojo)
 - Linter: [Selene](https://github.com/Kampfkarren/selene)
 - Formatter: [StyLua](https://github.com/JohnnyMorganz/StyLua)
 - Package Manager: [Wally](https://github.com/UpliftGames/wally)
 - Manager for Rojo and Wally: [Rokit](https://github.com/rojo-rbx/rokit)
 
-{{< notice warning >}}
-This template does not include CI/CD: [CI/CD Demo](https://github.com/Roblox/place-ci-cd-demo)
-{{< /notice >}}
+> [!WARNING]
+> CI/CD is not included: [CI/CD](https://github.com/Roblox/place-ci-cd-demo)
 
 # Installation
 
-{{< notice tip >}}
-You can use this template by clicking the "Use this template" button on the [roblox-rojo-wally-template](https://github.com/takoyakisoft/roblox-rojo-wally-template) repository.
-{{< /notice >}}
+> [!TIP]
+> You can use this via the "Use this template" button.
 
-## Install Rokit
+## Installing Rokit
 
 Windows (PowerShell)
 
@@ -51,7 +51,7 @@ macOS / Linux
 curl -fsSL https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | sh
 ```
 
-## Install Rojo, Wally, etc.
+## Installing Rojo, Wally, etc.
 
 ```bash
 rokit add rojo
@@ -59,7 +59,7 @@ rokit add wally
 rokit add wally-package-types
 ```
 
-## Install Packages
+## Installing Packages
 
 ```bash
 wally install
@@ -69,9 +69,9 @@ wally-package-types -s sourcemap.json ServerPackages/
 wally-package-types -s sourcemap.json DevPackages/
 ```
 
-## Install VSCode Extensions
+## Installing VSCode Extensions
 
-When you open this project in VSCode, you will be prompted to install the following extensions. Please install them.
+When you open this project in VSCode, you will be prompted to install the following recommended extensions. Please install them.
 
 - [Rojo](https://marketplace.visualstudio.com/items?itemName=evaera.vscode-rojo)
 - [Luau Language Server](https://marketplace.visualstudio.com/items?itemName=JohnnyMorganz.luau-lsp)
@@ -86,9 +86,8 @@ Press `Ctrl + Shift + P`
 
 Select `Rojo: Open Menu`
 
-{{< notice note >}}
-If this is your first time, launch Roblox Studio and then click "Install Roblox Studio Plugin".
-{{< /notice >}}
+> [!NOTE]
+> If this is your first time, launch Roblox Studio and install the Roblox Studio Plugin.
 
 Select `▶ default.project.json`
 
@@ -98,26 +97,24 @@ Select `▶ default.project.json`
 
 Go to the "Plugins" tab.
 
-Find the "Rojo" ribbon.
-
-Click the "Connect" button.
+In the "Rojo" ribbon, click the "Connect" button.
 
 ![How to connect to Rojo from Roblox Studio](roblox-luau-template-for-modern-development.webp)
 
-## Add a package with Wally
+## Adding Packages with Wally
 
 Edit `wally.toml` in VSCode.
 
-Go to the [wally.run](https://wally.run/) website, find the package you want, and copy its name from the "Install" section.
+Find the package you want on [wally.run](https://wally.run/) and copy its name from the "Install" section.
 
 The sections are categorized as follows:
 
-`[dependencies]` for both client and server
-`[server-dependencies]` for server-only
-`[dev-dependencies]` for development and testing only
+`[dependencies]` is for both client and server.
+`[server-dependencies]` is for server-only.
+`[dev-dependencies]` is for development and testing only.
 
-After editing the file, run the [package installation](#install-packages) steps again.
+Once you've finished editing, run the [package installation](#installing-packages) steps again.
 
-# Reference
+# References
 
-{{< youtube IJDg6tRJmHo >}}
+[How Big Studios Develop on Roblox](https://www.youtube.com/watch?v=IJDg6tRJmHo)
