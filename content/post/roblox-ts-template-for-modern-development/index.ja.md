@@ -30,13 +30,16 @@ Roblox（TypeScript）でVSCodeを使ったモダンな開発環境のテンプ�
 > 動作未確認ですが、有名なパッケージを入れてあります。
 
 - "@rbxts/janitor"
-- "@rbxts/knit"
 - "@rbxts/profileservice"
 - "@rbxts/replicaservice"
-- "@rbxts/react"
-- "@rbxts/react-roblox"
 - "@rbxts/cmdr"
 - "@rbxts/testez"
+
+> [!INFO]
+> 動作確認済
+
+- "@rbxts/react"
+- "@rbxts/react-roblox"
 
 > [!WARNING]
 > CI/CDは入ってないです

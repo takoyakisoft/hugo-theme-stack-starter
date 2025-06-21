@@ -30,13 +30,16 @@ tags:
 > 虽然尚未确认其功能，但已包含了一些知名的包。
 
 - "@rbxts/janitor"
-- "@rbxts/knit"
 - "@rbxts/profileservice"
 - "@rbxts/replicaservice"
-- "@rbxts/react"
-- "@rbxts/react-roblox"
 - "@rbxts/cmdr"
 - "@rbxts/testez"
+
+> [!INFO]
+> 确认运行
+
+- "@rbxts/react"
+- "@rbxts/react-roblox"
 
 > [!WARNING]
 > 不包含 CI/CD。
