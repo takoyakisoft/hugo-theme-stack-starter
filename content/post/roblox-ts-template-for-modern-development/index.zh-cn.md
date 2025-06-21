@@ -64,6 +64,10 @@ pnpm install
 
 ## 从 VSCode 启动 Rojo
 
+```bash
+pnpm run watch
+```
+
 按下“Ctrl + Shift + P”
 
 选择“Rojo: Open Menu”

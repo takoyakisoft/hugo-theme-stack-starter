@@ -64,6 +64,10 @@ pnpm install
 
 ## VSCodeからRojo
 
+```bash
+pnpm run watch
+```
+
 「Ctrl + Shift + P」
 
 「Rojo: Open Menu」

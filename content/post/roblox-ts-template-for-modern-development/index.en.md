@@ -65,6 +65,10 @@ When you open this project, VSCode will recommend the following extensions. Plea
 
 ## From VSCode to Rojo
 
+```bash
+pnpm run watch
+```
+
 `Ctrl + Shift + P`
 
 `Rojo: Open Menu`
