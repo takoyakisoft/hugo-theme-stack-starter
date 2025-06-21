@@ -35,7 +35,7 @@ tags:
 - "@rbxts/cmdr"
 - "@rbxts/testez"
 
-> [!INFO]
+> [!NOTE]
 > 确认运行
 
 - "@rbxts/react"

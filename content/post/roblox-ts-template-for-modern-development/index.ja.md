@@ -35,7 +35,7 @@ Roblox（TypeScript）でVSCodeを使ったモダンな開発環境のテンプ�
 - "@rbxts/cmdr"
 - "@rbxts/testez"
 
-> [!INFO]
+> [!NOTE]
 > 動作確認済
 
 - "@rbxts/react"
