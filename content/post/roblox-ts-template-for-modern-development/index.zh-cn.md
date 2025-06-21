@@ -34,6 +34,7 @@ tags:
 - "@rbxts/profileservice"
 - "@rbxts/replicaservice"
 - "@rbxts/roact"
+- "@rbxts/cmdr"
 - "@rbxts/testez"
 
 > [!WARNING]
