@@ -35,7 +35,8 @@ This is a template for a modern development environment using VSCode for Roblox 
 - "@rbxts/knit"
 - "@rbxts/profileservice"
 - "@rbxts/replicaservice"
-- "@rbxts/roact"
+- "@rbxts/react"
+- "@rbxts/react-roblox"
 - "@rbxts/cmdr"
 - "@rbxts/testez"
 

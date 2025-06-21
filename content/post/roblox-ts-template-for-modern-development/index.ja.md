@@ -33,7 +33,8 @@ Roblox（TypeScript）でVSCodeを使ったモダンな開発環境のテンプ�
 - "@rbxts/knit"
 - "@rbxts/profileservice"
 - "@rbxts/replicaservice"
-- "@rbxts/roact"
+- "@rbxts/react"
+- "@rbxts/react-roblox"
 - "@rbxts/cmdr"
 - "@rbxts/testez"
 
